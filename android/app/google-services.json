@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "384476936311",
+    "project_id": "fitnesstrack-3aa31",
+    "storage_bucket": "fitnesstrack-3aa31.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:384476936311:android:36c712e4f06804dffdae72",
+        "android_client_info": {
+          "package_name": "com.fitness.ftg"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5xkozrs7wcBOZWSoeFMGsVxMCYk6kqR4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:384476936311:android:dffb7bbbb39d9027fdae72",
+        "android_client_info": {
+          "package_name": "com.fitness.ftg"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5xkozrs7wcBOZWSoeFMGsVxMCYk6kqR4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
