@@ -60,6 +60,7 @@ class CustomerLoginController extends GetxController {
         if (baseModel.status??false) {
           Get.to(CustomerOtpVerificationView());
         } else {
+          // Get.to(CustomerOtpVerificationView());
           snackBar(context, baseModel.message ?? "");
         }
       });

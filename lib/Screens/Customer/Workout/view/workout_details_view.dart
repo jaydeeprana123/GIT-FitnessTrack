@@ -1,6 +1,8 @@
 import 'dart:developer';
+import 'package:video_thumbnail/video_thumbnail.dart';
 
 import 'package:fitness_track/Screens/Customer/Measurements/view/measurement_details_view.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,6 +20,9 @@ import '../../../../Styles/my_strings.dart';
 import '../../../../utils/internet_connection.dart';
 import '../../../../utils/password_text_field.dart';
 import '../controller/workout_controller.dart';
+import 'VideoPlayerPage.dart';
+import 'VideoThumbnailWidget.dart';
+import 'WorkoutVideoPlayer.dart';
 
 class WorkoutDetailsView extends StatefulWidget {
   const WorkoutDetailsView({Key? key}) : super(key: key);
@@ -200,9 +205,9 @@ class _WorkoutDetailsViewState extends State<WorkoutDetailsView> {
                     //     )),
                     child: InkWell(
                       onTap: () {
-                        controller.selectedWorkoutData.value =
-                        controller.workoutList[index];
-                        Get.to(WorkoutDetailsView());
+                        // controller.selectedWorkoutData.value =
+                        // controller.workoutList[index];
+                        // Get.to(WorkoutDetailsView());
                       },
                       child: Container(
                         width: double.infinity,
@@ -488,6 +493,101 @@ class _WorkoutDetailsViewState extends State<WorkoutDetailsView> {
           
                                                       ],
                                                     ),
+
+
+
+                                             if((controller.selectedWorkoutData.value.workoutTrainingList?[index]
+                                                 .workoutTrainingCategory?[j]
+                                                 .workoutTrainingSubCategory?[z]
+                                                 .workoutDetailVideoList ?? []).isNotEmpty) Container(
+                                               height: 160,
+                                               margin: REdgeInsets.only(bottom: 12),
+                                               child: ListView.builder(
+                                                 scrollDirection: Axis.horizontal,
+                                                 itemCount: (controller.selectedWorkoutData.value.workoutTrainingList?[index]
+                                                     .workoutTrainingCategory?[j]
+                                                     .workoutTrainingSubCategory?[z]
+                                                     .workoutDetailVideoList ??
+                                                     [])
+                                                     .length,
+                                                 itemBuilder: (context, g) {
+                                                   final videoPath = controller
+                                                       .selectedWorkoutData.value.workoutTrainingList?[index]
+                                                       .workoutTrainingCategory?[j]
+                                                       .workoutTrainingSubCategory?[z]
+                                                       .workoutDetailVideoList?[g]
+                                                       .video ??
+                                                       "";
+
+                                                   return FutureBuilder<Uint8List?>(
+                                                     future: _getThumbnail(videoPath),
+                                                     builder: (context, snapshot) {
+                                                       if (snapshot.connectionState == ConnectionState.waiting) {
+                                                         return const SizedBox(
+                                                           width: 160,
+                                                           child: Center(child: CircularProgressIndicator()),
+                                                         );
+                                                       }
+
+                                                       if (snapshot.hasError || snapshot.data == null) {
+                                                         return const SizedBox(
+                                                           width: 160,
+                                                           child: Center(child: Icon(Icons.error, color: Colors.red)),
+                                                         );
+                                                       }
+
+                                                       return GestureDetector(
+                                                         onTap: () {
+                                                           Navigator.push(
+                                                             context,
+                                                             MaterialPageRoute(
+                                                               builder: (context) => VideoPlayerPage(videoPath: videoPath,exerciseName: controller
+                                                                   .selectedWorkoutData.value.workoutTrainingList?[index]
+                                                                   .workoutTrainingCategory?[j]
+                                                                   .workoutTrainingSubCategory?[z].workoutDetailName??"",),
+                                                             ),
+                                                           );
+                                                         },
+                                                         child: Container(
+                                                           width: 160,
+                                                           margin: const EdgeInsets.symmetric(horizontal: 8),
+                                                           child: Column(
+                                                             children: [
+                                                               ClipRRect(
+                                                                 borderRadius: BorderRadius.circular(12),
+                                                                 child: Image.memory(
+                                                                   snapshot.data!,
+                                                                   fit: BoxFit.cover,
+                                                                   width: 160,
+                                                                   height: 120, // bigger height
+                                                                 ),
+                                                               ),
+                                                               const SizedBox(height: 6),
+                                                               Text(
+                                                                 "Video ${g+1}",
+                                                                 style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                                                                 overflow: TextOverflow.ellipsis,
+                                                               ),
+                                                             ],
+                                                           ),
+                                                         ),
+                                                       );
+                                                     },
+                                                   );
+                                                 },
+                                               ),
+                                             )
+                                                    ,
+
+
+
+                                              // for(int g=0 ; g< (controller.selectedWorkoutData.value.workoutTrainingList?[index].workoutTrainingCategory?[j].workoutTrainingSubCategory?[z].workoutDetailVideoList??[]).length; g++)
+                                                   //    Row(
+                                                   //      children: [
+                                                   //        WorkoutVideoPlayer(videoUrl: controller.selectedWorkoutData.value.workoutTrainingList?[index].workoutTrainingCategory?[j].workoutTrainingSubCategory?[z].workoutDetailVideoList?[g].video??"")
+                                                   //      ],
+                                                   //    )
+
           
                                                   ],
                                                 ),
@@ -531,4 +631,14 @@ class _WorkoutDetailsViewState extends State<WorkoutDetailsView> {
       ),
     );
   }
+
+  Future<Uint8List?> _getThumbnail(String videoPath) async {
+    return await VideoThumbnail.thumbnailData(
+      video: videoPath,
+      imageFormat: ImageFormat.JPEG,
+      maxWidth: 400, // generate higher resolution thumbnail
+      quality: 90,   // keep quality high
+    );
+  }
+
 }

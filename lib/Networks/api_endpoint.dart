@@ -1,6 +1,6 @@
 ///development
 const urlBase =
-    'https://ftgbharat.com/API/';
+    'https://ftgservices.in/API/';
 
 
 // const urlBase =

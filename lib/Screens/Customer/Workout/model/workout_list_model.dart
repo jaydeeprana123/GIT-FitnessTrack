@@ -240,6 +240,7 @@ class WorkoutTrainingSubCategory {
   String? remarks;
   String? status;
   String? deleteStatus;
+  List<WorkoutDetailVideoList>? workoutDetailVideoList;
 
   WorkoutTrainingSubCategory({
     this.workoutDetailName,
@@ -249,6 +250,7 @@ class WorkoutTrainingSubCategory {
     this.remarks,
     this.status,
     this.deleteStatus,
+    this.workoutDetailVideoList,
   });
 
   factory WorkoutTrainingSubCategory.fromJson(Map<String, dynamic> json) => WorkoutTrainingSubCategory(
@@ -259,6 +261,7 @@ class WorkoutTrainingSubCategory {
     remarks: json["remarks"],
     status: json["status"],
     deleteStatus: json["delete_status"],
+    workoutDetailVideoList: json["workout_detail_video_list"] == null ? [] : List<WorkoutDetailVideoList>.from(json["workout_detail_video_list"]!.map((x) => WorkoutDetailVideoList.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -266,6 +269,39 @@ class WorkoutTrainingSubCategory {
     "sets": sets,
     "repeat_no": repeatNo,
     "repeat_time": repeatTime,
+    "remarks": remarks,
+    "status": status,
+    "delete_status": deleteStatus,
+    "workout_detail_video_list": workoutDetailVideoList == null ? [] : List<dynamic>.from(workoutDetailVideoList!.map((x) => x.toJson())),
+  };
+}
+
+class WorkoutDetailVideoList {
+  String? video;
+  String? sortOrder;
+  String? remarks;
+  String? status;
+  String? deleteStatus;
+
+  WorkoutDetailVideoList({
+    this.video,
+    this.sortOrder,
+    this.remarks,
+    this.status,
+    this.deleteStatus,
+  });
+
+  factory WorkoutDetailVideoList.fromJson(Map<String, dynamic> json) => WorkoutDetailVideoList(
+    video: json["video"],
+    sortOrder: json["sort_order"],
+    remarks: json["remarks"],
+    status: json["status"],
+    deleteStatus: json["delete_status"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "video": video,
+    "sort_order": sortOrder,
     "remarks": remarks,
     "status": status,
     "delete_status": deleteStatus,
