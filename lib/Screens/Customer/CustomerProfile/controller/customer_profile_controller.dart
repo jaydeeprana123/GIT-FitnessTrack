@@ -15,8 +15,6 @@ import '../../../../Utils/preference_utils.dart';
 import '../../../../Utils/share_predata.dart';
 import '../../../Authentication/Login/model/customer_login_response_model.dart';
 
-
-
 /// Controller
 class CustomerProfileController extends GetxController {
   /// Editing controller for text field
@@ -27,11 +25,7 @@ class CustomerProfileController extends GetxController {
 
   String? deviceToken;
 
-
-
-
   RxString imagePathOfProfile = "".obs;
-
 
   /// Editing controller for text field
   Rx<TextEditingController> userNameEditingController =
@@ -43,8 +37,7 @@ class CustomerProfileController extends GetxController {
       TextEditingController().obs;
   Rx<TextEditingController> clientCodeEditingController =
       TextEditingController().obs;
-  Rx<TextEditingController> dobEditingController =
-      TextEditingController().obs;
+  Rx<TextEditingController> dobEditingController = TextEditingController().obs;
   Rx<TextEditingController> occupationEditingController =
       TextEditingController().obs;
   Rx<TextEditingController> emergencyPersonNameEditingController =
@@ -55,6 +48,7 @@ class CustomerProfileController extends GetxController {
       TextEditingController().obs;
   Rx<TextEditingController> medicineEditingController =
       TextEditingController().obs;
+
   /// Editing controller for text field
   Rx<TextEditingController> passwordEditingController =
       TextEditingController().obs;
@@ -62,15 +56,21 @@ class CustomerProfileController extends GetxController {
   Rx<TextEditingController> repeatPasswordEditingController =
       TextEditingController().obs;
 
-  Rx<TextEditingController> aadharCardNoEditingController = TextEditingController().obs;
-  Rx<TextEditingController> branchIdEditingController = TextEditingController().obs;
-  Rx<TextEditingController> addressEditingController = TextEditingController().obs;
+  Rx<TextEditingController> aadharCardNoEditingController =
+      TextEditingController().obs;
+  Rx<TextEditingController> branchIdEditingController =
+      TextEditingController().obs;
+  Rx<TextEditingController> addressEditingController =
+      TextEditingController().obs;
   Rx<TextEditingController> areaEditingController = TextEditingController().obs;
-  Rx<TextEditingController> pinCodeEditingController = TextEditingController().obs;
+  Rx<TextEditingController> pinCodeEditingController =
+      TextEditingController().obs;
   Rx<TextEditingController> ageEditingController = TextEditingController().obs;
-  Rx<TextEditingController> genderEditingController = TextEditingController().obs;
+  Rx<TextEditingController> genderEditingController =
+      TextEditingController().obs;
   Rx<TextEditingController> cityEditingController = TextEditingController().obs;
-  Rx<TextEditingController> stateEditingController = TextEditingController().obs;
+  Rx<TextEditingController> stateEditingController =
+      TextEditingController().obs;
 
   Rx<TextEditingController> oldPasswordEditingController =
       TextEditingController().obs;
@@ -81,19 +81,21 @@ class CustomerProfileController extends GetxController {
 
   Rx<TextEditingController> otpText = TextEditingController().obs;
 
-  Rx<CustomerLoginResponseModel> loginResponseModel = CustomerLoginResponseModel().obs;
+  Rx<CustomerLoginResponseModel> loginResponseModel =
+      CustomerLoginResponseModel().obs;
 
-
-  getUserInfo() async{
+  getUserInfo() async {
     /// Set login model into shared preference
-    loginResponseModel.value = (await MySharedPref().getCustomerLoginModel(SharePreData.keySaveLoginModel))??CustomerLoginResponseModel();
-    nameEditingController.value.text = loginResponseModel.value.data?[0].name??"";
-    emailEditingController.value.text = loginResponseModel.value.data?[0].email??"";
-    mobileNoEditingController.value.text = loginResponseModel.value.data?[0].mobile??"";
-  //  basicSalaryEditingController.value.text = loginResponseModel.value.data?[0].basicSalary??"";
-
-
-
+    loginResponseModel.value = (await MySharedPref()
+            .getCustomerLoginModel(SharePreData.keySaveLoginModel)) ??
+        CustomerLoginResponseModel();
+    nameEditingController.value.text =
+        loginResponseModel.value.data?[0].name ?? "";
+    emailEditingController.value.text =
+        loginResponseModel.value.data?[0].email ?? "";
+    mobileNoEditingController.value.text =
+        loginResponseModel.value.data?[0].mobile ?? "";
+    //  basicSalaryEditingController.value.text = loginResponseModel.value.data?[0].basicSalary??"";
   }
 
   // /// Edit profile api call
@@ -136,28 +138,29 @@ class CustomerProfileController extends GetxController {
   //   }
   // }
 
-
   /// Get profile api
   callGetProfileUpAPI(BuildContext context) async {
-     onLoading(context, "Loading..");
+    onLoading(context, "Loading..");
 
     String url = urlBase + urlGetCustomerProfileDetails;
 
-     String token = await MySharedPref().getStringValue(SharePreData.keyAccessToken);
-     printData("tokenn", token);
-     var headers = {'Content-Type': 'application/json',
-       'Authorization': 'Bearer $token'};
+    String token =
+        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+    printData("tokenn", token);
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
 
-     // var headers = {
-     //   'Content-Type': 'application/json',
-     //   'Authorization': 'BeeyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjEiLCJtb2JpbGUiOiI5NzM3Mzg4Nzg2IiwiZW1haWwiOiJhZG1pbkBmaXRuZXNzdHJhY2tneW0uY29tIn0.2Givt7c-Wtarer Z1h92xEoyrheqvcBsiMd9j6E8qCpCYwpw',
-     //
-     // };
+    // var headers = {
+    //   'Content-Type': 'application/json',
+    //   'Authorization': 'BeeyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjEiLCJtb2JpbGUiOiI5NzM3Mzg4Nzg2IiwiZW1haWwiOiJhZG1pbkBmaXRuZXNzdHJhY2tneW0uY29tIn0.2Givt7c-Wtarer Z1h92xEoyrheqvcBsiMd9j6E8qCpCYwpw',
+    //
+    // };
 
-    var request = http.Request(
-        'GET', Uri.parse(url));
+    var request = http.Request('GET', Uri.parse(url));
     request.body = json.encode({
-      "client_id": loginResponseModel.value.data?[0].id??"",
+      "client_id": loginResponseModel.value.data?[0].id ?? "",
     });
     request.headers.addAll(headers);
 
@@ -169,76 +172,107 @@ class CustomerProfileController extends GetxController {
 
     printData("response status code", response.statusCode.toString());
     if (response.statusCode == 200) {
-
       await response.stream.bytesToString().then((valueData) async {
-        printData(runtimeType.toString(),"callGetProfileUpAPI API value ${valueData}");
+        printData(runtimeType.toString(),
+            "callGetProfileUpAPI API value ${valueData}");
 
         Map<String, dynamic> userModel = json.decode(valueData);
-         loginResponseModel.value = CustomerLoginResponseModel.fromJson(userModel);
+        loginResponseModel.value =
+            CustomerLoginResponseModel.fromJson(userModel);
 
         if (loginResponseModel.value.status ?? false) {
           /// Set login model into shared preference
-          MySharedPref().setCustomerLoginModel(loginResponseModel.value, SharePreData.keySaveLoginModel);
-          userNameEditingController.value.text = loginResponseModel.value.data?[0].username??"";
-          nameEditingController.value.text = loginResponseModel.value.data?[0].name??"";
-          clientCodeEditingController.value.text = loginResponseModel.value.data?[0].clientCode??"";
-          emailEditingController.value.text = loginResponseModel.value.data?[0].email??"";
-          mobileNoEditingController.value.text = loginResponseModel.value.data?[0].mobile??"";
-          cityEditingController.value.text = loginResponseModel.value.data?[0].cityName??"";
-          stateEditingController.value.text = loginResponseModel.value.data?[0].stateName??"";
-          areaEditingController.value.text = loginResponseModel.value.data?[0].areaName??"";
-          pinCodeEditingController.value.text = loginResponseModel.value.data?[0].pincode??"";
-          addressEditingController.value.text = loginResponseModel.value.data?[0].address??"";
-          ageEditingController.value.text = loginResponseModel.value.data?[0].age??"";
+          MySharedPref().setCustomerLoginModel(
+              loginResponseModel.value, SharePreData.keySaveLoginModel);
+          userNameEditingController.value.text =
+              loginResponseModel.value.data?[0].username ?? "";
+          nameEditingController.value.text =
+              loginResponseModel.value.data?[0].name ?? "";
+          clientCodeEditingController.value.text =
+              loginResponseModel.value.data?[0].clientCode ?? "";
+          emailEditingController.value.text =
+              loginResponseModel.value.data?[0].email ?? "";
+          mobileNoEditingController.value.text =
+              loginResponseModel.value.data?[0].mobile ?? "";
+          cityEditingController.value.text =
+              loginResponseModel.value.data?[0].cityName ?? "";
+          stateEditingController.value.text =
+              loginResponseModel.value.data?[0].stateName ?? "";
+          areaEditingController.value.text =
+              loginResponseModel.value.data?[0].areaName ?? "";
+          pinCodeEditingController.value.text =
+              loginResponseModel.value.data?[0].pincode ?? "";
+          addressEditingController.value.text =
+              loginResponseModel.value.data?[0].address ?? "";
+          ageEditingController.value.text =
+              loginResponseModel.value.data?[0].age ?? "";
 
-          if((loginResponseModel.value.data?[0].gender??"").toLowerCase() == "m"){
-            male.value = 0;
-          }else if((loginResponseModel.value.data?[0].gender??"").toLowerCase() == "f"){
+          if ((loginResponseModel.value.data?[0].gender ?? "").toLowerCase() ==
+              "1") {
             male.value = 1;
+            genderEditingController.value.text = "Male";
+          } else if ((loginResponseModel.value.data?[0].gender ?? "")
+                  .toLowerCase() ==
+              "2") {
+            male.value = 2;
+
+            genderEditingController.value.text = "Female";
+          } else {
+            male.value = 3;
+
+            genderEditingController.value.text = "Others";
           }
 
-          genderEditingController.value.text = loginResponseModel.value.data?[0].gender??"";
-          dobEditingController.value.text = loginResponseModel.value.data?[0].dob??"";
-          occupationEditingController.value.text = loginResponseModel.value.data?[0].occupation??"";
-          emergencyPersonNameEditingController.value.text = loginResponseModel.value.data?[0].emergencyPersonName??"";
-          emergencyPersonPhoneEditingController.value.text = loginResponseModel.value.data?[0].emergencyPersonPhone??"";
-          problemEditingController.value.text = loginResponseModel.value.data?[0].problem??"";
-          medicineEditingController.value.text = loginResponseModel.value.data?[0].medicine??"";
-          aadharCardNoEditingController.value.text = loginResponseModel.value.data?[0].aadharCardNo??"";
-          branchIdEditingController.value.text = loginResponseModel.value.data?[0].branchId??"";
-
-
+          genderEditingController.value.text =
+              loginResponseModel.value.data?[0].gender ?? "";
+          dobEditingController.value.text =
+              loginResponseModel.value.data?[0].dob ?? "";
+          occupationEditingController.value.text =
+              loginResponseModel.value.data?[0].occupation ?? "";
+          emergencyPersonNameEditingController.value.text =
+              loginResponseModel.value.data?[0].emergencyPersonName ?? "";
+          emergencyPersonPhoneEditingController.value.text =
+              loginResponseModel.value.data?[0].emergencyPersonPhone ?? "";
+          problemEditingController.value.text =
+              loginResponseModel.value.data?[0].problem ?? "";
+          medicineEditingController.value.text =
+              loginResponseModel.value.data?[0].medicine ?? "";
+          aadharCardNoEditingController.value.text =
+              loginResponseModel.value.data?[0].aadharCardNo ?? "";
+          branchIdEditingController.value.text =
+              loginResponseModel.value.data?[0].branchId ?? "";
         } else {
-          snackBar(context, loginResponseModel.value.message??"");
+          snackBar(context, loginResponseModel.value.message ?? "");
         }
       });
-
     } else {
-      print("kjhkj"+ (response.reasonPhrase).toString());
+      print("kjhkj" + (response.reasonPhrase).toString());
     }
   }
 
   /// edit profile api
-  callEditProfileUpAPI(BuildContext context, String stateId, String cityId, String areaId) async {
-     onLoading(context, "Loading..");
+  callEditProfileUpAPI(BuildContext context, String stateId, String cityId,
+      String areaId) async {
+    onLoading(context, "Loading..");
 
     String url = urlBase + urlEditCustomerProfileDetails;
-     String token = await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+    String token =
+        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
     var request = http.MultipartRequest('POST', Uri.parse(url));
-     request.headers['authorization'] = 'Bearer $token';
+    request.headers['authorization'] = 'Bearer $token';
 
     request.fields.addAll({
-      "client_id": loginResponseModel.value.data?[0].id??"",
-      "client_code":loginResponseModel.value.data?[0].clientCode??"",
-      "branch_id": loginResponseModel.value.data?[0].branchId??"",
-      "trainer_id":loginResponseModel.value.data?[0].trainerId??"",
-      "programme_id":loginResponseModel.value.data?[0].programmeId??"",
+      "client_id": loginResponseModel.value.data?[0].id ?? "",
+      "client_code": loginResponseModel.value.data?[0].clientCode ?? "",
+      "branch_id": loginResponseModel.value.data?[0].branchId ?? "",
+      "trainer_id": loginResponseModel.value.data?[0].trainerId ?? "",
+      "programme_id": loginResponseModel.value.data?[0].programmeId ?? "",
       "aadhar_card_no": aadharCardNoEditingController.value.text,
-      "name":nameEditingController.value.text,
-      "age":ageEditingController.value.text,
-      "gender":male.value == 0?"m":"f",
-      "mobile":mobileNoEditingController.value.text,
-      "dob":dobEditingController.value.text,
+      "name": nameEditingController.value.text,
+      "age": ageEditingController.value.text,
+      "gender": male.value == 0 ? "m" : "f",
+      "mobile": mobileNoEditingController.value.text,
+      "dob": dobEditingController.value.text,
       "email": emailEditingController.value.text,
       "signature": "Yes",
       "address": addressEditingController.value.text,
@@ -246,21 +280,22 @@ class CustomerProfileController extends GetxController {
       "state_id": stateId,
       "area_id": areaId,
       "pincode": pinCodeEditingController.value.text,
-      "occupation":occupationEditingController.value.text,
-      "username":userNameEditingController.value.text,
-      "emergency_person_name":emergencyPersonNameEditingController.value.text,
-      "emergency_person_phone":emergencyPersonPhoneEditingController.value.text,
-      "problem":problemEditingController.value.text,
-      "medicine":medicineEditingController.value.text,
-      "status":"0"
+      "occupation": occupationEditingController.value.text,
+      "username": userNameEditingController.value.text,
+      "emergency_person_name": emergencyPersonNameEditingController.value.text,
+      "emergency_person_phone":
+          emergencyPersonPhoneEditingController.value.text,
+      "problem": problemEditingController.value.text,
+      "medicine": medicineEditingController.value.text,
+      "status": "0"
     });
 
-    if(imagePathOfProfile.value.isNotEmpty){
-      request.files.add(await http.MultipartFile.fromPath('image',imagePathOfProfile.value));
+    if (imagePathOfProfile.value.isNotEmpty) {
+      request.files.add(
+          await http.MultipartFile.fromPath('image', imagePathOfProfile.value));
     }
 
     printData("request of edit profile", request.fields.toString());
-
 
     http.StreamedResponse response = await request.send();
 
@@ -268,57 +303,33 @@ class CustomerProfileController extends GetxController {
 
     if (response.statusCode == 200) {
       await response.stream.bytesToString().then((valueData) async {
-        printData(runtimeType.toString(),"callEditProfileUpAPI API value ${valueData}");
+        printData(runtimeType.toString(),
+            "callEditProfileUpAPI API value ${valueData}");
 
         Map<String, dynamic> userModel = json.decode(valueData);
-        CustomerLoginResponseModel loginResponseModel = CustomerLoginResponseModel.fromJson(userModel);
+        CustomerLoginResponseModel loginResponseModel =
+            CustomerLoginResponseModel.fromJson(userModel);
 
         imagePathOfProfile.value = "";
 
         if (loginResponseModel.status ?? false) {
           /// Set login model into shared preference
-          MySharedPref().setCustomerLoginModel(loginResponseModel, SharePreData.keySaveLoginModel);
-          printData(runtimeType.toString(),"callEditProfileUpAPI Message ${loginResponseModel.message}");
+          MySharedPref().setCustomerLoginModel(
+              loginResponseModel, SharePreData.keySaveLoginModel);
+          printData(runtimeType.toString(),
+              "callEditProfileUpAPI Message ${loginResponseModel.message}");
 
           Navigator.pop(context);
-           snackBar(context, loginResponseModel.message??"");
+          snackBar(context, loginResponseModel.message ?? "");
         } else {
-
-         // Navigator.pop(context);
-          snackBar(context, loginResponseModel.message??"");
+          // Navigator.pop(context);
+          snackBar(context, loginResponseModel.message ?? "");
         }
       });
-    }
-    else {
+    } else {
       // Navigator.pop(context);
       print(response.reasonPhrase);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     // var headers = {'Content-Type': 'application/json'};
     // var request = http.Request(
@@ -369,12 +380,14 @@ class CustomerProfileController extends GetxController {
 
     String url = urlBase + urlChangePassword;
 
-    var headers = {'Content-Type': 'application/json',
-      'lang': (await MySharedPref().getStringValue(SharePreData.keyLanguage)).toString()};
-    var request = http.Request(
-        'POST', Uri.parse(url));
+    var headers = {
+      'Content-Type': 'application/json',
+      'lang': (await MySharedPref().getStringValue(SharePreData.keyLanguage))
+          .toString()
+    };
+    var request = http.Request('POST', Uri.parse(url));
     request.body = json.encode({
-      "customer_id": loginResponseModel.value.data?[0].id??"",
+      "customer_id": loginResponseModel.value.data?[0].id ?? "",
       "old_password": oldPasswordEditingController.value.text,
       "new_password": newPasswordEditingController.value.text,
       "confirm_password": confirmPasswordEditingController.value.text,
@@ -386,52 +399,27 @@ class CustomerProfileController extends GetxController {
     http.StreamedResponse response = await request.send();
 
     Navigator.pop(context);
-    printData(runtimeType.toString(),"callChangePasswordAPI API status ${response.statusCode}");
+    printData(runtimeType.toString(),
+        "callChangePasswordAPI API status ${response.statusCode}");
     if (response.statusCode == 200) {
       await response.stream.bytesToString().then((valueData) async {
-        printData(runtimeType.toString(),"callChangePasswordAPI API value ${valueData}");
+        printData(runtimeType.toString(),
+            "callChangePasswordAPI API value ${valueData}");
 
         Map<String, dynamic> userModel = json.decode(valueData);
         BaseModel baseModel = BaseModel.fromJson(userModel);
         if (baseModel.status ?? false) {
           Navigator.pop(context);
-          snackBar(context, baseModel.message??"");
+          snackBar(context, baseModel.message ?? "");
         } else {
           // Navigator.pop(context);
-          snackBar(context, baseModel.message??"");
+          snackBar(context, baseModel.message ?? "");
         }
       });
-    }
-    else {
+    } else {
       // Navigator.pop(context);
       print(response.reasonPhrase);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     // var headers = {'Content-Type': 'application/json'};
     // var request = http.Request(
@@ -482,13 +470,14 @@ class CustomerProfileController extends GetxController {
 
     String url = urlBase + urlStateList;
 
-    String token = await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+    String token =
+        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
     printData("tokenn", token);
-    var headers = {'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token'};
-    var request = http.Request(
-        'GET', Uri.parse(url));
-
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
+    var request = http.Request('GET', Uri.parse(url));
 
     // request.body = json.encode({
     //   "chat_id": chatId.value,
@@ -501,15 +490,13 @@ class CustomerProfileController extends GetxController {
     Navigator.pop(context);
 
     if (response.statusCode == 200) {
-
       await response.stream.bytesToString().then((valueData) async {
-        printData(runtimeType.toString(),"getStateList value ${valueData}");
+        printData(runtimeType.toString(), "getStateList value ${valueData}");
 
         Map<String, dynamic> mapModel = json.decode(valueData);
         StateListModel stateListModel = StateListModel.fromJson(mapModel);
-        stateList.value = stateListModel.data??[];
+        stateList.value = stateListModel.data ?? [];
       });
-
     } else {
       print(response.reasonPhrase);
     }
@@ -521,13 +508,14 @@ class CustomerProfileController extends GetxController {
 
     String url = urlBase + urlCityList;
 
-    String token = await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+    String token =
+        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
     printData("tokenn", token);
-    var headers = {'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token'};
-    var request = http.Request(
-        'POST', Uri.parse(url));
-
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
+    var request = http.Request('POST', Uri.parse(url));
 
     request.body = json.encode({
       "state_id": stateId,
@@ -540,20 +528,17 @@ class CustomerProfileController extends GetxController {
     Navigator.pop(context);
 
     if (response.statusCode == 200) {
-
       await response.stream.bytesToString().then((valueData) async {
-        printData(runtimeType.toString(),"getCityList value ${valueData}");
+        printData(runtimeType.toString(), "getCityList value ${valueData}");
 
         Map<String, dynamic> mapModel = json.decode(valueData);
         CityListModel cityListModel = CityListModel.fromJson(mapModel);
-        cityList.value = cityListModel.data??[];
+        cityList.value = cityListModel.data ?? [];
       });
-
     } else {
       print(response.reasonPhrase);
     }
   }
-
 
   /// get area list api call
   getAreaList(BuildContext context, String cityId) async {
@@ -561,13 +546,14 @@ class CustomerProfileController extends GetxController {
 
     String url = urlBase + urlAreaList;
 
-    String token = await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+    String token =
+        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
     printData("tokenn", token);
-    var headers = {'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token'};
-    var request = http.Request(
-        'POST', Uri.parse(url));
-
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
+    var request = http.Request('POST', Uri.parse(url));
 
     request.body = json.encode({
       "city_id": cityId,
@@ -580,15 +566,13 @@ class CustomerProfileController extends GetxController {
     Navigator.pop(context);
 
     if (response.statusCode == 200) {
-
       await response.stream.bytesToString().then((valueData) async {
-        printData(runtimeType.toString(),"getAreaList value ${valueData}");
+        printData(runtimeType.toString(), "getAreaList value ${valueData}");
 
         Map<String, dynamic> mapModel = json.decode(valueData);
         AreaListModel areaListModel = AreaListModel.fromJson(mapModel);
-        areaList.value = areaListModel.data??[];
+        areaList.value = areaListModel.data ?? [];
       });
-
     } else {
       print(response.reasonPhrase);
     }
