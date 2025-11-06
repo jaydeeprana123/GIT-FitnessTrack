@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:video_thumbnail/video_thumbnail.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:fitness_track/Screens/Customer/Measurements/view/measurement_details_view.dart';
 import 'package:flutter/rendering.dart';
@@ -20,6 +21,7 @@ import '../../../../Styles/my_strings.dart';
 import '../../../../utils/internet_connection.dart';
 import '../../../../utils/password_text_field.dart';
 import '../controller/workout_controller.dart';
+import 'AutoPlayVideoWidget.dart';
 import 'VideoPlayerPage.dart';
 import 'VideoThumbnailWidget.dart';
 import 'WorkoutVideoPlayer.dart';
@@ -302,6 +304,7 @@ class _WorkoutDetailsViewState extends State<WorkoutDetailsView> {
                   scrollDirection: Axis.vertical,
                   primary: false,
                   shrinkWrap: true,
+                  cacheExtent: 500,
                   itemCount: (controller.selectedWorkoutData.value.workoutTrainingList??[]).length,
                   itemBuilder: (context, index) => Container(
                     margin: EdgeInsets.only( top: 8),
@@ -499,7 +502,11 @@ class _WorkoutDetailsViewState extends State<WorkoutDetailsView> {
                                              if((controller.selectedWorkoutData.value.workoutTrainingList?[index]
                                                  .workoutTrainingCategory?[j]
                                                  .workoutTrainingSubCategory?[z]
-                                                 .workoutDetailVideoList ?? []).isNotEmpty) Container(
+                                                 .workoutDetailVideoList ?? []).isNotEmpty)
+
+
+
+                                               Container(
                                                height: 160,
                                                margin: REdgeInsets.only(bottom: 12),
                                                child: ListView.builder(
@@ -553,15 +560,22 @@ class _WorkoutDetailsViewState extends State<WorkoutDetailsView> {
                                                            margin: const EdgeInsets.symmetric(horizontal: 8),
                                                            child: Column(
                                                              children: [
+
                                                                ClipRRect(
                                                                  borderRadius: BorderRadius.circular(12),
-                                                                 child: Image.memory(
-                                                                   snapshot.data!,
-                                                                   fit: BoxFit.cover,
-                                                                   width: 160,
-                                                                   height: 120, // bigger height
-                                                                 ),
+                                                                 child: AutoPlayVideoWidget(videoUrl: videoPath),
                                                                ),
+
+
+                                                               // ClipRRect(
+                                                               //   borderRadius: BorderRadius.circular(12),
+                                                               //   child: Image.memory(
+                                                               //     snapshot.data!,
+                                                               //     fit: BoxFit.cover,
+                                                               //     width: 160,
+                                                               //     height: 120, // bigger height
+                                                               //   ),
+                                                               // ),
                                                                const SizedBox(height: 6),
                                                                Text(
                                                                  "Video ${g+1}",
@@ -639,6 +653,14 @@ class _WorkoutDetailsViewState extends State<WorkoutDetailsView> {
       maxWidth: 400, // generate higher resolution thumbnail
       quality: 90,   // keep quality high
     );
+  }
+
+
+  Future<void> _launchURL(String url) async {
+    final Uri uri = Uri.parse(url);
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      throw 'Could not launch $url';
+    }
   }
 
 }

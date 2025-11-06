@@ -207,6 +207,9 @@ class CustomerProfileController extends GetxController {
           ageEditingController.value.text =
               loginResponseModel.value.data?[0].age ?? "";
 
+
+          printData("gender", (loginResponseModel.value.data?[0].gender ?? ""));
+
           if ((loginResponseModel.value.data?[0].gender ?? "").toLowerCase() ==
               "1") {
             male.value = 1;
@@ -223,8 +226,6 @@ class CustomerProfileController extends GetxController {
             genderEditingController.value.text = "Others";
           }
 
-          genderEditingController.value.text =
-              loginResponseModel.value.data?[0].gender ?? "";
           dobEditingController.value.text =
               loginResponseModel.value.data?[0].dob ?? "";
           occupationEditingController.value.text =

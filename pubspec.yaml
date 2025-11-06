@@ -79,6 +79,7 @@ dev_dependencies:
   package_info_plus: ^8.0.3
   video_player:
   video_thumbnail: ^0.5.6
+  visibility_detector: ^0.4.0+2
 #  flutter_plugin_android_lifecycle: ^2.0.21
 #  firebase_messaging_platform_interface: ^4.5.42
 
