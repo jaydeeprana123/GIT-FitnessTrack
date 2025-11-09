@@ -67,6 +67,12 @@ class MeasurementController extends GetxController {
 
   RxBool measurementListApiCall = false.obs;
 
+  RxString frontViewImagePath = "".obs;
+  RxString backViewImagePath = "".obs;
+  RxString leftViewImagePath = "".obs;
+  RxString rightViewImagePath = "".obs;
+
+
   @override
   void onInit() {
     super.onInit();
@@ -92,8 +98,8 @@ class MeasurementController extends GetxController {
 
     print("Submitted: $data");
 
-    Get.snackbar("Success", "Form Submitted Successfully!",
-        backgroundColor: Colors.green.shade100);
+
+    callAddBodyMeasurementAPI(context);
   }
 
   getUserInfo() async {
@@ -158,17 +164,12 @@ class MeasurementController extends GetxController {
 
   /// Upload body measurement data (with images if any)
   callAddBodyMeasurementAPI(
-    BuildContext context,
-    String? frontViewPath,
-    String? backViewPath,
-    String? leftViewPath,
-    String? rightViewPath, // optional image files
+    BuildContext context, // optional image files
   ) async {
     onLoading(context, "Uploading..");
 
     // 🔹 API URL
-    String url =
-        "$urlBase/member/measurement/measurement_add_edit.php"; // change as needed
+    String url = urlBase + urlMeasurementAddEdit;
     printData("callAddBodyMeasurementAPI url", url);
 
     // 🔹 Fetch token from shared prefs
@@ -181,6 +182,9 @@ class MeasurementController extends GetxController {
       'Authorization': 'Bearer $token',
     };
     var request = http.MultipartRequest('POST', Uri.parse(url));
+
+    request.headers['authorization'] = 'Bearer $token';
+
     // 🔹 Prepare form data
     request.fields.addAll({
       'client_id': loginResponseModel.value.data?[0].id ?? "0",
@@ -221,26 +225,26 @@ class MeasurementController extends GetxController {
       'obese_grade_3': fieldControllers['obese_grade_3']?.text ?? '',
       'bmr': fieldControllers['bmr']?.text ?? '',
       'status': '0',
-      'current_login_id': '',
+      'current_login_id': loginResponseModel.value.data?[0].id ?? "0",
     });
 
     // 🔹 Add images (if any)
     // 🔹 Add multiple images (if selected)
-    if (frontViewPath != null && frontViewPath.isNotEmpty) {
+    if (frontViewImagePath != null && frontViewImagePath.isNotEmpty) {
       request.files
-          .add(await http.MultipartFile.fromPath('front_view', frontViewPath));
+          .add(await http.MultipartFile.fromPath('front_view', frontViewImagePath.value));
     }
-    if (backViewPath != null && backViewPath.isNotEmpty) {
+    if (backViewImagePath != null && backViewImagePath.isNotEmpty) {
       request.files
-          .add(await http.MultipartFile.fromPath('back_view', backViewPath));
+          .add(await http.MultipartFile.fromPath('back_view', backViewImagePath.value));
     }
-    if (leftViewPath != null && leftViewPath.isNotEmpty) {
+    if (leftViewImagePath != null && leftViewImagePath.isNotEmpty) {
       request.files
-          .add(await http.MultipartFile.fromPath('left_view', leftViewPath));
+          .add(await http.MultipartFile.fromPath('left_view', leftViewImagePath.value));
     }
-    if (rightViewPath != null && rightViewPath.isNotEmpty) {
+    if (rightViewImagePath != null && rightViewImagePath.isNotEmpty) {
       request.files
-          .add(await http.MultipartFile.fromPath('right_view', rightViewPath));
+          .add(await http.MultipartFile.fromPath('right_view', rightViewImagePath.value));
     }
 
     printData("callAddBodyMeasurementAPI headers", headers.toString());
@@ -253,7 +257,7 @@ class MeasurementController extends GetxController {
     if (response.statusCode == 200) {
       await response.stream.bytesToString().then((valueData) async {
         printData(runtimeType.toString(),
-            "callInsertFavCommentAPI API value ${valueData}");
+            "callAddBodyMeasurementAPI API value ${valueData}");
 
         Map<String, dynamic> userModel = json.decode(valueData);
         BaseModel baseModel = BaseModel.fromJson(userModel);

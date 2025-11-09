@@ -42,6 +42,10 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
+import 'package:flutter/material.dart';
+import 'package:video_player/video_player.dart';
+import 'package:visibility_detector/visibility_detector.dart';
+
 class AutoPlayVideoWidget extends StatefulWidget {
   final String videoUrl;
   const AutoPlayVideoWidget({Key? key, required this.videoUrl}) : super(key: key);
@@ -80,12 +84,12 @@ class _AutoPlayVideoWidgetState extends State<AutoPlayVideoWidget> {
   }
 
   void _handleVisibility(double visibleFraction) async {
-    // ✅ Play when >50% visible, pause when <30%
     if (!_initialized) {
       _isVisible = visibleFraction > 0.5;
       return;
     }
 
+    // ✅ Autoplay logic (only if user didn’t manually pause)
     if (visibleFraction > 0.5 && !_controller.value.isPlaying) {
       _isVisible = true;
       await _controller.play();
@@ -95,21 +99,72 @@ class _AutoPlayVideoWidgetState extends State<AutoPlayVideoWidget> {
     }
   }
 
+  void _togglePlayPause() async {
+    if (!_initialized) return;
+
+    if (_controller.value.isPlaying) {
+      await _controller.pause();
+    } else {
+      await _controller.play();
+    }
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return VisibilityDetector(
       key: Key(widget.videoUrl),
       onVisibilityChanged: (info) => _handleVisibility(info.visibleFraction),
       child: Container(
-        width: 160,
+        width: 200,
         margin: const EdgeInsets.symmetric(horizontal: 8),
         child: _initialized
-            ? ClipRRect(
-          borderRadius: BorderRadius.circular(12),
-          child: AspectRatio(
-            aspectRatio: _controller.value.aspectRatio,
-            child: VideoPlayer(_controller),
-          ),
+            ? Stack(
+          alignment: Alignment.center,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: AspectRatio(
+                aspectRatio: _controller.value.aspectRatio,
+                child: VideoPlayer(_controller),
+              ),
+            ),
+
+            // ▶️ Play / ⏸ Pause Button
+            GestureDetector(
+              onTap: _togglePlayPause,
+              child: AnimatedOpacity(
+                opacity: _controller.value.isPlaying ? 0.0 : 1.0,
+                duration: const Duration(milliseconds: 300),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.black45,
+                    shape: BoxShape.circle,
+                  ),
+                  padding: const EdgeInsets.all(12),
+                  child: Icon(
+                    _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+                    color: Colors.white,
+                    size: 40,
+                  ),
+                ),
+              ),
+            ),
+
+            // Stop Button (bottom-right)
+            Positioned(
+              bottom: 8,
+              right: 8,
+              child: IconButton(
+                icon: const Icon(Icons.stop, color: Colors.white),
+                onPressed: () async {
+                  await _controller.pause();
+                  await _controller.seekTo(Duration.zero);
+                  setState(() {});
+                },
+              ),
+            ),
+          ],
         )
             : const SizedBox(
           height: 120,
@@ -119,6 +174,7 @@ class _AutoPlayVideoWidgetState extends State<AutoPlayVideoWidget> {
     );
   }
 }
+
 
 
 

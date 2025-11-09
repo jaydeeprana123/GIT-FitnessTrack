@@ -545,18 +545,18 @@ class _WorkoutDetailsViewState extends State<WorkoutDetailsView> {
 
                                                        return GestureDetector(
                                                          onTap: () {
-                                                           Navigator.push(
-                                                             context,
-                                                             MaterialPageRoute(
-                                                               builder: (context) => VideoPlayerPage(videoPath: videoPath,exerciseName: controller
-                                                                   .selectedWorkoutData.value.workoutTrainingList?[index]
-                                                                   .workoutTrainingCategory?[j]
-                                                                   .workoutTrainingSubCategory?[z].workoutDetailName??"",),
-                                                             ),
-                                                           );
+                                                           // Navigator.push(
+                                                           //   context,
+                                                           //   MaterialPageRoute(
+                                                           //     builder: (context) => VideoPlayerPage(videoPath: videoPath,exerciseName: controller
+                                                           //         .selectedWorkoutData.value.workoutTrainingList?[index]
+                                                           //         .workoutTrainingCategory?[j]
+                                                           //         .workoutTrainingSubCategory?[z].workoutDetailName??"",),
+                                                           //   ),
+                                                           // );
                                                          },
                                                          child: Container(
-                                                           width: 160,
+                                                           width: 200,
                                                            margin: const EdgeInsets.symmetric(horizontal: 8),
                                                            child: Column(
                                                              children: [

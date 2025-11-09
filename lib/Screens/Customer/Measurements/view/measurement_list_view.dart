@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:fitness_track/Screens/Customer/Measurements/view/BodyMeasurementPage.dart';
+import 'package:fitness_track/Screens/Customer/Measurements/view/AddMeasurementPage.dart';
 import 'package:fitness_track/Screens/Customer/Measurements/view/measurement_details_view.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter/material.dart';
@@ -76,7 +76,7 @@ class _MeasurementListViewState extends State<MeasurementListView> {
               ),
               InkWell(
                 onTap: () {
-                  Get.to(BodyMeasurementPage());
+                  Get.to(AddMeasurementPage());
                 },
                 child: Row(
                   children: [
