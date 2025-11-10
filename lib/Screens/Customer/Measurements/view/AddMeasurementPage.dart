@@ -35,26 +35,24 @@ class AddMeasurementPage extends StatefulWidget {
 
 class _AddMeasurementPageState extends State<AddMeasurementPage> {
   final _formKey = GlobalKey<FormState>();
-  final MeasurementController controller = Get.put(MeasurementController());
+  final MeasurementController measureController =
+      Get.put(MeasurementController());
 
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context);
     return Scaffold(
       appBar: AppBar(
-    iconTheme: IconThemeData(
-    color: Colors.white, //change your color here
-    ),
-    backgroundColor: color_primary,
-    title: Text(
-    "Add Measurement",
-    style: TextStyle(
-    color: Colors.white,
-    fontSize: 16,
-    fontFamily: fontInterRegular),
-    ),
-
-    ),
+        iconTheme: IconThemeData(
+          color: Colors.white, //change your color here
+        ),
+        backgroundColor: color_primary,
+        title: Text(
+          "Add Measurement",
+          style: TextStyle(
+              color: Colors.white, fontSize: 16, fontFamily: fontInterRegular),
+        ),
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.only(bottom: 40),
         child: Column(
@@ -64,13 +62,13 @@ class _AddMeasurementPageState extends State<AddMeasurementPage> {
             _buildDatePicker(context),
 
             // Auto-generate measurement fields
-            ...controller.fieldLabels.entries.map((e) {
+            ...measureController.fieldLabels.entries.map((e) {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildTitle(e.value),
                   _buildInputField(
-                      controller.fieldControllers[e.key]!, e.value),
+                      measureController.fieldControllers[e.key]!, e.value),
                 ],
               );
             }).toList(),
@@ -85,11 +83,11 @@ class _AddMeasurementPageState extends State<AddMeasurementPage> {
                   children: [
                     InkWell(
                       onTap: () async {
-
-                        controller.frontViewImagePath.value = await selectPhoto(context, true);
+                        measureController.frontViewImagePath.value =
+                            await selectPhoto(context, true);
 
                         printData("controller.imagePath.value",
-                            controller.frontViewImagePath.value);
+                            measureController.frontViewImagePath.value);
                         setState(() {});
                       },
                       child: Column(
@@ -98,65 +96,60 @@ class _AddMeasurementPageState extends State<AddMeasurementPage> {
                           ClipRRect(
                               borderRadius: BorderRadius.circular(58.r),
                               child:
-                              // controller.imagePath.value.isNotEmpty
-                              //     ?
+                                  // controller.imagePath.value.isNotEmpty
+                                  //     ?
 
-                              (controller
-                                  .frontViewImagePath.value.isNotEmpty)
-                                  ? Image.file(
-                                File(controller
-                                    .frontViewImagePath.value),
-                                fit: BoxFit.cover,
-                                height: 100,
-                                width: 100,
-                              )
-                                  : DottedBorder(
-                                dashPattern: [6, 3],
-                                strokeWidth: 1.5,
-                                color: hint_txt_909196,
-                                borderType:
-                                BorderType.Circle,
-                                radius: Radius.circular(50),
-                                child: Container(
-                                  height: 100,
-                                  width: 100,
-                                  decoration:
-                                  const BoxDecoration(
-                                      shape: BoxShape
-                                          .circle,
-                                      color:
-                                      line_gray_e2e2e6),
-                                  child: Column(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment
-                                        .center,
-                                    children: [
-                                      SvgPicture.asset(
-                                        icon_add_plus_square_new, height: 20, width: 20,color: text_color,),
-                                      SizedBox(
-                                        height: 5.h,
-                                      ),
-                                      Text("Add",
-                                          style: TextStyle(
-                                              color: const Color(
-                                                  0xff3e4046),
-                                              fontFamily:
-                                              fontInterSemiBold,
-                                              fontStyle:
-                                              FontStyle
-                                                  .normal,
-                                              fontSize:
-                                              14),
-                                          textAlign:
-                                          TextAlign
-                                              .left)
-                                    ],
-                                  ),
-                                ),
-                              )),
-
-                          SizedBox(height: 8,),
-
+                                  (measureController
+                                          .frontViewImagePath.value.isNotEmpty)
+                                      ? Image.file(
+                                          File(measureController
+                                              .frontViewImagePath.value),
+                                          fit: BoxFit.cover,
+                                          height: 100,
+                                          width: 100,
+                                        )
+                                      : DottedBorder(
+                                          dashPattern: [6, 3],
+                                          strokeWidth: 1.5,
+                                          color: hint_txt_909196,
+                                          borderType: BorderType.Circle,
+                                          radius: Radius.circular(50),
+                                          child: Container(
+                                            height: 100,
+                                            width: 100,
+                                            decoration: const BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: line_gray_e2e2e6),
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                SvgPicture.asset(
+                                                  icon_add_plus_square_new,
+                                                  height: 20,
+                                                  width: 20,
+                                                  color: text_color,
+                                                ),
+                                                SizedBox(
+                                                  height: 5.h,
+                                                ),
+                                                Text("Add",
+                                                    style: TextStyle(
+                                                        color: const Color(
+                                                            0xff3e4046),
+                                                        fontFamily:
+                                                            fontInterSemiBold,
+                                                        fontStyle:
+                                                            FontStyle.normal,
+                                                        fontSize: 14),
+                                                    textAlign: TextAlign.left)
+                                              ],
+                                            ),
+                                          ),
+                                        )),
+                          SizedBox(
+                            height: 8,
+                          ),
                           Text(
                             "Front View",
                             style: TextStyle(
@@ -164,20 +157,19 @@ class _AddMeasurementPageState extends State<AddMeasurementPage> {
                                 fontSize: 14,
                                 fontFamily: fontInterMedium),
                           )
-
                         ],
                       ),
                     ),
-
-                    SizedBox(width: 20,),
-
+                    SizedBox(
+                      width: 20,
+                    ),
                     InkWell(
                       onTap: () async {
-
-                        controller.backViewImagePath.value = await selectPhoto(context, true);
+                        measureController.backViewImagePath.value =
+                            await selectPhoto(context, true);
 
                         printData("controller.imagePath.value",
-                            controller.backViewImagePath.value);
+                            measureController.backViewImagePath.value);
                         setState(() {});
                       },
                       child: Column(
@@ -186,65 +178,60 @@ class _AddMeasurementPageState extends State<AddMeasurementPage> {
                           ClipRRect(
                               borderRadius: BorderRadius.circular(58.r),
                               child:
-                              // controller.imagePath.value.isNotEmpty
-                              //     ?
+                                  // controller.imagePath.value.isNotEmpty
+                                  //     ?
 
-                              (controller
-                                  .backViewImagePath.value.isNotEmpty)
-                                  ? Image.file(
-                                File(controller
-                                    .backViewImagePath.value),
-                                fit: BoxFit.cover,
-                                height: 100,
-                                width: 100,
-                              )
-                                  : DottedBorder(
-                                dashPattern: [6, 3],
-                                strokeWidth: 1.5,
-                                color: hint_txt_909196,
-                                borderType:
-                                BorderType.Circle,
-                                radius: Radius.circular(50),
-                                child: Container(
-                                  height: 100,
-                                  width: 100,
-                                  decoration:
-                                  const BoxDecoration(
-                                      shape: BoxShape
-                                          .circle,
-                                      color:
-                                      line_gray_e2e2e6),
-                                  child: Column(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment
-                                        .center,
-                                    children: [
-                                      SvgPicture.asset(
-                                        icon_add_plus_square_new, height: 20, width: 20,color: text_color,),
-                                      SizedBox(
-                                        height: 5.h,
-                                      ),
-                                      Text("Add",
-                                          style: TextStyle(
-                                              color: const Color(
-                                                  0xff3e4046),
-                                              fontFamily:
-                                              fontInterSemiBold,
-                                              fontStyle:
-                                              FontStyle
-                                                  .normal,
-                                              fontSize:
-                                              14),
-                                          textAlign:
-                                          TextAlign
-                                              .left)
-                                    ],
-                                  ),
-                                ),
-                              )),
-
-                          SizedBox(height: 8,),
-
+                                  (measureController
+                                          .backViewImagePath.value.isNotEmpty)
+                                      ? Image.file(
+                                          File(measureController
+                                              .backViewImagePath.value),
+                                          fit: BoxFit.cover,
+                                          height: 100,
+                                          width: 100,
+                                        )
+                                      : DottedBorder(
+                                          dashPattern: [6, 3],
+                                          strokeWidth: 1.5,
+                                          color: hint_txt_909196,
+                                          borderType: BorderType.Circle,
+                                          radius: Radius.circular(50),
+                                          child: Container(
+                                            height: 100,
+                                            width: 100,
+                                            decoration: const BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: line_gray_e2e2e6),
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                SvgPicture.asset(
+                                                  icon_add_plus_square_new,
+                                                  height: 20,
+                                                  width: 20,
+                                                  color: text_color,
+                                                ),
+                                                SizedBox(
+                                                  height: 5.h,
+                                                ),
+                                                Text("Add",
+                                                    style: TextStyle(
+                                                        color: const Color(
+                                                            0xff3e4046),
+                                                        fontFamily:
+                                                            fontInterSemiBold,
+                                                        fontStyle:
+                                                            FontStyle.normal,
+                                                        fontSize: 14),
+                                                    textAlign: TextAlign.left)
+                                              ],
+                                            ),
+                                          ),
+                                        )),
+                          SizedBox(
+                            height: 8,
+                          ),
                           Text(
                             "Back View",
                             style: TextStyle(
@@ -252,20 +239,19 @@ class _AddMeasurementPageState extends State<AddMeasurementPage> {
                                 fontSize: 14,
                                 fontFamily: fontInterMedium),
                           )
-
                         ],
                       ),
                     ),
-
-                    SizedBox(width: 20,),
-
+                    SizedBox(
+                      width: 20,
+                    ),
                     InkWell(
                       onTap: () async {
-
-                        controller.leftViewImagePath.value = await selectPhoto(context, true);
+                        measureController.leftViewImagePath.value =
+                            await selectPhoto(context, true);
 
                         printData("controller.imagePath.value",
-                            controller.leftViewImagePath.value);
+                            measureController.leftViewImagePath.value);
                         setState(() {});
                       },
                       child: Column(
@@ -274,65 +260,60 @@ class _AddMeasurementPageState extends State<AddMeasurementPage> {
                           ClipRRect(
                               borderRadius: BorderRadius.circular(58.r),
                               child:
-                              // controller.imagePath.value.isNotEmpty
-                              //     ?
+                                  // controller.imagePath.value.isNotEmpty
+                                  //     ?
 
-                              (controller
-                                  .leftViewImagePath.value.isNotEmpty)
-                                  ? Image.file(
-                                File(controller
-                                    .leftViewImagePath.value),
-                                fit: BoxFit.cover,
-                                height: 100,
-                                width: 100,
-                              )
-                                  : DottedBorder(
-                                dashPattern: [6, 3],
-                                strokeWidth: 1.5,
-                                color: hint_txt_909196,
-                                borderType:
-                                BorderType.Circle,
-                                radius: Radius.circular(50),
-                                child: Container(
-                                  height: 100,
-                                  width: 100,
-                                  decoration:
-                                  const BoxDecoration(
-                                      shape: BoxShape
-                                          .circle,
-                                      color:
-                                      line_gray_e2e2e6),
-                                  child: Column(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment
-                                        .center,
-                                    children: [
-                                      SvgPicture.asset(
-                                        icon_add_plus_square_new, height: 20, width: 20,color: text_color,),
-                                      SizedBox(
-                                        height: 5.h,
-                                      ),
-                                      Text("Add",
-                                          style: TextStyle(
-                                              color: const Color(
-                                                  0xff3e4046),
-                                              fontFamily:
-                                              fontInterSemiBold,
-                                              fontStyle:
-                                              FontStyle
-                                                  .normal,
-                                              fontSize:
-                                              14),
-                                          textAlign:
-                                          TextAlign
-                                              .left)
-                                    ],
-                                  ),
-                                ),
-                              )),
-
-                          SizedBox(height: 8,),
-
+                                  (measureController
+                                          .leftViewImagePath.value.isNotEmpty)
+                                      ? Image.file(
+                                          File(measureController
+                                              .leftViewImagePath.value),
+                                          fit: BoxFit.cover,
+                                          height: 100,
+                                          width: 100,
+                                        )
+                                      : DottedBorder(
+                                          dashPattern: [6, 3],
+                                          strokeWidth: 1.5,
+                                          color: hint_txt_909196,
+                                          borderType: BorderType.Circle,
+                                          radius: Radius.circular(50),
+                                          child: Container(
+                                            height: 100,
+                                            width: 100,
+                                            decoration: const BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: line_gray_e2e2e6),
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                SvgPicture.asset(
+                                                  icon_add_plus_square_new,
+                                                  height: 20,
+                                                  width: 20,
+                                                  color: text_color,
+                                                ),
+                                                SizedBox(
+                                                  height: 5.h,
+                                                ),
+                                                Text("Add",
+                                                    style: TextStyle(
+                                                        color: const Color(
+                                                            0xff3e4046),
+                                                        fontFamily:
+                                                            fontInterSemiBold,
+                                                        fontStyle:
+                                                            FontStyle.normal,
+                                                        fontSize: 14),
+                                                    textAlign: TextAlign.left)
+                                              ],
+                                            ),
+                                          ),
+                                        )),
+                          SizedBox(
+                            height: 8,
+                          ),
                           Text(
                             "Left View",
                             style: TextStyle(
@@ -340,21 +321,19 @@ class _AddMeasurementPageState extends State<AddMeasurementPage> {
                                 fontSize: 14,
                                 fontFamily: fontInterMedium),
                           )
-
                         ],
                       ),
                     ),
-
-
-                    SizedBox(width: 20,),
-
+                    SizedBox(
+                      width: 20,
+                    ),
                     InkWell(
                       onTap: () async {
-
-                        controller.rightViewImagePath.value = await selectPhoto(context, true);
+                        measureController.rightViewImagePath.value =
+                            await selectPhoto(context, true);
 
                         printData("controller.imagePath.value",
-                            controller.rightViewImagePath.value);
+                            measureController.rightViewImagePath.value);
                         setState(() {});
                       },
                       child: Column(
@@ -363,65 +342,60 @@ class _AddMeasurementPageState extends State<AddMeasurementPage> {
                           ClipRRect(
                               borderRadius: BorderRadius.circular(58.r),
                               child:
-                              // controller.imagePath.value.isNotEmpty
-                              //     ?
+                                  // controller.imagePath.value.isNotEmpty
+                                  //     ?
 
-                              (controller
-                                  .rightViewImagePath.value.isNotEmpty)
-                                  ? Image.file(
-                                File(controller
-                                    .rightViewImagePath.value),
-                                fit: BoxFit.cover,
-                                height: 100,
-                                width: 100,
-                              )
-                                  : DottedBorder(
-                                dashPattern: [6, 3],
-                                strokeWidth: 1.5,
-                                color: hint_txt_909196,
-                                borderType:
-                                BorderType.Circle,
-                                radius: Radius.circular(50),
-                                child: Container(
-                                  height: 100,
-                                  width: 100,
-                                  decoration:
-                                  const BoxDecoration(
-                                      shape: BoxShape
-                                          .circle,
-                                      color:
-                                      line_gray_e2e2e6),
-                                  child: Column(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment
-                                        .center,
-                                    children: [
-                                      SvgPicture.asset(
-                                        icon_add_plus_square_new, height: 20, width: 20,color: text_color,),
-                                      SizedBox(
-                                        height: 5.h,
-                                      ),
-                                      Text("Add",
-                                          style: TextStyle(
-                                              color: const Color(
-                                                  0xff3e4046),
-                                              fontFamily:
-                                              fontInterSemiBold,
-                                              fontStyle:
-                                              FontStyle
-                                                  .normal,
-                                              fontSize:
-                                              14),
-                                          textAlign:
-                                          TextAlign
-                                              .left)
-                                    ],
-                                  ),
-                                ),
-                              )),
-
-                          SizedBox(height: 8,),
-
+                                  (measureController
+                                          .rightViewImagePath.value.isNotEmpty)
+                                      ? Image.file(
+                                          File(measureController
+                                              .rightViewImagePath.value),
+                                          fit: BoxFit.cover,
+                                          height: 100,
+                                          width: 100,
+                                        )
+                                      : DottedBorder(
+                                          dashPattern: [6, 3],
+                                          strokeWidth: 1.5,
+                                          color: hint_txt_909196,
+                                          borderType: BorderType.Circle,
+                                          radius: Radius.circular(50),
+                                          child: Container(
+                                            height: 100,
+                                            width: 100,
+                                            decoration: const BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: line_gray_e2e2e6),
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                SvgPicture.asset(
+                                                  icon_add_plus_square_new,
+                                                  height: 20,
+                                                  width: 20,
+                                                  color: text_color,
+                                                ),
+                                                SizedBox(
+                                                  height: 5.h,
+                                                ),
+                                                Text("Add",
+                                                    style: TextStyle(
+                                                        color: const Color(
+                                                            0xff3e4046),
+                                                        fontFamily:
+                                                            fontInterSemiBold,
+                                                        fontStyle:
+                                                            FontStyle.normal,
+                                                        fontSize: 14),
+                                                    textAlign: TextAlign.left)
+                                              ],
+                                            ),
+                                          ),
+                                        )),
+                          SizedBox(
+                            height: 8,
+                          ),
                           Text(
                             "Right View",
                             style: TextStyle(
@@ -429,12 +403,9 @@ class _AddMeasurementPageState extends State<AddMeasurementPage> {
                                 fontSize: 14,
                                 fontFamily: fontInterMedium),
                           )
-
                         ],
                       ),
                     ),
-
-
                   ],
                 ),
               ),
@@ -446,7 +417,7 @@ class _AddMeasurementPageState extends State<AddMeasurementPage> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 58.0, vertical: 20),
                 child: ElevatedButton(
-                  onPressed: () => controller.submit(context),
+                  onPressed: () => measureController.submit(context),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: button_Color,
                     shape: RoundedRectangleBorder(
@@ -493,6 +464,30 @@ class _AddMeasurementPageState extends State<AddMeasurementPage> {
         padding: const EdgeInsets.all(10),
         child: TextFormField(
           controller: controller,
+          onChanged: (value) {
+            if (controller == measureController.fieldControllers['waist'] ||
+                controller == measureController.fieldControllers['hips']) {
+              setState(() {
+                measureController.calculateWHR();
+              });
+            } else if (controller ==
+                    measureController.fieldControllers['bicep'] ||
+                controller == measureController.fieldControllers['tricep'] ||
+                controller ==
+                    measureController.fieldControllers['subscapula'] ||
+                controller ==
+                    measureController.fieldControllers['suprailliac']) {
+              setState(() {
+                measureController.calculateTotalBodyFatSkinfold();
+              });
+            } else if (controller ==
+                    measureController.fieldControllers['weight'] ||
+                controller == measureController.fieldControllers['height']) {
+              setState(() {
+                measureController.calculateBMR();
+              });
+            }
+          },
           style: const TextStyle(
             color: text_color,
             fontWeight: FontWeight.w500,
@@ -533,7 +528,7 @@ class _AddMeasurementPageState extends State<AddMeasurementPage> {
             lastDate: DateTime(2100),
           );
           if (picked != null) {
-            controller.dateEditingController.value.text =
+            measureController.dateEditingController.value.text =
                 DateFormat('dd-MM-yyyy').format(picked);
           }
         },
@@ -546,11 +541,11 @@ class _AddMeasurementPageState extends State<AddMeasurementPage> {
             border: Border.all(width: 1, color: line_gray_e2e2e6),
           ),
           child: Text(
-            controller.dateEditingController.value.text.isEmpty
+            measureController.dateEditingController.value.text.isEmpty
                 ? ""
-                : controller.dateEditingController.value.text,
+                : measureController.dateEditingController.value.text,
             style: TextStyle(
-              color: controller.dateEditingController.value.text.isEmpty
+              color: measureController.dateEditingController.value.text.isEmpty
                   ? hint_txt_909196
                   : subtitle_black_101623,
               fontFamily: fontInterMedium,

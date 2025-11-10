@@ -72,7 +72,6 @@ class MeasurementController extends GetxController {
   RxString leftViewImagePath = "".obs;
   RxString rightViewImagePath = "".obs;
 
-
   @override
   void onInit() {
     super.onInit();
@@ -97,7 +96,6 @@ class MeasurementController extends GetxController {
     });
 
     print("Submitted: $data");
-
 
     callAddBodyMeasurementAPI(context);
   }
@@ -231,20 +229,20 @@ class MeasurementController extends GetxController {
     // 🔹 Add images (if any)
     // 🔹 Add multiple images (if selected)
     if (frontViewImagePath != null && frontViewImagePath.isNotEmpty) {
-      request.files
-          .add(await http.MultipartFile.fromPath('front_view', frontViewImagePath.value));
+      request.files.add(await http.MultipartFile.fromPath(
+          'front_view', frontViewImagePath.value));
     }
     if (backViewImagePath != null && backViewImagePath.isNotEmpty) {
-      request.files
-          .add(await http.MultipartFile.fromPath('back_view', backViewImagePath.value));
+      request.files.add(await http.MultipartFile.fromPath(
+          'back_view', backViewImagePath.value));
     }
     if (leftViewImagePath != null && leftViewImagePath.isNotEmpty) {
-      request.files
-          .add(await http.MultipartFile.fromPath('left_view', leftViewImagePath.value));
+      request.files.add(await http.MultipartFile.fromPath(
+          'left_view', leftViewImagePath.value));
     }
     if (rightViewImagePath != null && rightViewImagePath.isNotEmpty) {
-      request.files
-          .add(await http.MultipartFile.fromPath('right_view', rightViewImagePath.value));
+      request.files.add(await http.MultipartFile.fromPath(
+          'right_view', rightViewImagePath.value));
     }
 
     printData("callAddBodyMeasurementAPI headers", headers.toString());
@@ -272,6 +270,94 @@ class MeasurementController extends GetxController {
       });
     } else {
       print(response.reasonPhrase);
+    }
+  }
+
+  /// Calculate Waist–Hip Ratio (WHR)
+  calculateWHR() {
+    fieldControllers['whr']?.text =
+        (int.parse(fieldControllers['waist']?.text ?? "0") /
+                int.parse(fieldControllers['hips']?.text ?? "0"))
+            .toString();
+  }
+
+  /// Body Fat Skinfold Total
+  calculateTotalBodyFatSkinfold() {
+    fieldControllers['total']?.text =
+        (int.parse(fieldControllers['bicep']?.text ?? "0") +
+                int.parse(fieldControllers['tricep']?.text ?? "0") +
+                int.parse(fieldControllers['subscapula']?.text ?? "0") +
+                int.parse(fieldControllers['suprailliac']?.text ?? "0"))
+            .toString();
+  }
+
+  /// Calculate Basal Metabolic Rate (BMR)
+  calculateBMR() {
+    /// For Male
+    if ((loginResponseModel.value.data?[0].gender ?? "1") == "1") {
+      fieldControllers['bmr']?.text = ((10 *
+                  (int.parse(fieldControllers['weight']?.text ?? "0"))) +
+              (6.25 * (int.parse(fieldControllers['height']?.text ?? "0"))) -
+              (5 * (int.parse(loginResponseModel.value.data?[0].age ?? "0"))) +
+              5)
+          .toString();
+
+      /// For Female
+    } else if ((loginResponseModel.value.data?[0].gender ?? "1") == "2") {
+      fieldControllers['bmr']?.text = ((10 *
+                  (int.parse(fieldControllers['weight']?.text ?? "0"))) +
+              (6.25 * (int.parse(fieldControllers['height']?.text ?? "0"))) -
+              (5 * (int.parse(loginResponseModel.value.data?[0].age ?? "0"))) -
+              161)
+          .toString();
+    }
+
+    if (double.parse(fieldControllers['bmr']?.text ?? "0") < 18.5) {
+      fieldControllers['underweight']?.text = "Yes";
+      fieldControllers['normal']?.text = "No";
+      fieldControllers['overweight']?.text = "No";
+      fieldControllers['obese_grade_1']?.text = "No";
+      fieldControllers['obese_grade_2']?.text = "No";
+      fieldControllers['obese_grade_3']?.text = "No";
+    } else if ((double.parse(fieldControllers['bmr']?.text ?? "0") >= 18.5) &&
+        (double.parse(fieldControllers['bmr']?.text ?? "0") < 24.9)) {
+      fieldControllers['underweight']?.text = "No";
+      fieldControllers['normal']?.text = "Yes";
+      fieldControllers['overweight']?.text = "No";
+      fieldControllers['obese_grade_1']?.text = "No";
+      fieldControllers['obese_grade_2']?.text = "No";
+      fieldControllers['obese_grade_3']?.text = "No";
+    } else if ((double.parse(fieldControllers['bmr']?.text ?? "0") >= 25) &&
+        (double.parse(fieldControllers['bmr']?.text ?? "0") < 29.9)) {
+      fieldControllers['underweight']?.text = "No";
+      fieldControllers['normal']?.text = "No";
+      fieldControllers['overweight']?.text = "Yes";
+      fieldControllers['obese_grade_1']?.text = "No";
+      fieldControllers['obese_grade_2']?.text = "No";
+      fieldControllers['obese_grade_3']?.text = "No";
+    } else if ((double.parse(fieldControllers['bmr']?.text ?? "0") >= 30) &&
+        (double.parse(fieldControllers['bmr']?.text ?? "0") < 34.9)) {
+      fieldControllers['underweight']?.text = "No";
+      fieldControllers['normal']?.text = "No";
+      fieldControllers['overweight']?.text = "No";
+      fieldControllers['obese_grade_1']?.text = "Yes";
+      fieldControllers['obese_grade_2']?.text = "No";
+      fieldControllers['obese_grade_3']?.text = "No";
+    } else if ((double.parse(fieldControllers['bmr']?.text ?? "0") >= 35) &&
+        (double.parse(fieldControllers['bmr']?.text ?? "0") < 39.9)) {
+      fieldControllers['underweight']?.text = "No";
+      fieldControllers['normal']?.text = "No";
+      fieldControllers['overweight']?.text = "No";
+      fieldControllers['obese_grade_1']?.text = "No";
+      fieldControllers['obese_grade_2']?.text = "Yes";
+      fieldControllers['obese_grade_3']?.text = "No";
+    } else if ((double.parse(fieldControllers['bmr']?.text ?? "0") >= 40)) {
+      fieldControllers['underweight']?.text = "No";
+      fieldControllers['normal']?.text = "No";
+      fieldControllers['overweight']?.text = "No";
+      fieldControllers['obese_grade_1']?.text = "No";
+      fieldControllers['obese_grade_2']?.text = "No";
+      fieldControllers['obese_grade_3']?.text = "Yes";
     }
   }
 
