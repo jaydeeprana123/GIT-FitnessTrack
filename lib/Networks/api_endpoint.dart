@@ -41,6 +41,8 @@ const urlMeasurementAddEdit = '/member/measurement/measurement_add_edit.php';
 const urlMeasurementDelete = '/member/measurement/measurement_delete.php';
 
 const urlWorkoutList = '/member/workout/workout_list.php';
+const urlAddEditWorkout = '/member/workout/workout_add_edit.php';
+
 const urlAppointmentList = '/member/appointment/appointment_list.php';
 const urlBookAppointment = '/member/appointment/appointment_add.php';
 const urlUpdateAppointment = '/member/appointment/appointment_edit.php';

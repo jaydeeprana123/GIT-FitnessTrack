@@ -66,9 +66,27 @@ class _AddMeasurementPageState extends State<AddMeasurementPage> {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildTitle(e.value),
-                  _buildInputField(
-                      measureController.fieldControllers[e.key]!, e.value),
+                  if (e.key == "tricep") _buildBoldTitle("Fat Percentage"),
+                  if (e.key == "health_risk")
+                    _buildBoldTitle("WHR (Waist To Hip Ratio)"),
+                  if (e.key == "underweight")
+                    _buildBoldTitle("BMI (Body Mass Index)"),
+                  if (e.key == "bmr")
+                    _buildBoldTitle("BMR (Basal Metabolic Rate)"),
+                  Row(
+                    children: [
+                      Expanded(flex: 1, child: _buildTitle(e.value)),
+                      Expanded(
+                        flex: 2,
+                        child: _buildInputField(
+                            measureController.fieldControllers[e.key]!,
+                            e.value),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 12,
+                  )
                 ],
               );
             }).toList(),
@@ -439,6 +457,20 @@ class _AddMeasurementPageState extends State<AddMeasurementPage> {
     );
   }
 
+  Widget _buildBoldTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 24.0, bottom: 8, top: 20),
+      child: Text(
+        title,
+        style: const TextStyle(
+          color: text_color,
+          fontSize: 14,
+          fontFamily: fontInterBold,
+        ),
+      ),
+    );
+  }
+
   Widget _buildTitle(String title) {
     return Padding(
       padding: const EdgeInsets.only(left: 24.0, bottom: 2, top: 20),
@@ -506,7 +538,24 @@ class _AddMeasurementPageState extends State<AddMeasurementPage> {
             ),
             border: InputBorder.none,
           ),
-          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          keyboardType: (controller ==
+                      measureController.fieldControllers['low'] ||
+                  controller == measureController.fieldControllers['medium'] ||
+                  controller == measureController.fieldControllers['high'] ||
+                  controller ==
+                      measureController.fieldControllers['underweight'] ||
+                  controller == measureController.fieldControllers['normal'] ||
+                  controller ==
+                      measureController.fieldControllers['overweight'] ||
+                  controller ==
+                      measureController.fieldControllers['obese_grade_1'] ||
+                  controller ==
+                      measureController.fieldControllers['obese_grade_2'] ||
+                  controller ==
+                      measureController.fieldControllers['obese_grade_3'] ||
+                  controller == measureController.fieldControllers['sign'])
+              ? TextInputType.text
+              : TextInputType.numberWithOptions(decimal: true),
           inputFormatters: [
             FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))
           ],
