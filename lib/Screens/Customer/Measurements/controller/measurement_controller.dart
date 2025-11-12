@@ -80,7 +80,21 @@ class MeasurementController extends GetxController {
     }
   }
 
-  void submit(BuildContext context) {
+  Future<void> fillMeasurementControllers(MeasurementData data) async {
+    // Create a map from your data (convert object → Map<String, dynamic>)
+    final dataMap = data.toJson();
+
+    for (var key in fieldControllers.keys) {
+      // Check if API data has this key
+      if (dataMap.containsKey(key)) {
+        // Convert value to string and set it safely
+        final value = dataMap[key];
+        fieldControllers[key]!.text = value != null ? value.toString() : '';
+      }
+    }
+  }
+
+  void submit(BuildContext context, String measurementId) {
     if (dateEditingController.value.text.isEmpty) {
       Get.snackbar("Error", "Select Date",
           backgroundColor: Colors.red.shade100);
@@ -97,7 +111,7 @@ class MeasurementController extends GetxController {
 
     print("Submitted: $data");
 
-    callAddBodyMeasurementAPI(context);
+    callAddEditBodyMeasurementAPI(context, measurementId);
   }
 
   getUserInfo() async {
@@ -160,10 +174,64 @@ class MeasurementController extends GetxController {
     }
   }
 
+  /// delete measurement api call
+  callDeleteMeasurementAPI(BuildContext context, String id) async {
+    onLoading(context, "Loading..");
+
+    String url = urlBase + urlMeasurementDelete;
+
+    String token =
+        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+    printData("tokenn", token);
+
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
+
+    // var headers = {
+    //   'Content-Type': 'application/json',
+    //   'Authorization': 'BeeyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjEiLCJtb2JpbGUiOiI5NzM3Mzg4Nzg2IiwiZW1haWwiOiJhZG1pbkBmaXRuZXNzdHJhY2tneW0uY29tIn0.2Givt7c-Wtarer Z1h92xEoyrheqvcBsiMd9j6E8qCpCYwpw',
+    //
+    // };
+
+    var request = http.Request('POST', Uri.parse(url));
+    request.body = json.encode({
+      "id": id,
+    });
+    request.headers.addAll(headers);
+
+    printData("boddyyy", request.body);
+
+    http.StreamedResponse response = await request.send();
+
+    Navigator.pop(context);
+
+    if (response.statusCode == 200) {
+      await response.stream.bytesToString().then((valueData) async {
+        printData(runtimeType.toString(),
+            "callInsertFavCommentAPI API value ${valueData}");
+
+        Map<String, dynamic> userModel = json.decode(valueData);
+        BaseModel baseModel = BaseModel.fromJson(userModel);
+
+        if (baseModel.status ?? false) {
+          snackBar(context, baseModel.message ?? "");
+
+          getAllMeasurementListAPI(context);
+        } else {
+          snackBar(context, baseModel.message ?? "");
+        }
+      });
+    } else {
+      print(response.reasonPhrase);
+    }
+  }
+
   /// Upload body measurement data (with images if any)
-  callAddBodyMeasurementAPI(
-    BuildContext context, // optional image files
-  ) async {
+  callAddEditBodyMeasurementAPI(
+      BuildContext context, // optional image files
+      String measurementId) async {
     onLoading(context, "Uploading..");
 
     // 🔹 API URL
@@ -186,7 +254,7 @@ class MeasurementController extends GetxController {
     // 🔹 Prepare form data
     request.fields.addAll({
       'client_id': loginResponseModel.value.data?[0].id ?? "0",
-      'measurement_id': '',
+      'measurement_id': measurementId,
       'date': dateEditingController.value.text,
       'weight': fieldControllers['weight']?.text ?? '',
       'height': fieldControllers['height']?.text ?? '',

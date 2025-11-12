@@ -26,17 +26,40 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class AddMeasurementPage extends StatefulWidget {
-  const AddMeasurementPage({Key? key}) : super(key: key);
+class AddEditMeasurementPage extends StatefulWidget {
+  final bool isEdit;
+
+  const AddEditMeasurementPage({
+    Key? key,
+    required this.isEdit,
+  }) : super(key: key);
 
   @override
-  State<AddMeasurementPage> createState() => _AddMeasurementPageState();
+  State<AddEditMeasurementPage> createState() => _AddEditMeasurementPageState();
 }
 
-class _AddMeasurementPageState extends State<AddMeasurementPage> {
+class _AddEditMeasurementPageState extends State<AddEditMeasurementPage> {
   final _formKey = GlobalKey<FormState>();
   final MeasurementController measureController =
       Get.put(MeasurementController());
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    if (widget.isEdit) {
+
+      WidgetsBinding.instance.addPostFrameCallback((_) async{
+        await measureController.fillMeasurementControllers(measureController.selectedMeasurementData.value);
+        setState(() {
+
+        });
+      });
+
+
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -435,7 +458,7 @@ class _AddMeasurementPageState extends State<AddMeasurementPage> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 58.0, vertical: 20),
                 child: ElevatedButton(
-                  onPressed: () => measureController.submit(context),
+                  onPressed: () => measureController.submit(context, widget.isEdit?measureController.selectedMeasurementData.value.measurementId??"0":""),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: button_Color,
                     shape: RoundedRectangleBorder(

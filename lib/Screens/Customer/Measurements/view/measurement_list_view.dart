@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:fitness_track/Screens/Customer/Measurements/view/AddMeasurementPage.dart';
+import 'package:fitness_track/Screens/Customer/Measurements/view/AddEditMeasurementPage.dart';
 import 'package:fitness_track/Screens/Customer/Measurements/view/measurement_details_view.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter/material.dart';
@@ -76,7 +76,9 @@ class _MeasurementListViewState extends State<MeasurementListView> {
               ),
               InkWell(
                 onTap: () {
-                  Get.to(AddMeasurementPage());
+                  Get.to(AddEditMeasurementPage(
+                    isEdit: false,
+                  ));
                 },
                 child: Row(
                   children: [
@@ -148,18 +150,82 @@ class _MeasurementListViewState extends State<MeasurementListView> {
                                         color: text_color,
                                         fontSize: 14,
                                         fontFamily: fontInterSemiBold)),
-                                // SizedBox(
-                                //   height: 4,
-                                // ),
-                                // Text(
-                                //     "Measurement By " +
-                                //         (controller
-                                //                 .measurementList[index].trainerName ??
-                                //             "Abdul Hameed"),
-                                //     style: TextStyle(
-                                //         color: Colors.white,
-                                //         fontSize: 14,
-                                //         fontFamily: fontInterSemiBold))
+                                SizedBox(
+                                  height: 4,
+                                ),
+                                Text(
+                                    "Measurement By " +
+                                        (controller.measurementList[index]
+                                                .trainerName ??
+                                            ""),
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14,
+                                        fontFamily: fontInterSemiBold)),
+                                SizedBox(
+                                  height: 6,
+                                ),
+                                Row(
+                                  children: [
+                                    InkWell(
+                                      onTap: () {
+                                        controller
+                                                .selectedMeasurementData.value =
+                                            controller.measurementList[index];
+
+                                        Get.to(AddEditMeasurementPage(
+                                            isEdit: true));
+                                      },
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.edit,
+                                            color: color_primary,
+                                          ),
+                                          SizedBox(
+                                            width: 3,
+                                          ),
+                                          Text("Edit",
+                                              style: TextStyle(
+                                                  color: color_primary,
+                                                  fontSize: 11,
+                                                  fontFamily:
+                                                      fontInterSemiBold)),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 16,
+                                    ),
+                                    InkWell(
+                                      onTap: () {
+
+                                        showConfirmationDialog(context: context, title: "Delete", message: "Are you sure want to delete this measurement?",onConfirmed: (){
+                                          controller.callDeleteMeasurementAPI(context, controller.measurementList[index].measurementId??"");
+                                        }, onCancelled: (){
+
+                                        });
+                                      },
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.delete_forever,
+                                            color: Colors.red,
+                                          ),
+                                          SizedBox(
+                                            width: 3,
+                                          ),
+                                          Text("Delete",
+                                              style: TextStyle(
+                                                  color: Colors.red,
+                                                  fontSize: 11,
+                                                  fontFamily:
+                                                      fontInterSemiBold)),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                )
                               ],
                             ),
                           ),

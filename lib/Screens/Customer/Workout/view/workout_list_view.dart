@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:fitness_track/Screens/Customer/Measurements/view/measurement_details_view.dart';
+import 'package:fitness_track/Screens/Customer/Workout/view/WorkoutAddEditPage.dart';
 import 'package:fitness_track/Screens/Customer/Workout/view/workout_details_view.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter/material.dart';
@@ -56,137 +57,246 @@ class _WorkoutListViewState extends State<WorkoutListView> {
       child: Scaffold(
         backgroundColor: Colors.white,
         resizeToAvoidBottomInset: true,
-        // appBar: AppBar(
-        //   backgroundColor: color_primary,
-        //   titleSpacing: 0,
-        //   automaticallyImplyLeading: true,
-        //   leading: Builder(
-        //     builder: (BuildContext context) {
-        //       return InkWell(
-        //         onTap: () {
-        //           Navigator.pop(context);
-        //         },
-        //         child: Container(
-        //           margin: EdgeInsets.all(14),
-        //           child: Image.asset(
-        //             width: double.infinity,
-        //             height: double.infinity,
-        //             icon_staklist_logo,
-        //             fit: BoxFit.cover,
-        //           ),
-        //         ),
-        //       );
-        //     },
-        //   ),
-        //   iconTheme: IconThemeData(
-        //     color: Colors.white, //change your color here
-        //   ),
-        //   title: Row(
-        //     children: [
-        //       Expanded(
-        //         child: Text(
-        //           "Measurements",
-        //           style: TextStyle(
-        //               color: Colors.white,
-        //               fontSize: 16,
-        //               fontFamily: fontInterMedium),
-        //         ),
-        //       ),
-        //     ],
-        //   ),
-        // ),
-        body: Obx(() => controller.workoutListApiCall.value?
-        (controller.workoutList??[]).isNotEmpty?ListView.builder(
-              scrollDirection: Axis.vertical,
-              primary: false,
-              shrinkWrap: true,
-              itemCount: controller.workoutList.length,
-              itemBuilder: (context, index) => Container(
-                margin: EdgeInsets.only(left: 12, right: 12, top: 12),
-                // decoration: BoxDecoration(
-                //     borderRadius: BorderRadius.circular(12),
-                //     color: color_primary,
-                //     border: Border.all(
-                //       width: 0.5,
-                //       color: Colors.white,
-                //     )),
-                child: InkWell(
-                  onTap: () {
-                    controller.selectedWorkoutData.value =
-                        controller.workoutList[index];
-                    Get.to(WorkoutDetailsView());
-                  },
-                  child: Container(
+        appBar: AppBar(
+          backgroundColor: color_primary,
+          titleSpacing: 0,
+          automaticallyImplyLeading: true,
+          leading: Builder(
+            builder: (BuildContext context) {
+              return InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Container(
+                  margin: EdgeInsets.all(14),
+                  child: Image.asset(
                     width: double.infinity,
-                    padding: EdgeInsets.all(12),
-                    margin:
-                        EdgeInsets.only( left: 0, right: 0),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color: notification_item_color,
-                        border: Border.all(
-                          width: 0.5,
-                          color: notification_item_color,
-                        )),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-
-                        Text(
-                            "Code : ${controller.workoutList[index].code ??
-                                ""}",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontFamily: fontInterSemiBold)),
-
-                        SizedBox(
-                          height: 4,
-                        ),
-
-                        Row(
-                          children: [
-                            Text(
-                                (getDateOnly((controller.workoutList[index]
-                                                .workoutDate ??
-                                            DateTime(2023))
-                                        .toString())) +
-                                    " - " +
-                                    (getDateOnly((controller
-                                                .workoutList[index].dueDate ??
-                                            DateTime(2023))
-                                        .toString())),
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                    fontFamily: fontInterSemiBold)),
-                            // Text(
-                            //     getDateOnly((controller
-                            //                 .workoutList[index].workoutDate ??
-                            //             DateTime(2023))
-                            //         .toString()),
-                            //     style: TextStyle(
-                            //         color: Colors.white,
-                            //         fontSize: 12,
-                            //         fontFamily: fontInterSemiBold)),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 4,
-                        ),
-                        Text(
-                           "Duration : ${controller.workoutList[index].durationInDays ??
-                                    "0"}",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontFamily: fontInterSemiBold)),
-                      ],
-                    ),
+                    height: double.infinity,
+                    icon_staklist_logo,
+                    fit: BoxFit.cover,
                   ),
                 ),
+              );
+            },
+          ),
+          iconTheme: IconThemeData(
+            color: Colors.white, //change your color here
+          ),
+          title: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  "Workout",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontFamily: fontInterMedium),
+                ),
               ),
-            ):Center(child: Text("No Record Found"),):Center(child: CircularProgressIndicator(),)),
+              InkWell(
+                onTap: () {
+                  Get.to(WorkoutAddEditPage(isEdit: false));
+                },
+                child: Row(
+                  children: [
+                    Icon(Icons.add_circle),
+                    SizedBox(
+                      width: 4,
+                    ),
+                    Text(
+                      "Add",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontFamily: fontInterMedium),
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+        body: Obx(() => controller.workoutListApiCall.value
+            ? (controller.workoutList ?? []).isNotEmpty
+                ? ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    primary: false,
+                    shrinkWrap: true,
+                    itemCount: controller.workoutList.length,
+                    itemBuilder: (context, index) => Container(
+                      margin: EdgeInsets.only(left: 12, right: 12, top: 12),
+                      // decoration: BoxDecoration(
+                      //     borderRadius: BorderRadius.circular(12),
+                      //     color: color_primary,
+                      //     border: Border.all(
+                      //       width: 0.5,
+                      //       color: Colors.white,
+                      //     )),
+                      child: InkWell(
+                        onTap: () {
+                          controller.selectedWorkoutData.value =
+                              controller.workoutList[index];
+                          Get.to(WorkoutDetailsView());
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.all(12),
+                          margin: EdgeInsets.only(left: 0, right: 0),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              color: Colors.white,
+                              border: Border.all(
+                                width: 0.5,
+                                color: color_primary,
+                              )),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                    "Code : ${controller.workoutList[index].code ?? ""}",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 12,
+                                        fontFamily: fontInterSemiBold)),
+                              ),
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.edit,
+                                    color: color_primary,
+                                  ),
+                                  SizedBox(
+                                    width: 3,
+                                  ),
+                                  Text("Edit",
+                                      style: TextStyle(
+                                          color: color_primary,
+                                          fontSize: 11,
+                                          fontFamily: fontInterSemiBold)),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 4,
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                      (getDateOnly((controller
+                                                      .workoutList[index]
+                                                      .workoutDate ??
+                                                  DateTime(2023))
+                                              .toString())) +
+                                          " - " +
+                                          (getDateOnly((controller
+                                                      .workoutList[index]
+                                                      .dueDate ??
+                                                  DateTime(2023))
+                                              .toString())),
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                          fontFamily: fontInterSemiBold)),
+                                  // Text(
+                                  //     getDateOnly((controller
+                                  //                 .workoutList[index].workoutDate ??
+                                  //             DateTime(2023))
+                                  //         .toString()),
+                                  //     style: TextStyle(
+                                  //         color: Colors.white,
+                                  //         fontSize: 12,
+                                  //         fontFamily: fontInterSemiBold)),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 4,
+                              ),
+                              Text(
+                                  "Duration : ${controller.workoutList[index].durationInDays ?? "0"}",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                      fontFamily: fontInterSemiBold)),
+                              SizedBox(
+                                height: 6,
+                              ),
+                              Row(
+                                children: [
+                                  InkWell(
+                                    onTap: () {
+                                      controller.selectedWorkoutData.value =
+                                          controller.workoutList[index];
+
+                                      Get.to(WorkoutAddEditPage(isEdit: true));
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.edit,
+                                          color: color_primary,
+                                        ),
+                                        SizedBox(
+                                          width: 3,
+                                        ),
+                                        Text("Edit",
+                                            style: TextStyle(
+                                                color: color_primary,
+                                                fontSize: 11,
+                                                fontFamily: fontInterSemiBold)),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 16,
+                                  ),
+                                  InkWell(
+                                    onTap: () {
+                                      showConfirmationDialog(
+                                          context: context,
+                                          title: "Delete",
+                                          message:
+                                              "Are you sure want to delete this measurement?",
+                                          onConfirmed: () {
+                                            controller.callDeleteWorkoutAPI(
+                                                context,
+                                                controller
+                                                        .measurementList[index]
+                                                        .measurementId ??
+                                                    "");
+                                          },
+                                          onCancelled: () {});
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.delete_forever,
+                                          color: Colors.red,
+                                        ),
+                                        SizedBox(
+                                          width: 3,
+                                        ),
+                                        Text("Delete",
+                                            style: TextStyle(
+                                                color: Colors.red,
+                                                fontSize: 11,
+                                                fontFamily: fontInterSemiBold)),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                : Center(
+                    child: Text("No Record Found"),
+                  )
+            : Center(
+                child: CircularProgressIndicator(),
+              )),
       ),
     );
   }

@@ -2,7 +2,8 @@ import 'package:fitness_track/Enums/attendance_type_status_enum.dart';
 import 'package:fitness_track/Screens/Attendance/view/branch_list_view_for_attendance.dart';
 import 'package:fitness_track/Screens/Attendance/view/branch_wise_attendance_list_view.dart';
 import 'package:fitness_track/Screens/Authentication/Welcome/view/welcome_screen_view.dart';
-import 'dart:io';import 'package:fitness_track/Screens/Dashboard/view/dashboard_view.dart';
+import 'dart:io';
+import 'package:fitness_track/Screens/Dashboard/view/dashboard_view.dart';
 import 'package:fitness_track/Screens/DayInDayOut/view/branch_list_view.dart';
 import 'package:fitness_track/Screens/LateEmployees/view/late_employee_list_view.dart';
 import 'package:flutter/cupertino.dart';
@@ -62,27 +63,36 @@ class _BottomNavigationViewState extends State<BottomNavigationView> {
     super.initState();
 
     setState(() {
-
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         await bottomNavController.getUserInfo();
         bottomNavController.callGetAppUpdateRequired(context);
-         tabs = [
+        tabs = [
           DashboardView(),
           SalaryListView(),
-          ShiftListView(isFromBottomNavigation: true, branchId: "",branchName: (bottomNavController.loginResponseModel.value.data??[]).isNotEmpty?(bottomNavController.loginResponseModel.value.data?[0].branchName??""):"",),
-          FilterAttendanceListView(attendanceType: bottomNavController.attendanceType.value),
+          ShiftListView(
+            isFromBottomNavigation: true,
+            branchId: "",
+            branchName:
+                (bottomNavController.loginResponseModel.value.data ?? [])
+                        .isNotEmpty
+                    ? (bottomNavController
+                            .loginResponseModel.value.data?[0].branchName ??
+                        "")
+                    : "",
+          ),
+          FilterAttendanceListView(
+              attendanceType: bottomNavController.attendanceType.value),
           ProfileView(),
         ];
 
-         tabsWithBranch = [
+        tabsWithBranch = [
           DashboardView(),
           SalaryListView(),
           BranchListView(),
-          FilterAttendanceListView(attendanceType: bottomNavController.attendanceType.value),
+          FilterAttendanceListView(
+              attendanceType: bottomNavController.attendanceType.value),
           ProfileView(),
         ];
-
-
 
         bottomNavController.currentIndex.value = widget.selectTabPosition;
       });
@@ -92,466 +102,489 @@ class _BottomNavigationViewState extends State<BottomNavigationView> {
   @override
   Widget build(BuildContext context) {
     return Obx(() => Scaffold(
-          appBar: (bottomNavController.currentIndex.value != 4) && (bottomNavController.currentIndex.value != 3)?AppBar(
-            automaticallyImplyLeading: true,
-            // leading: Builder(
-            //   builder: (BuildContext context) {
-            //     return InkWell(
-            //       onTap: () {
-            //         Scaffold.of(context).openDrawer();
-            //       },
-            //       child: Container(
-            //         margin: EdgeInsets.all(14),
-            //         child: Image.asset(
-            //           width: double.infinity,
-            //           height: double.infinity,
-            //           icon_staklist_logo,
-            //           fit: BoxFit.cover,
-            //         ),
-            //       ),
-            //     );
-            //   },
-            // ),
-            iconTheme: IconThemeData(color: Colors.white),
-            title: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    bottomNavController.currentIndex.value == 0
-                        ? "Dashboard"
-                        : bottomNavController.currentIndex.value == 1
-                        ? "My Salary"
-                        : bottomNavController.currentIndex.value == 2
-                            ? ((bottomNavController.loginResponseModel.value.data?[0].regularShiftApply??"0") == "1")?"Branches":"Shifts"
-                            : bottomNavController.currentIndex.value == 3
-                                ? "My Attendance"
-                                : bottomNavController.currentIndex.value == 4
-                                    ? "My Profile"
-                                    : "My Profile",
-                    style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.white,
-                        fontFamily: fontInterSemiBold),
+          appBar: (bottomNavController.currentIndex.value != 4) &&
+                  (bottomNavController.currentIndex.value != 3)
+              ? AppBar(
+                  automaticallyImplyLeading: true,
+                  // leading: Builder(
+                  //   builder: (BuildContext context) {
+                  //     return InkWell(
+                  //       onTap: () {
+                  //         Scaffold.of(context).openDrawer();
+                  //       },
+                  //       child: Container(
+                  //         margin: EdgeInsets.all(14),
+                  //         child: Image.asset(
+                  //           width: double.infinity,
+                  //           height: double.infinity,
+                  //           icon_staklist_logo,
+                  //           fit: BoxFit.cover,
+                  //         ),
+                  //       ),
+                  //     );
+                  //   },
+                  // ),
+                  iconTheme: IconThemeData(color: Colors.white),
+                  title: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          bottomNavController.currentIndex.value == 0
+                              ? "Dashboard"
+                              : bottomNavController.currentIndex.value == 1
+                                  ? "My Salary"
+                                  : bottomNavController.currentIndex.value == 2
+                                      ? ((bottomNavController
+                                                      .loginResponseModel
+                                                      .value
+                                                      .data?[0]
+                                                      .regularShiftApply ??
+                                                  "0") ==
+                                              "1")
+                                          ? "Branches"
+                                          : "Shifts"
+                                      : bottomNavController
+                                                  .currentIndex.value ==
+                                              3
+                                          ? "My Attendance"
+                                          : bottomNavController
+                                                      .currentIndex.value ==
+                                                  4
+                                              ? "My Profile"
+                                              : "My Profile",
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                              fontFamily: fontInterSemiBold),
+                        ),
+                      ),
+                      bottomNavController.currentIndex.value == 0
+                          ? InkWell(
+                              onTap: () {
+                                openLogoutDialog();
+                              },
+                              child: SvgPicture.asset(
+                                icon_logout,
+                                width: 22,
+                                height: 22,
+                                color: Colors.white,
+                              ),
+                            )
+                          : SizedBox(),
+                    ],
                   ),
-                ),
-
-                bottomNavController.currentIndex.value == 0
-                    ? InkWell(
-                  onTap: () {
-                    openLogoutDialog();
-                  },
-                  child: SvgPicture.asset(
-                    icon_logout,
-                    width: 22,
-                    height: 22,
-                    color: Colors.white,
-                  ),
+                  backgroundColor: color_primary,
                 )
-                    : SizedBox(),
-              ],
-            ),
-            backgroundColor: color_primary,
-          ):null,
+              : null,
           backgroundColor: Colors.white,
 
-
-        drawer: Drawer(
-          // Add a ListView to the drawer. This ensures the user can scroll
-          // through the options in the drawer if there isn't enough vertical
-          // space to fit everything.
-          child: ListView(
-            // Important: Remove any padding from the ListView.
-            padding: EdgeInsets.zero,
-            children: [
-              DrawerHeader(
-                  decoration: BoxDecoration(
-                      color: color_primary
-                  ),
+          drawer: Drawer(
+            // Add a ListView to the drawer. This ensures the user can scroll
+            // through the options in the drawer if there isn't enough vertical
+            // space to fit everything.
+            child: ListView(
+              // Important: Remove any padding from the ListView.
+              padding: EdgeInsets.zero,
+              children: [
+                DrawerHeader(
+                    decoration: BoxDecoration(color: color_primary),
+                    child: Column(
+                      children: [
+                        ((bottomNavController.loginResponseModel.value.data?[0]
+                                            .id ??
+                                        0)
+                                    .toString()) !=
+                                "0"
+                            ? (bottomNavController.loginResponseModel.value
+                                            .data?[0].photo ??
+                                        "")
+                                    .isNotEmpty
+                                ? ClipRRect(
+                                    borderRadius: BorderRadius.circular(58.r),
+                                    child: CachedNetworkImage(
+                                      key: UniqueKey(),
+                                      imageUrl: bottomNavController
+                                              .loginResponseModel
+                                              .value
+                                              .data?[0]
+                                              .photo ??
+                                          "",
+                                      imageBuilder: (context, imageProvider) {
+                                        return Container(
+                                            height: 80,
+                                            width: 80,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.rectangle,
+                                              image: DecorationImage(
+                                                image: imageProvider,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ));
+                                      },
+                                      progressIndicatorBuilder:
+                                          (context, url, downloadProgress) =>
+                                              Image.asset(
+                                        img_photo_place_holder,
+                                        height: 80,
+                                        width: 80,
+                                        fit: BoxFit.cover,
+                                      ),
+                                      errorWidget: (context, url, error) =>
+                                          Image.asset(
+                                        img_photo_place_holder,
+                                        height: 80,
+                                        width: 80,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  )
+                                : Image.asset(
+                                    icon_logo,
+                                    height: 80,
+                                    width: 80,
+                                  )
+                            : Image.asset(
+                                icon_logo,
+                                height: 80,
+                                width: 80,
+                              ),
+                        SizedBox(height: 8),
+                        Text(
+                          " ${bottomNavController.loginResponseModel.value.data?[0].name ?? ""}",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: fontInterRegular,
+                              fontSize: 14),
+                        ),
+                        Text(
+                          bottomNavController
+                                  .loginResponseModel.value.data?[0].email ??
+                              "",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: fontInterRegular,
+                              fontSize: 13),
+                        ),
+                      ],
+                    )),
+                Container(
+                  padding: EdgeInsets.only(top: 26, left: 16),
                   child: Column(
                     children: [
-                      ((bottomNavController.loginResponseModel.value.data?[0].id??0).toString()) != "0"
-                          ? (bottomNavController.loginResponseModel.value.data?[0].photo ??
-                          "")
-                          .isNotEmpty
-                          ? ClipRRect(
-                        borderRadius: BorderRadius.circular(58.r),
-                        child: CachedNetworkImage(
-                          key: UniqueKey(),
-                          imageUrl: bottomNavController.loginResponseModel.value.data?[0].photo ?? "",
-                          imageBuilder: (context, imageProvider) {
-                            return Container(
-                                height: 80,
-                                width: 80,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.rectangle,
-                                  image: DecorationImage(
-                                    image: imageProvider,
-                                    fit: BoxFit.cover,
+                      InkWell(
+                        onTap: () {
+                          Get.to(HolidayListView());
+
+                          setState(() {});
+                        },
+                        child: Padding(
+                          padding:
+                              const EdgeInsets.only(left: 12.0, bottom: 16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              SvgPicture.asset(
+                                icon_holiday,
+                                width: 20,
+                                height: 20,
+                                color: color_primary,
+                              ),
+                              SizedBox(
+                                width: 8,
+                              ),
+                              Text(
+                                "Holidays",
+                                style: TextStyle(
+                                    color: text_color,
+                                    fontSize: 14,
+                                    fontFamily: fontInterRegular),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      Container(
+                        margin: EdgeInsets.only(left: 16, right: 12),
+                        height: 0.25,
+                        width: double.infinity,
+                        color: color_primary,
+                      ),
+
+                      /// Here if person is a branch manager
+                      bottomNavController.loginResponseModel.value.data?[0]
+                                  .designationId ==
+                              "2"
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    Get.to(LateEmployeeListView());
+
+                                    setState(() {});
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(16),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        SvgPicture.asset(
+                                          icon_leave,
+                                          width: 20,
+                                          height: 20,
+                                          color: color_primary,
+                                        ),
+                                        SizedBox(
+                                          width: 8,
+                                        ),
+                                        Text(
+                                          "Late Employees",
+                                          style: TextStyle(
+                                              color: text_color,
+                                              fontSize: 14,
+                                              fontFamily: fontInterRegular),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ));
-                          },
-                          progressIndicatorBuilder:
-                              (context, url, downloadProgress) =>
-                              Image.asset(
-                                img_photo_place_holder,
-                                height: 80,
-                                width: 80,
-                                fit: BoxFit.cover,
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(left: 16, right: 12),
+                                  height: 0.25,
+                                  width: double.infinity,
+                                  color: color_primary,
+                                ),
+                              ],
+                            )
+                          : SizedBox(),
+
+                      InkWell(
+                        onTap: () {
+                          Get.to(LeaveListView());
+
+                          setState(() {});
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              SvgPicture.asset(
+                                icon_leave,
+                                width: 20,
+                                height: 20,
+                                color: color_primary,
                               ),
-                          errorWidget: (context, url, error) =>
-                              Image.asset(
-                                img_photo_place_holder,
-                                height: 80,
-                                width: 80,
-                                fit: BoxFit.cover,
+                              SizedBox(
+                                width: 8,
                               ),
+                              Text(
+                                "My Leaves",
+                                style: TextStyle(
+                                    color: text_color,
+                                    fontSize: 14,
+                                    fontFamily: fontInterRegular),
+                              ),
+                            ],
+                          ),
                         ),
-                      )
-
-                          : Image.asset(
-                        icon_logo,
-                        height: 80,
-                        width: 80,
-                      )
-                          : Image.asset(
-                        icon_logo,
-                        height: 80,
-                        width: 80,
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        " ${bottomNavController.loginResponseModel.value.data?[0].name ??
-                            ""}",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontFamily: fontInterRegular,
-                            fontSize: 14),
-                      ),
-                      Text(
-                        bottomNavController.loginResponseModel.value.data?[0].email ?? "",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontFamily: fontInterRegular,
-                            fontSize: 13),
                       ),
 
+                      Container(
+                        margin: EdgeInsets.only(left: 16, right: 12),
+                        height: 0.25,
+                        width: double.infinity,
+                        color: color_primary,
+                      ),
 
+                      InkWell(
+                        onTap: () {
+                          Get.to(LeaveAllotmentListView());
+
+                          setState(() {});
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              SvgPicture.asset(
+                                icon_allotment,
+                                width: 18,
+                                height: 18,
+                                color: color_primary,
+                              ),
+                              SizedBox(
+                                width: 8,
+                              ),
+                              Text(
+                                "Leave Allotments",
+                                style: TextStyle(
+                                    color: text_color,
+                                    fontSize: 14,
+                                    fontFamily: fontInterRegular),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(left: 12, right: 12),
+                        height: 0.25,
+                        width: double.infinity,
+                        color: color_primary,
+                      ),
+
+                      ((bottomNavController.loginResponseModel.value.data?[0]
+                                      .branchId ??
+                                  "0") ==
+                              "0")
+                          ? Column(
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    Get.to(BranchListViewForAttendance());
+
+                                    setState(() {});
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(16),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        SvgPicture.asset(
+                                          icon_attendance,
+                                          width: 18,
+                                          height: 18,
+                                          color: color_primary,
+                                        ),
+                                        SizedBox(
+                                          width: 8,
+                                        ),
+                                        Text(
+                                          "Branch Wise Attendance",
+                                          style: TextStyle(
+                                              color: text_color,
+                                              fontSize: 14,
+                                              fontFamily: fontInterRegular),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(left: 12, right: 12),
+                                  height: 0.25,
+                                  width: double.infinity,
+                                  color: color_primary,
+                                ),
+                              ],
+                            )
+                          : SizedBox(),
+
+                      Column(
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              Get.to(EmployeeAttendanceListView());
+
+                              setState(() {});
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  SvgPicture.asset(
+                                    icon_attendance,
+                                    width: 18,
+                                    height: 18,
+                                    color: color_primary,
+                                  ),
+                                  SizedBox(
+                                    width: 8,
+                                  ),
+                                  Text(
+                                    "My Attendance",
+                                    style: TextStyle(
+                                        color: text_color,
+                                        fontSize: 14,
+                                        fontFamily: fontInterRegular),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(left: 12, right: 12),
+                            height: 0.25,
+                            width: double.infinity,
+                            color: color_primary,
+                          ),
+                        ],
+                      ),
+
+                      InkWell(
+                        onTap: () {
+                          openLogoutDialog();
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Row(
+                            children: [
+                              SvgPicture.asset(
+                                icon_logout,
+                                width: 18,
+                                height: 18,
+                                color: color_primary,
+                              ),
+                              SizedBox(
+                                width: 8,
+                              ),
+                              Text(
+                                "Logout",
+                                style: TextStyle(
+                                    color: text_color,
+                                    fontSize: 14,
+                                    fontFamily: fontInterRegular),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      // Container(
+                      //    margin: EdgeInsets.only(left: 12, right: 12),
+                      //   height: 0.25,
+                      //   width: double.infinity,
+                      //   color: light_red,
+                      // ),
                     ],
-                  )),
-              Container(
-                padding: EdgeInsets.only(top: 26,left: 16),
-                child: Column(
-                  children: [
-
-                    InkWell(
-                      onTap: () {
-
-                        Get.to(HolidayListView());
-
-                        setState(() {});
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 12.0, bottom: 16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            SvgPicture.asset(
-                              icon_holiday,
-                              width: 20,
-                              height: 20,
-                              color: color_primary,
-                            ),
-                            SizedBox(
-                              width: 8,
-                            ),
-                            Text(
-                              "Holidays",
-                              style: TextStyle(
-                                  color: text_color,
-                                  fontSize: 14,
-                                  fontFamily: fontInterRegular),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    Container(
-                      margin: EdgeInsets.only(left: 16, right: 12),
-                      height: 0.25,
-                      width: double.infinity,
-                      color: color_primary,
-                    ),
-
-
-                    /// Here if person is a branch manager
-                    bottomNavController.loginResponseModel.value.data?[0].designationId == "2"? Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        InkWell(
-                          onTap: () {
-
-                            Get.to(LateEmployeeListView());
-
-                            setState(() {});
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                SvgPicture.asset(
-                                  icon_leave,
-                                  width: 20,
-                                  height: 20,
-                                  color: color_primary,
-                                ),
-                                SizedBox(
-                                  width: 8,
-                                ),
-                                Text(
-                                  "Late Employees",
-                                  style: TextStyle(
-                                      color: text_color,
-                                      fontSize: 14,
-                                      fontFamily: fontInterRegular),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-
-                        Container(
-                          margin: EdgeInsets.only(left: 16, right: 12),
-                          height: 0.25,
-                          width: double.infinity,
-                          color: color_primary,
-                        ),
-                      ],
-                    ):SizedBox(),
-
-
-                    InkWell(
-                      onTap: () {
-
-                        Get.to(LeaveListView());
-
-                        setState(() {});
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            SvgPicture.asset(
-                              icon_leave,
-                              width: 20,
-                              height: 20,
-                              color: color_primary,
-                            ),
-                            SizedBox(
-                              width: 8,
-                            ),
-                            Text(
-                              "My Leaves",
-                              style: TextStyle(
-                                  color: text_color,
-                                  fontSize: 14,
-                                  fontFamily: fontInterRegular),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    Container(
-                      margin: EdgeInsets.only(left: 16, right: 12),
-                      height: 0.25,
-                      width: double.infinity,
-                      color: color_primary,
-                    ),
-
-                    InkWell(
-                      onTap: () {
-
-                        Get.to(LeaveAllotmentListView());
-
-                        setState(() {});
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            SvgPicture.asset(
-                              icon_allotment,
-                              width: 18,
-                              height: 18,
-                              color: color_primary,
-                            ),
-                            SizedBox(
-                              width: 8,
-                            ),
-                            Text(
-                              "Leave Allotments",
-                              style: TextStyle(
-                                  color: text_color,
-                                  fontSize: 14,
-                                  fontFamily: fontInterRegular),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(left: 12, right: 12),
-                      height: 0.25,
-                      width: double.infinity,
-                      color: color_primary,
-                    ),
-
-
-
-                    ((bottomNavController.loginResponseModel.value.data?[0].branchId??"0") == "0")?Column(
-                      children: [
-                        InkWell(
-                          onTap: () {
-
-                            Get.to(BranchListViewForAttendance());
-
-                            setState(() {});
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                SvgPicture.asset(
-                                  icon_attendance,
-                                  width: 18,
-                                  height: 18,
-                                  color: color_primary,
-                                ),
-                                SizedBox(
-                                  width: 8,
-                                ),
-                                Text(
-                                  "Branch Wise Attendance",
-                                  style: TextStyle(
-                                      color: text_color,
-                                      fontSize: 14,
-                                      fontFamily: fontInterRegular),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(left: 12, right: 12),
-                          height: 0.25,
-                          width: double.infinity,
-                          color: color_primary,
-                        ),
-                      ],
-                    ):SizedBox(),
-
-
-                    Column(
-                      children: [
-                        InkWell(
-                          onTap: () {
-
-                            Get.to(EmployeeAttendanceListView());
-
-                            setState(() {});
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                SvgPicture.asset(
-                                  icon_attendance,
-                                  width: 18,
-                                  height: 18,
-                                  color: color_primary,
-                                ),
-                                SizedBox(
-                                  width: 8,
-                                ),
-                                Text(
-                                  "My Attendance",
-                                  style: TextStyle(
-                                      color: text_color,
-                                      fontSize: 14,
-                                      fontFamily: fontInterRegular),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(left: 12, right: 12),
-                          height: 0.25,
-                          width: double.infinity,
-                          color: color_primary,
-                        ),
-                      ],
-                    ),
-
-
-
-                    InkWell(
-                      onTap: () {
-                        openLogoutDialog();
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Row(
-                          children: [
-                            SvgPicture.asset(
-                              icon_logout,
-                              width: 18,
-                              height: 18,
-                              color: color_primary,
-                            ),
-                            SizedBox(
-                              width: 8,
-                            ),
-                            Text(
-                              "Logout",
-                              style: TextStyle(
-                                  color: text_color,
-                                  fontSize: 14,
-                                  fontFamily: fontInterRegular),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    // Container(
-                    //    margin: EdgeInsets.only(left: 12, right: 12),
-                    //   height: 0.25,
-                    //   width: double.infinity,
-                    //   color: light_red,
-                    // ),
-                  ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
 
-
-
-          body: tabs.isNotEmpty?((bottomNavController.loginResponseModel.value.data?[0].regularShiftApply??"0") == "0")?tabs[bottomNavController.currentIndex.value]:tabsWithBranch[bottomNavController.currentIndex.value]:Center(child: CircularProgressIndicator(),),
+          body: tabs.isNotEmpty
+              ? ((bottomNavController.loginResponseModel.value.data?[0]
+                              .regularShiftApply ??
+                          "0") ==
+                      "0")
+                  ? tabs[bottomNavController.currentIndex.value]
+                  : tabsWithBranch[bottomNavController.currentIndex.value]
+              : Center(
+                  child: CircularProgressIndicator(),
+                ),
           bottomNavigationBar:
               // SizedBox(
               //   height: 60.h,
               //   child:
-          Obx(
-                () => BottomNavigationBar(
+              Obx(
+            () => BottomNavigationBar(
               key: _bottomNavigationKey,
               backgroundColor: color_primary,
               selectedItemColor: Colors.white,
@@ -665,20 +698,15 @@ class _BottomNavigationViewState extends State<BottomNavigationView> {
         ));
   }
 
-
-  openLogoutDialog(){
+  openLogoutDialog() {
     Get.defaultDialog(
         title: "LOGOUT",
-        middleText:
-        "Are you sure want to logout from the app?",
+        middleText: "Are you sure want to logout from the app?",
         barrierDismissible: false,
-        titlePadding: const EdgeInsets.only(
-            left: 20, right: 20, top: 10),
+        titlePadding: const EdgeInsets.only(left: 20, right: 20, top: 10),
         textConfirm: "Yes",
         textCancel: "No",
-        titleStyle: TextStyle(
-            fontSize: 15,
-            fontFamily: fontInterSemiBold),
+        titleStyle: TextStyle(fontSize: 15, fontFamily: fontInterSemiBold),
         buttonColor: Colors.white,
         confirmTextColor: color_primary,
         onCancel: () {
@@ -692,12 +720,8 @@ class _BottomNavigationViewState extends State<BottomNavigationView> {
 
   /// logout from the app
   logoutFromTheApp() async {
-
     var preferences = MySharedPref();
     await preferences.clearData(SharePreData.keySaveLoginModel);
     Get.offAll(() => const WelcomeScreenView());
   }
-
-
-
 }

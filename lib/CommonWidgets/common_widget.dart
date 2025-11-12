@@ -14,13 +14,11 @@ import '../Styles/my_icons.dart';
 import '../Utils/preference_utils.dart';
 import '../Utils/share_predata.dart';
 
-
 File imageFile = File("");
 final String _text =
     'Toda persona tiene derecho a la educación. La educación debe ser gratuita, al menos en lo concerniente a la instrucción elemental y fundamental. La instrucción elemental será obligatoria. La instrucción técnica y profesional habrá de ser generalizada; el acceso a los estudios superiores será igual para todos, en función de los méritos respectivos.';
 // TranslationModel _translated = TranslationModel(translatedText: '', detectedSourceLanguage: '');
 // TranslationModel _detected = TranslationModel(translatedText: '', detectedSourceLanguage: '');
-
 
 snackBar(BuildContext? context, String message) {
   if (!Get.isOverlaysOpen) {
@@ -127,15 +125,12 @@ snackBarRapid(BuildContext context, String message) {
   );
 }
 
-
-goToWelcomeScreen() async{
-
+goToWelcomeScreen() async {
   var preferences = MySharedPref();
   await preferences.clearData(SharePreData.keySaveLoginModel);
   await preferences.clearData(SharePreData.keySaveCart);
   Get.offAll(() => const WelcomeScreenView());
 }
-
 
 void printData(String str, String val) {
   print("$str :::::::::::::  $val");
@@ -174,6 +169,11 @@ getDateOnlyInIndianFormat(DateTime originalDate) {
   return result;
 }
 
+getDateIndMMYYYYFormat(DateTime originalDate) {
+  String result = "";
+  result = DateFormat("d MMM, yyyy").format(originalDate);
+  return result;
+}
 
 createdDateTimeConverted(String originalDate) {
   String result = "";
@@ -182,11 +182,53 @@ createdDateTimeConverted(String originalDate) {
   return result;
 }
 
+/// A reusable AlertDialog with callback
+void showConfirmationDialog({
+  required BuildContext context,
+  required String title,
+  required String message,
+  required VoidCallback onConfirmed,
+  VoidCallback? onCancelled,
+}) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(); // close dialog
+              if (onCancelled != null) onCancelled();
+            },
+            child: const Text("Cancel"),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blueAccent,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            onPressed: () {
+              Navigator.of(context).pop(); // close dialog
+              onConfirmed(); // trigger callback
+            },
+            child: const Text("OK"),
+          ),
+        ],
+      );
+    },
+  );
+}
 
-Future<String> openCamera(BuildContext context) async{
+Future<String> openCamera(BuildContext context) async {
   String imagePathOfFile = "";
-  await _getFile(ImageSource.camera)
-      .then((value) {
+  await _getFile(ImageSource.camera).then((value) {
     if (imageFile.toString() != "File: ''") {
       // poster = imagePath;
       int sizeInBytes = imageFile.lengthSync();
@@ -202,7 +244,7 @@ Future<String> openCamera(BuildContext context) async{
         imagePathOfFile = imageFile.path.toString();
       }
     }
-  } );
+  });
 
   return imagePathOfFile;
 }
@@ -211,7 +253,7 @@ Future<String> openCamera(BuildContext context) async{
 Future<String> selectPhoto(BuildContext context, bool isGalleryVisible) async {
   String imagePathOfFile = "";
 
-  await showImagePicker(context,isGalleryVisible).then((value) {
+  await showImagePicker(context, isGalleryVisible).then((value) {
     if (imageFile.toString() != "File: ''") {
       // poster = imagePath;
       int sizeInBytes = imageFile.lengthSync();
@@ -247,36 +289,38 @@ Future showImagePicker(context, bool isGalleryVisible) {
               borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(25.0),
                   topRight: Radius.circular(25.0))),
-          child:isGalleryVisible? Wrap(
-            children: <Widget>[
-               ListTile(
-                  leading: const Icon(Icons.photo_library),
-                  title: const Text('Gallery'),
-                  onTap: () {
-                    _getFile(ImageSource.gallery)
-                        .then((value) => Navigator.of(context).pop());
-                  }),
-              ListTile(
-                leading: const Icon(Icons.photo_camera),
-                title: const Text('Camera'),
-                onTap: () {
-                  _getFile(ImageSource.camera)
-                      .then((value) => Navigator.of(context).pop());
-                },
-              ),
-            ],
-          ):Wrap(
-            children: <Widget>[
-              ListTile(
-                leading: const Icon(Icons.photo_camera),
-                title: const Text('Camera'),
-                onTap: () {
-                  _getFile(ImageSource.camera)
-                      .then((value) => Navigator.of(context).pop());
-                },
-              ),
-            ],
-          ),
+          child: isGalleryVisible
+              ? Wrap(
+                  children: <Widget>[
+                    ListTile(
+                        leading: const Icon(Icons.photo_library),
+                        title: const Text('Gallery'),
+                        onTap: () {
+                          _getFile(ImageSource.gallery)
+                              .then((value) => Navigator.of(context).pop());
+                        }),
+                    ListTile(
+                      leading: const Icon(Icons.photo_camera),
+                      title: const Text('Camera'),
+                      onTap: () {
+                        _getFile(ImageSource.camera)
+                            .then((value) => Navigator.of(context).pop());
+                      },
+                    ),
+                  ],
+                )
+              : Wrap(
+                  children: <Widget>[
+                    ListTile(
+                      leading: const Icon(Icons.photo_camera),
+                      title: const Text('Camera'),
+                      onTap: () {
+                        _getFile(ImageSource.camera)
+                            .then((value) => Navigator.of(context).pop());
+                      },
+                    ),
+                  ],
+                ),
         ),
       );
     },
@@ -290,7 +334,7 @@ Future _getFile(ImageSource source) async {
     imageQuality: 10,
     preferredCameraDevice: CameraDevice.front,
   );
-  print("Image Path " + (image?.path??""));
+  print("Image Path " + (image?.path ?? ""));
 
   if (image != null) {
     return imageFile = File(image.path);
@@ -300,34 +344,33 @@ Future _getFile(ImageSource source) async {
 }
 
 void onLoading(BuildContext context, String msg) {
-
   Future.delayed(Duration.zero, () {
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
         return Center(child: CircularProgressIndicator()
-          // Image.asset(icon_waiting, height: 80.w, width: 80.h)
-          // SizedBox(
-          //   height: 200.w,
-          //   width: 200.h,
-          //   child: CircularProgressIndicator()
-          //
-          //   // Lottie.asset(
-          //   //   icon_loader_json,
-          //   //   repeat: true,
-          //   //   reverse: true,
-          //   //   animate: true,
-          //   // ),
-          // ),
-          // Container(
-          //     width: 50,
-          //     height: 50,
-          //     decoration: const BoxDecoration(
-          //       shape: BoxShape.circle,
-          //       color: Colors.green,
-          //       ) , child: Image.asset(icon_waiting, height: 35, width: 35)),
-        );
+            // Image.asset(icon_waiting, height: 80.w, width: 80.h)
+            // SizedBox(
+            //   height: 200.w,
+            //   width: 200.h,
+            //   child: CircularProgressIndicator()
+            //
+            //   // Lottie.asset(
+            //   //   icon_loader_json,
+            //   //   repeat: true,
+            //   //   reverse: true,
+            //   //   animate: true,
+            //   // ),
+            // ),
+            // Container(
+            //     width: 50,
+            //     height: 50,
+            //     decoration: const BoxDecoration(
+            //       shape: BoxShape.circle,
+            //       color: Colors.green,
+            //       ) , child: Image.asset(icon_waiting, height: 35, width: 35)),
+            );
         // child: const CircularProgressIndicator(
         //   backgroundColor: Colors.white,
         //   valueColor: AlwaysStoppedAnimation<Color>(
@@ -338,8 +381,4 @@ void onLoading(BuildContext context, String msg) {
       },
     );
   });
-
-
-
 }
-
