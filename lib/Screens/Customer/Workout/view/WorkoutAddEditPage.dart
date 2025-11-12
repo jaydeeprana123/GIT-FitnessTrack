@@ -31,7 +31,7 @@ class _WorkoutAddEditPageState extends State<WorkoutAddEditPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
+    workoutController.getAllMeasurementListAPI(context);
     if (widget.isEdit) {
       strSelectedMeasurement =
           workoutController.selectedWorkoutData.value.measurementId ?? "";
@@ -75,7 +75,7 @@ class _WorkoutAddEditPageState extends State<WorkoutAddEditPage> {
                   ),
                   Container(
                     width: double.infinity,
-                    margin: EdgeInsets.only(left: 24, right: 24),
+                    margin: EdgeInsets.only(bottom: 22),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(11),
                       border: Border.all(color: text_color, width: 0.5),
@@ -84,7 +84,7 @@ class _WorkoutAddEditPageState extends State<WorkoutAddEditPage> {
                       child: DropdownButton2<String>(
                         isExpanded: true,
                         hint: Text(
-                          'Select State',
+                          'Select Measurement',
                           style: TextStyle(
                             fontSize: 14,
                             color: Theme.of(context).hintColor,

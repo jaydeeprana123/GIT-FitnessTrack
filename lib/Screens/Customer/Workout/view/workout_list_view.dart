@@ -152,32 +152,14 @@ class _WorkoutListViewState extends State<WorkoutListView> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Expanded(
-                                child: Text(
-                                    "Code : ${controller.workoutList[index].code ?? ""}",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 12,
-                                        fontFamily: fontInterSemiBold)),
-                              ),
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.edit,
-                                    color: color_primary,
-                                  ),
-                                  SizedBox(
-                                    width: 3,
-                                  ),
-                                  Text("Edit",
-                                      style: TextStyle(
-                                          color: color_primary,
-                                          fontSize: 11,
-                                          fontFamily: fontInterSemiBold)),
-                                ],
-                              ),
+                              Text(
+                                  "Code : ${controller.workoutList[index].code ?? ""}",
+                                  style: TextStyle(
+                                      color: text_color,
+                                      fontSize: 14,
+                                      fontFamily: fontInterSemiBold)),
                               SizedBox(
-                                height: 4,
+                                height: 6,
                               ),
                               Row(
                                 children: [
@@ -194,9 +176,9 @@ class _WorkoutListViewState extends State<WorkoutListView> {
                                                   DateTime(2023))
                                               .toString())),
                                       style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 12,
-                                          fontFamily: fontInterSemiBold)),
+                                          color: text_color,
+                                          fontSize: 13,
+                                          fontFamily: fontInterRegular)),
                                   // Text(
                                   //     getDateOnly((controller
                                   //                 .workoutList[index].workoutDate ??
@@ -209,82 +191,77 @@ class _WorkoutListViewState extends State<WorkoutListView> {
                                 ],
                               ),
                               SizedBox(
-                                height: 4,
+                                height: 6,
                               ),
                               Text(
                                   "Duration : ${controller.workoutList[index].durationInDays ?? "0"}",
                                   style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 12,
+                                      color: text_color,
+                                      fontSize: 13,
                                       fontFamily: fontInterSemiBold)),
                               SizedBox(
-                                height: 6,
+                                height: 12,
                               ),
                               Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  InkWell(
+                                  _buildCircleMenuItem(
+                                    icon: Icons.local_fire_department,
+                                    label: "Warm up",
+                                    color: color_primary,
                                     onTap: () {
                                       controller.selectedWorkoutData.value =
                                           controller.workoutList[index];
-
                                       Get.to(WorkoutAddEditPage(isEdit: true));
                                     },
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.edit,
-                                          color: color_primary,
-                                        ),
-                                        SizedBox(
-                                          width: 3,
-                                        ),
-                                        Text("Edit",
-                                            style: TextStyle(
-                                                color: color_primary,
-                                                fontSize: 11,
-                                                fontFamily: fontInterSemiBold)),
-                                      ],
-                                    ),
                                   ),
-                                  SizedBox(
-                                    width: 16,
+                                  const SizedBox(width: 16),
+                                  _buildCircleMenuItem(
+                                    icon: Icons.fitness_center,
+                                    label: "Workout",
+                                    color: color_primary,
+                                    onTap: () {
+                                      controller.selectedWorkoutData.value =
+                                          controller.workoutList[index];
+                                      Get.to(WorkoutAddEditPage(isEdit: true));
+                                    },
                                   ),
-                                  InkWell(
+                                  const SizedBox(width: 16),
+                                  _buildCircleMenuItem(
+                                    icon: Icons.edit,
+                                    label: "Edit",
+                                    color: color_primary,
+                                    onTap: () {
+                                      controller.selectedWorkoutData.value =
+                                          controller.workoutList[index];
+                                      Get.to(WorkoutAddEditPage(isEdit: true));
+                                    },
+                                  ),
+                                  const SizedBox(width: 16),
+                                  _buildCircleMenuItem(
+                                    icon: Icons.delete_forever,
+                                    label: "Delete",
+                                    color: Colors.red,
                                     onTap: () {
                                       showConfirmationDialog(
-                                          context: context,
-                                          title: "Delete",
-                                          message:
-                                              "Are you sure want to delete this measurement?",
-                                          onConfirmed: () {
-                                            controller.callDeleteWorkoutAPI(
-                                                context,
-                                                controller
-                                                        .measurementList[index]
-                                                        .measurementId ??
-                                                    "");
-                                          },
-                                          onCancelled: () {});
+                                        context: context,
+                                        title: "Delete",
+                                        message:
+                                            "Are you sure you want to delete this measurement?",
+                                        onConfirmed: () {
+                                          controller.callDeleteWorkoutAPI(
+                                            context,
+                                            controller.measurementList[index]
+                                                    .measurementId ??
+                                                "",
+                                          );
+                                        },
+                                        onCancelled: () {},
+                                      );
                                     },
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.delete_forever,
-                                          color: Colors.red,
-                                        ),
-                                        SizedBox(
-                                          width: 3,
-                                        ),
-                                        Text("Delete",
-                                            style: TextStyle(
-                                                color: Colors.red,
-                                                fontSize: 11,
-                                                fontFamily: fontInterSemiBold)),
-                                      ],
-                                    ),
                                   ),
                                 ],
-                              )
+                              ),
                             ],
                           ),
                         ),
@@ -297,6 +274,43 @@ class _WorkoutListViewState extends State<WorkoutListView> {
             : Center(
                 child: CircularProgressIndicator(),
               )),
+      ),
+    );
+  }
+
+  Widget _buildCircleMenuItem({
+    required IconData icon,
+    required String label,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return Expanded(
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(30),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: color.withOpacity(0.15), // light background tint
+                border: Border.all(color: color, width: 0.5),
+              ),
+              child: Icon(icon, color: color, size: 26),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              label,
+              style: TextStyle(
+                color: color,
+                fontSize: 11,
+                fontFamily: fontInterSemiBold,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

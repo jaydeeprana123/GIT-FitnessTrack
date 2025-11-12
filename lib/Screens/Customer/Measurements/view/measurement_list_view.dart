@@ -157,13 +157,13 @@ class _MeasurementListViewState extends State<MeasurementListView> {
                                     "Measurement By " +
                                         (controller.measurementList[index]
                                                 .trainerName ??
-                                            ""),
+                                            "me"),
                                     style: TextStyle(
-                                        color: Colors.white,
+                                        color: text_color,
                                         fontSize: 14,
                                         fontFamily: fontInterSemiBold)),
                                 SizedBox(
-                                  height: 6,
+                                  height: 8,
                                 ),
                                 Row(
                                   children: [
@@ -199,12 +199,22 @@ class _MeasurementListViewState extends State<MeasurementListView> {
                                     ),
                                     InkWell(
                                       onTap: () {
-
-                                        showConfirmationDialog(context: context, title: "Delete", message: "Are you sure want to delete this measurement?",onConfirmed: (){
-                                          controller.callDeleteMeasurementAPI(context, controller.measurementList[index].measurementId??"");
-                                        }, onCancelled: (){
-
-                                        });
+                                        showConfirmationDialog(
+                                            context: context,
+                                            title: "Delete",
+                                            message:
+                                                "Are you sure want to delete this measurement?",
+                                            onConfirmed: () {
+                                              controller
+                                                  .callDeleteMeasurementAPI(
+                                                      context,
+                                                      controller
+                                                              .measurementList[
+                                                                  index]
+                                                              .measurementId ??
+                                                          "");
+                                            },
+                                            onCancelled: () {});
                                       },
                                       child: Row(
                                         children: [
@@ -213,7 +223,7 @@ class _MeasurementListViewState extends State<MeasurementListView> {
                                             color: Colors.red,
                                           ),
                                           SizedBox(
-                                            width: 3,
+                                            width: 2,
                                           ),
                                           Text("Delete",
                                               style: TextStyle(
