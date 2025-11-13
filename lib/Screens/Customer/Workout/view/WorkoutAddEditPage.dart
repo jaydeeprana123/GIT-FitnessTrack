@@ -217,7 +217,7 @@ class _WorkoutAddEditPageState extends State<WorkoutAddEditPage> {
                   onPressed: workoutController.isLoading.value
                       ? null
                       : () {
-                          workoutController.callAddWorkoutDaysAPI(
+                          workoutController.callAddEditWorkoutDaysAPI(
                               context,
                               strSelectedMeasurement ?? "",
                               widget.isEdit

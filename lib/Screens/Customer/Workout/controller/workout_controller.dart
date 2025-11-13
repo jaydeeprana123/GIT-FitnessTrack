@@ -12,12 +12,17 @@ import '../../../../Utils/preference_utils.dart';
 import '../../../../Utils/share_predata.dart';
 import '../../../Authentication/Login/model/customer_login_response_model.dart';
 import '../../Measurements/model/measurement_list_model.dart';
+import '../model/warmup_list_response.dart';
 
 /// Controller
 class WorkoutController extends GetxController {
   RxList<WorkoutData> workoutList = <WorkoutData>[].obs;
   Rx<WorkoutData> selectedWorkoutData = WorkoutData().obs;
+  Rx<WarmupData> selectedWarmupData = WarmupData().obs;
+
   RxList<MeasurementData> measurementList = <MeasurementData>[].obs;
+
+  RxList<WarmupData> warmupList = <WarmupData>[].obs;
 
   Rx<CustomerLoginResponseModel> loginResponseModel =
       CustomerLoginResponseModel().obs;
@@ -32,6 +37,11 @@ class WorkoutController extends GetxController {
   Rx<TextEditingController> endDateController = TextEditingController().obs;
   DateTime? startDate;
   DateTime? endDate;
+
+  /// Warm up
+  var setsController = TextEditingController().obs;
+  var repeatNoController = TextEditingController().obs;
+  var repeatTimeController = TextEditingController().obs;
 
   RxBool isLoading = false.obs;
 
@@ -66,11 +76,11 @@ class WorkoutController extends GetxController {
     }
   }
 
-  /// delete workout api call
-  callDeleteWorkoutAPI(BuildContext context, String id) async {
+  /// delete warmup api call
+  callDeleteWarmupAPI(BuildContext context, String id) async {
     onLoading(context, "Loading..");
 
-    String url = urlBase + urlDeleteWorkout;
+    String url = urlBase + urlDeleteWarmup;
 
     String token =
         await MySharedPref().getStringValue(SharePreData.keyAccessToken);
@@ -110,7 +120,169 @@ class WorkoutController extends GetxController {
         if (baseModel.status ?? false) {
           snackBar(context, baseModel.message ?? "");
 
-          getAllMeasurementListAPI(context);
+          getAllWarmupListAPI(context);
+        } else {
+          snackBar(context, baseModel.message ?? "");
+        }
+      });
+    } else {
+      print(response.reasonPhrase);
+    }
+  }
+
+  /// delete workout api call
+  callDeleteWorkoutAPI(BuildContext context, String id) async {
+    onLoading(context, "Loading..");
+
+    String url = urlBase + urlDeleteWorkout;
+
+    String token =
+        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+    printData("tokenn", token);
+
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
+
+    // var headers = {
+    //   'Content-Type': 'application/json',
+    //   'Authorization': 'BeeyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjEiLCJtb2JpbGUiOiI5NzM3Mzg4Nzg2IiwiZW1haWwiOiJhZG1pbkBmaXRuZXNzdHJhY2tneW0uY29tIn0.2Givt7c-Wtarer Z1h92xEoyrheqvcBsiMd9j6E8qCpCYwpw',
+    //
+    // };
+
+    var request = http.Request('POST', Uri.parse(url));
+    request.body = json.encode({
+      "id": id,
+    });
+    request.headers.addAll(headers);
+
+    printData("boddyyy", request.body);
+
+    http.StreamedResponse response = await request.send();
+
+    Navigator.pop(context);
+
+    if (response.statusCode == 200) {
+      await response.stream.bytesToString().then((valueData) async {
+        printData(runtimeType.toString(),
+            "callDeleteWorkoutAPI API value ${valueData}");
+
+        Map<String, dynamic> userModel = json.decode(valueData);
+        BaseModel baseModel = BaseModel.fromJson(userModel);
+
+        if (baseModel.status ?? false) {
+          snackBar(context, baseModel.message ?? "");
+
+          getAllWorkoutListAPI(context);
+        } else {
+          snackBar(context, baseModel.message ?? "");
+        }
+      });
+    } else {
+      print(response.reasonPhrase);
+    }
+  }
+
+  /// get Warmup list
+  getAllWarmupListAPI(BuildContext context) async {
+    isLoading.value = true;
+    String url = urlBase + urlWarmupList;
+
+    printData("urrllll", url);
+
+    String token =
+        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+    printData("tokenn", token);
+
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
+    // var headers = {
+    //   'Content-Type': 'application/json',
+    //   'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjEiLCJtb2JpbGUiOiI5NzM3Mzg4Nzg2IiwiZW1haWwiOiJhZG1pbkBmaXRuZXNzdHJhY2tneW0uY29tIn0.2Givt7c-WtZ1h92xEoyrheqvcBsiMd9j6E8qCpCYwpw',
+    //
+    // };
+
+    var request = http.Request('POST', Uri.parse(url));
+
+    request.body = json
+        .encode({"customer_id": loginResponseModel.value.data?[0].id ?? ""});
+    request.headers.addAll(headers);
+    http.StreamedResponse response = await request.send();
+
+    isLoading.value = false;
+
+    printData(
+        "getAllWorkoutListAPI code main ", response.statusCode.toString());
+
+    printData("getAllWorkoutListAPI request.body ", request.body);
+
+    if (response.statusCode == 200) {
+      await response.stream.bytesToString().then((valueData) async {
+        printData(runtimeType.toString(),
+            "getAllWorkoutListAPI place API value ${valueData}");
+
+        Map<String, dynamic> userModel = json.decode(valueData);
+        WarmupListResponse warmupListModel =
+            WarmupListResponse.fromJson(userModel);
+        warmupList.value = warmupListModel.data ?? [];
+      });
+    } else {
+      print(response.reasonPhrase);
+    }
+  }
+
+  /// Insert Workout days api call
+  callAddEditWarmupDaysAPI(BuildContext context, String warmupId) async {
+    onLoading(context, "Loading..");
+
+    String url = urlBase + urlAddEditWarmup;
+    printData("callAddWorkoutDaysAPI url", url);
+    String token =
+        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+    printData("tokenn", token);
+
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
+    var request = http.Request('POST', Uri.parse(url));
+
+    printData("callAddEditWarmupDaysAPI headers", headers.toString());
+
+    request.body = json.encode({
+      "id": warmupId,
+      "current_login_id": loginResponseModel.value.data?[0].id ?? "0",
+      "client_id": loginResponseModel.value.data?[0].id ?? "0",
+      "workout_id": selectedWorkoutData.value.workoutId ?? "",
+      "master_workout_id": "32014",
+      "sets": setsController.value.text,
+      "repeat_no": repeatNoController.value.text,
+      "repeat_time": repeatTimeController.value.text,
+      "status": "0"
+    });
+    request.headers.addAll(headers);
+
+    printData("callAddEditWarmupDaysAPI boddyyy", request.body);
+
+    http.StreamedResponse response = await request.send();
+
+    Navigator.pop(context);
+
+    if (response.statusCode == 200) {
+      await response.stream.bytesToString().then((valueData) async {
+        printData(runtimeType.toString(),
+            "callAddEditWarmupDaysAPI API value ${valueData}");
+
+        Map<String, dynamic> userModel = json.decode(valueData);
+        BaseModel baseModel = BaseModel.fromJson(userModel);
+
+        if (baseModel.status ?? false) {
+          snackBar(context, baseModel.message ?? "");
+
+          Navigator.pop(context);
         } else {
           snackBar(context, baseModel.message ?? "");
         }
@@ -224,7 +396,7 @@ class WorkoutController extends GetxController {
   }
 
   /// Insert Workout days api call
-  callAddWorkoutDaysAPI(
+  callAddEditWorkoutDaysAPI(
       BuildContext context, String measurementId, String workoutId) async {
     onLoading(context, "Loading..");
 

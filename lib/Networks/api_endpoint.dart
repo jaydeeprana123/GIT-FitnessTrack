@@ -44,6 +44,10 @@ const urlWorkoutList = '/member/workout/workout_list.php';
 const urlAddEditWorkout = '/member/workout/workout_add_edit.php';
 const urlDeleteWorkout = '/member/workout/workout_delete.php';
 
+const urlWarmupList = '/member/workout_warm_up/warm_up_list.php';
+const urlAddEditWarmup = '/member/workout_warm_up/warm_up_add_edit.php';
+const urlDeleteWarmup = '/member/workout_warm_up/warm_up_delete.php';
+
 const urlAppointmentList = '/member/appointment/appointment_list.php';
 const urlBookAppointment = '/member/appointment/appointment_add.php';
 const urlUpdateAppointment = '/member/appointment/appointment_edit.php';

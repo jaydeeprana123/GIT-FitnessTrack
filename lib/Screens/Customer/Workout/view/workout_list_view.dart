@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:fitness_track/Screens/Customer/Measurements/view/measurement_details_view.dart';
 import 'package:fitness_track/Screens/Customer/Workout/view/WorkoutAddEditPage.dart';
+import 'package:fitness_track/Screens/Customer/Workout/view/warmup_list_view.dart';
 import 'package:fitness_track/Screens/Customer/Workout/view/workout_details_view.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter/material.dart';
@@ -218,12 +219,12 @@ class _WorkoutListViewState extends State<WorkoutListView> {
                                   const SizedBox(width: 16),
                                   _buildCircleMenuItem(
                                     icon: Icons.fitness_center,
-                                    label: "Workout",
+                                    label: "Warmup",
                                     color: color_primary,
                                     onTap: () {
                                       controller.selectedWorkoutData.value =
                                           controller.workoutList[index];
-                                      Get.to(WorkoutAddEditPage(isEdit: true));
+                                      Get.to(WarmupListView());
                                     },
                                   ),
                                   const SizedBox(width: 16),
@@ -247,12 +248,12 @@ class _WorkoutListViewState extends State<WorkoutListView> {
                                         context: context,
                                         title: "Delete",
                                         message:
-                                            "Are you sure you want to delete this measurement?",
+                                            "Are you sure you want to delete this workout?",
                                         onConfirmed: () {
                                           controller.callDeleteWorkoutAPI(
                                             context,
-                                            controller.measurementList[index]
-                                                    .measurementId ??
+                                            controller.workoutList[index]
+                                                    .workoutId ??
                                                 "",
                                           );
                                         },
