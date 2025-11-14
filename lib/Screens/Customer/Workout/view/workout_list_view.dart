@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:fitness_track/Screens/Customer/Measurements/view/measurement_details_view.dart';
+import 'package:fitness_track/Screens/Customer/Workout/view/AddWorkoutTrainingScreen.dart';
 import 'package:fitness_track/Screens/Customer/Workout/view/WorkoutAddEditPage.dart';
 import 'package:fitness_track/Screens/Customer/Workout/view/warmup_list_view.dart';
 import 'package:fitness_track/Screens/Customer/Workout/view/workout_details_view.dart';
@@ -153,53 +154,39 @@ class _WorkoutListViewState extends State<WorkoutListView> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                  "Code : ${controller.workoutList[index].code ?? ""}",
-                                  style: TextStyle(
-                                      color: text_color,
-                                      fontSize: 14,
-                                      fontFamily: fontInterSemiBold)),
-                              SizedBox(
-                                height: 6,
-                              ),
-                              Row(
-                                children: [
-                                  Text(
-                                      (getDateOnly((controller
-                                                      .workoutList[index]
-                                                      .workoutDate ??
-                                                  DateTime(2023))
-                                              .toString())) +
-                                          " - " +
-                                          (getDateOnly((controller
-                                                      .workoutList[index]
-                                                      .dueDate ??
-                                                  DateTime(2023))
-                                              .toString())),
-                                      style: TextStyle(
-                                          color: text_color,
-                                          fontSize: 13,
-                                          fontFamily: fontInterRegular)),
-                                  // Text(
-                                  //     getDateOnly((controller
-                                  //                 .workoutList[index].workoutDate ??
-                                  //             DateTime(2023))
-                                  //         .toString()),
-                                  //     style: TextStyle(
-                                  //         color: Colors.white,
-                                  //         fontSize: 12,
-                                  //         fontFamily: fontInterSemiBold)),
-                                ],
+                              buildTitleValue(
+                                title: "Code",
+                                value: controller.workoutList[index].code ?? "",
                               ),
                               SizedBox(
                                 height: 6,
                               ),
-                              Text(
-                                  "Duration : ${controller.workoutList[index].durationInDays ?? "0"}",
-                                  style: TextStyle(
-                                      color: text_color,
-                                      fontSize: 13,
-                                      fontFamily: fontInterSemiBold)),
+                              buildTitleValue(
+                                title: "From",
+                                value: getDateOnly((controller
+                                            .workoutList[index].workoutDate ??
+                                        DateTime(2023))
+                                    .toString()),
+                              ),
+                              SizedBox(
+                                height: 6,
+                              ),
+                              buildTitleValue(
+                                title: "To",
+                                value: getDateOnly(
+                                    (controller.workoutList[index].dueDate ??
+                                            DateTime(2023))
+                                        .toString()),
+                              ),
+                              SizedBox(
+                                height: 6,
+                              ),
+                              buildTitleValue(
+                                title: "Duration",
+                                value: controller
+                                        .workoutList[index].durationInDays ??
+                                    "0",
+                              ),
                               SizedBox(
                                 height: 12,
                               ),
@@ -213,18 +200,18 @@ class _WorkoutListViewState extends State<WorkoutListView> {
                                     onTap: () {
                                       controller.selectedWorkoutData.value =
                                           controller.workoutList[index];
-                                      Get.to(WorkoutAddEditPage(isEdit: true));
+                                      Get.to(WarmupListView());
                                     },
                                   ),
                                   const SizedBox(width: 16),
                                   _buildCircleMenuItem(
                                     icon: Icons.fitness_center,
-                                    label: "Warmup",
+                                    label: "Workout",
                                     color: color_primary,
                                     onTap: () {
                                       controller.selectedWorkoutData.value =
                                           controller.workoutList[index];
-                                      Get.to(WarmupListView());
+                                      Get.to(AddWorkoutTrainingScreen());
                                     },
                                   ),
                                   const SizedBox(width: 16),
@@ -312,6 +299,34 @@ class _WorkoutListViewState extends State<WorkoutListView> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget buildTitleValue({
+    required String title,
+    required String value,
+  }) {
+    return RichText(
+      text: TextSpan(
+        children: [
+          TextSpan(
+            text: "$title :  ",
+            style: TextStyle(
+              color: text_color,
+              fontSize: 14,
+              fontFamily: fontInterRegular,
+            ),
+          ),
+          TextSpan(
+            text: value,
+            style: TextStyle(
+              color: text_color, // <-- Different color
+              fontSize: 14,
+              fontFamily: fontInterSemiBold, // <-- Different font
+            ),
+          ),
+        ],
       ),
     );
   }

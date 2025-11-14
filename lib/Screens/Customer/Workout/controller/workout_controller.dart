@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:fitness_track/Screens/Customer/Workout/model/master_workout_list_response.dart';
+import 'package:fitness_track/Screens/Customer/Workout/model/workout_sub_category_list_response.dart';
 import 'package:intl/intl.dart';
 import 'package:fitness_track/Screens/Customer/Workout/model/workout_list_model.dart';
 import 'package:flutter/material.dart';
@@ -13,9 +15,12 @@ import '../../../../Utils/share_predata.dart';
 import '../../../Authentication/Login/model/customer_login_response_model.dart';
 import '../../Measurements/model/measurement_list_model.dart';
 import '../model/warmup_list_response.dart';
+import '../view/AddWorkoutTrainingScreen.dart';
 
 /// Controller
 class WorkoutController extends GetxController {
+  RxList<CategoryRowModel> categoryList = <CategoryRowModel>[].obs;
+
   RxList<WorkoutData> workoutList = <WorkoutData>[].obs;
   Rx<WorkoutData> selectedWorkoutData = WorkoutData().obs;
   Rx<WarmupData> selectedWarmupData = WarmupData().obs;
@@ -23,6 +28,9 @@ class WorkoutController extends GetxController {
   RxList<MeasurementData> measurementList = <MeasurementData>[].obs;
 
   RxList<WarmupData> warmupList = <WarmupData>[].obs;
+  RxList<MasterWorkoutData> masterWorkoutDataList = <MasterWorkoutData>[].obs;
+  RxList<WorkoutSubCategoryData> workoutSubCategoryDataList =
+      <WorkoutSubCategoryData>[].obs;
 
   Rx<CustomerLoginResponseModel> loginResponseModel =
       CustomerLoginResponseModel().obs;
@@ -184,6 +192,107 @@ class WorkoutController extends GetxController {
     }
   }
 
+  /// get Master Workout list
+  getAllMasterWorkoutListAPI(BuildContext context) async {
+    isLoading.value = true;
+    String url = urlBase + urlMasterWorkoutList;
+
+    printData("urrllll", url);
+
+    String token =
+        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+    printData("tokenn", token);
+
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
+    // var headers = {
+    //   'Content-Type': 'application/json',
+    //   'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjEiLCJtb2JpbGUiOiI5NzM3Mzg4Nzg2IiwiZW1haWwiOiJhZG1pbkBmaXRuZXNzdHJhY2tneW0uY29tIn0.2Givt7c-WtZ1h92xEoyrheqvcBsiMd9j6E8qCpCYwpw',
+    //
+    // };
+
+    var request = http.Request('POST', Uri.parse(url));
+
+    request.body = json.encode({
+      "customer_id": loginResponseModel.value.data?[0].id ?? "",
+    });
+    request.headers.addAll(headers);
+    http.StreamedResponse response = await request.send();
+
+    isLoading.value = false;
+
+    printData(
+        "getAllWorkoutListAPI code main ", response.statusCode.toString());
+
+    printData("getAllWorkoutListAPI request.body ", request.body);
+
+    if (response.statusCode == 200) {
+      await response.stream.bytesToString().then((valueData) async {
+        printData(runtimeType.toString(),
+            "getAllWorkoutListAPI place API value ${valueData}");
+
+        Map<String, dynamic> userModel = json.decode(valueData);
+        MasterWorkoutListResponse masterWorkoutListResponse =
+            MasterWorkoutListResponse.fromJson(userModel);
+        masterWorkoutDataList.value = masterWorkoutListResponse.data ?? [];
+      });
+    } else {
+      print(response.reasonPhrase);
+    }
+  }
+
+  /// get Sub category Workout list
+  getAllWorkoutSubCategoryListAPI(
+      BuildContext context, String masterWorkoutId, int categoryIndex) async {
+    isLoading.value = true;
+    String url = urlBase + urlSubCategoryWorkoutList;
+
+    printData("urrllll", url);
+
+    String token =
+        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+    printData("tokenn", token);
+
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
+
+    var request = http.Request('POST', Uri.parse(url));
+
+    request.body = json.encode({
+      "master_workout_id": masterWorkoutId,
+    });
+    request.headers.addAll(headers);
+    http.StreamedResponse response = await request.send();
+
+    isLoading.value = false;
+
+    printData(
+        "getAllWorkoutListAPI code main ", response.statusCode.toString());
+
+    printData("getAllWorkoutListAPI request.body ", request.body);
+
+    if (response.statusCode == 200) {
+      await response.stream.bytesToString().then((valueData) async {
+        printData(runtimeType.toString(),
+            "getAllWorkoutListAPI place API value ${valueData}");
+
+        Map<String, dynamic> userModel = json.decode(valueData);
+        WorkoutSubCategoryResponse workoutSubCategoryResponse =
+            WorkoutSubCategoryResponse.fromJson(userModel);
+        workoutSubCategoryDataList.value =
+            workoutSubCategoryResponse.data ?? [];
+        categoryList[categoryIndex].workoutSubCategoryDataList =
+            workoutSubCategoryDataList.value;
+      });
+    } else {
+      print(response.reasonPhrase);
+    }
+  }
+
   /// get Warmup list
   getAllWarmupListAPI(BuildContext context) async {
     isLoading.value = true;
@@ -207,8 +316,10 @@ class WorkoutController extends GetxController {
 
     var request = http.Request('POST', Uri.parse(url));
 
-    request.body = json
-        .encode({"customer_id": loginResponseModel.value.data?[0].id ?? ""});
+    request.body = json.encode({
+      "customer_id": loginResponseModel.value.data?[0].id ?? "",
+      "workout_id": selectedWorkoutData.value.workoutId ?? ""
+    });
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
 

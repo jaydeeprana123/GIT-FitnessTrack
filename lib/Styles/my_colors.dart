@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
 const color_primary = Color(0xff363584);
+const color_primary_transparent = Color(0x22363584);
 const half_transparent = Color(0x80000000);
 const quater_transparent = Color(0x12000000);
 const title_black_15181e = Color(0xFF15181e);
@@ -21,7 +22,6 @@ const line_gray_e2e2e6 = Color(0xFFe2e2e6);
 const subtitle_black_101623 = Color(0xFF101623);
 const black_4d5764 = Color(0xFF4d5764);
 const silver_67696c = Color(0xFF67696c);
-
 
 const light_green_f8fbff = Color(0xFFf8fbff);
 const bg_f8f8f8 = Color(0xfff8f8f8);
@@ -112,13 +112,9 @@ const dark_green = Color(0xff57A29D);
 const golden_Color = Color(0xffB97F32);
 const button_Color = Color(0xffCD8032);
 
-
-
 const nav_drawer_color = Color(0xff242E32);
 const notification_item_color = Color(0xff0B4F51);
 const icon_color_fav = Color(0xff088181);
 const sign_up_bg_color = Color(0xfff6f6f6);
 const search_bg_color = Color(0xff004d4d);
 const login_bg_color = Color(0xff066666);
-
-

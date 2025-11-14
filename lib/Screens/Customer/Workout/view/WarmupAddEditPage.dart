@@ -1,4 +1,5 @@
 import 'package:fitness_track/Screens/Customer/Measurements/model/measurement_list_model.dart';
+import 'package:fitness_track/Screens/Customer/Workout/model/master_workout_list_response.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -43,7 +44,7 @@ class _WarmupAddEditPageState extends State<WarmupAddEditPage> {
   @override
   void initState() {
     super.initState();
-    workoutController.getAllWarmupListAPI(context);
+    workoutController.getAllMasterWorkoutListAPI(context);
 
     if (widget.isEdit) {
       final data = workoutController.selectedWarmupData.value;
@@ -96,14 +97,15 @@ class _WarmupAddEditPageState extends State<WarmupAddEditPage> {
                     value: selectedWorkoutName?.isEmpty == true
                         ? null
                         : selectedWorkoutName,
-                    items: workoutController.warmupList
-                        .map((WarmupData item) => DropdownMenuItem<String>(
-                              value: item.workoutName,
+                    items: workoutController.masterWorkoutDataList
+                        .map((MasterWorkoutData item) =>
+                            DropdownMenuItem<String>(
+                              value: item.name,
                               child: Padding(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 12),
                                 child: Text(
-                                  item.workoutName ?? '',
+                                  item.name ?? '',
                                   style: const TextStyle(fontSize: 14),
                                 ),
                               ),
