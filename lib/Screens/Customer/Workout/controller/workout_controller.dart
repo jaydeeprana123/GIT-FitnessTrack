@@ -16,6 +16,7 @@ import '../../../Authentication/Login/model/customer_login_response_model.dart';
 import '../../Measurements/model/measurement_list_model.dart';
 import '../model/warmup_list_response.dart';
 import '../model/workout_training_add_edit_request.dart';
+import '../model/workout_training_list_response.dart';
 import '../view/AddWorkoutTrainingScreen.dart';
 
 /// Controller
@@ -26,12 +27,17 @@ class WorkoutController extends GetxController {
   Rx<WorkoutData> selectedWorkoutData = WorkoutData().obs;
   Rx<WarmupData> selectedWarmupData = WarmupData().obs;
 
+  Rx<WorkoutTrainingData> selectedWorkoutTrainingData =
+      WorkoutTrainingData().obs;
+
   Rx<WorkoutTrainingAddEditRequest> workoutTrainingAddEditRequest =
       WorkoutTrainingAddEditRequest().obs;
 
   RxList<MeasurementData> measurementList = <MeasurementData>[].obs;
 
   RxList<WarmupData> warmupList = <WarmupData>[].obs;
+  RxList<WorkoutTrainingData> workoutTrainingList = <WorkoutTrainingData>[].obs;
+
   RxList<MasterWorkoutData> masterWorkoutDataList = <MasterWorkoutData>[].obs;
   RxList<WorkoutSubCategoryData> workoutSubCategoryDataList =
       <WorkoutSubCategoryData>[].obs;
@@ -137,6 +143,61 @@ class WorkoutController extends GetxController {
           snackBar(context, baseModel.message ?? "");
 
           getAllWarmupListAPI(context);
+        } else {
+          snackBar(context, baseModel.message ?? "");
+        }
+      });
+    } else {
+      print(response.reasonPhrase);
+    }
+  }
+
+  /// delete Workout training api call
+  callDeleteWorkoutTrainingAPI(BuildContext context, String id) async {
+    onLoading(context, "Loading..");
+
+    String url = urlBase + urlDeleteWorkoutTraining;
+
+    String token =
+        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+    printData("tokenn", token);
+
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
+
+    // var headers = {
+    //   'Content-Type': 'application/json',
+    //   'Authorization': 'BeeyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjEiLCJtb2JpbGUiOiI5NzM3Mzg4Nzg2IiwiZW1haWwiOiJhZG1pbkBmaXRuZXNzdHJhY2tneW0uY29tIn0.2Givt7c-Wtarer Z1h92xEoyrheqvcBsiMd9j6E8qCpCYwpw',
+    //
+    // };
+
+    var request = http.Request('POST', Uri.parse(url));
+    request.body = json.encode({
+      "id": id,
+      "current_login_id": loginResponseModel.value.data?[0].id ?? "0"
+    });
+    request.headers.addAll(headers);
+
+    printData("boddyyy", request.body);
+
+    http.StreamedResponse response = await request.send();
+
+    Navigator.pop(context);
+
+    if (response.statusCode == 200) {
+      await response.stream.bytesToString().then((valueData) async {
+        printData(runtimeType.toString(),
+            "callInsertFavCommentAPI API value ${valueData}");
+
+        Map<String, dynamic> userModel = json.decode(valueData);
+        BaseModel baseModel = BaseModel.fromJson(userModel);
+
+        if (baseModel.status ?? false) {
+          snackBar(context, baseModel.message ?? "");
+
+          getAllWorkoutTrainingListAPI(context);
         } else {
           snackBar(context, baseModel.message ?? "");
         }
@@ -347,6 +408,53 @@ class WorkoutController extends GetxController {
         WarmupListResponse warmupListModel =
             WarmupListResponse.fromJson(userModel);
         warmupList.value = warmupListModel.data ?? [];
+      });
+    } else {
+      print(response.reasonPhrase);
+    }
+  }
+
+  /// get Workoput Training list
+  getAllWorkoutTrainingListAPI(BuildContext context) async {
+    isLoading.value = true;
+    String url = urlBase + urlWorkoutTrainingList;
+
+    printData("urrllll", url);
+
+    String token =
+        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+    printData("tokenn", token);
+
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
+
+    var request = http.Request('POST', Uri.parse(url));
+
+    request.body = json.encode({
+      "client_id": loginResponseModel.value.data?[0].id ?? "",
+      "workout_id": selectedWorkoutData.value.workoutId ?? ""
+    });
+    request.headers.addAll(headers);
+    http.StreamedResponse response = await request.send();
+
+    isLoading.value = false;
+
+    printData("getAllWorkoutTrainingListAPI code main ",
+        response.statusCode.toString());
+
+    printData("getAllWorkoutTrainingListAPI request.body ", request.body);
+
+    if (response.statusCode == 200) {
+      await response.stream.bytesToString().then((valueData) async {
+        printData(runtimeType.toString(),
+            "getAllWorkoutTrainingListAPI place API value ${valueData}");
+
+        Map<String, dynamic> userModel = json.decode(valueData);
+        WorkoutTrainingListResponse workoutTrainingListResponse =
+            WorkoutTrainingListResponse.fromJson(userModel);
+        workoutTrainingList.value = workoutTrainingListResponse.data ?? [];
       });
     } else {
       print(response.reasonPhrase);

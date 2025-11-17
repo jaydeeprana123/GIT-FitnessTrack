@@ -5,6 +5,7 @@ import 'package:fitness_track/Screens/Customer/Workout/view/AddWorkoutTrainingSc
 import 'package:fitness_track/Screens/Customer/Workout/view/WorkoutAddEditPage.dart';
 import 'package:fitness_track/Screens/Customer/Workout/view/warmup_list_view.dart';
 import 'package:fitness_track/Screens/Customer/Workout/view/workout_details_view.dart';
+import 'package:fitness_track/Screens/Customer/Workout/view/workout_training_list_view.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -212,21 +213,23 @@ class _WorkoutListViewState extends State<WorkoutListView> {
                                       controller.selectedWorkoutData.value =
                                           controller.workoutList[index];
 
-                                      if ((controller.selectedWorkoutData.value
-                                                  .workoutTrainingList ??
-                                              [])
-                                          .isEmpty) {
-                                        Get.to(AddWorkoutTrainingScreen(
-                                          workoutId: controller
-                                                  .selectedWorkoutData
-                                                  .value
-                                                  .workoutId ??
-                                              "0",
-                                          isEdit: false,
-                                        ));
-                                      } else {
-                                        Get.to(WorkoutDetailsView());
-                                      }
+                                      Get.to(WorkoutTrainingListScreen());
+
+                                      // if ((controller.selectedWorkoutData.value
+                                      //             .workoutTrainingList ??
+                                      //         [])
+                                      //     .isEmpty) {
+                                      //   Get.to(AddWorkoutTrainingScreen(
+                                      //     workoutId: controller
+                                      //             .selectedWorkoutData
+                                      //             .value
+                                      //             .workoutId ??
+                                      //         "0",
+                                      //     isEdit: false,
+                                      //   ));
+                                      // } else {
+                                      //   Get.to(WorkoutTrainingScreen());
+                                      // }
                                     },
                                   ),
                                   const SizedBox(width: 16),

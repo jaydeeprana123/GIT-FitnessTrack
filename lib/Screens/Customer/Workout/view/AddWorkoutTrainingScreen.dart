@@ -560,41 +560,39 @@ class _AddWorkoutTrainingScreenState extends State<AddWorkoutTrainingScreen> {
   }
 
   void prefillWorkoutTrainingUI() {
-    workoutController.categoryList.clear();
+    final data = workoutController.selectedWorkoutTrainingData.value;
 
-    final editData = workoutController.selectedWorkoutData.value;
+    if (data.workoutList == null || data.workoutList!.isEmpty) return;
 
-    if (editData.workoutTrainingList == null) return;
+    for (var apiCategory in data.workoutList!) {
+      CategoryRowModel uiCategory = CategoryRowModel();
 
-    for (var dayTraining in editData.workoutTrainingList!) {
-      for (var cat in dayTraining.workoutTrainingCategory ?? []) {
-        CategoryRowModel categoryRow = CategoryRowModel();
-        categoryRow.categoryId = cat.workoutTrainingCategoryId;
+      // Category ID for dropdown
+      uiCategory.categoryId = apiCategory.masterWorkoutId;
 
-        // Now category name also available
-        // categoryRow.categoryName =
-        //     getCategoryName(cat.workoutTrainingCategoryId);
+      // workout_training_category_id (for editing existing)
+      uiCategory.workoutId = apiCategory.workoutTrainingCategoryId;
 
-        for (var sub in cat.workoutTrainingSubCategory ?? []) {
-          SubCategoryModel subRow = SubCategoryModel();
+      // Filter subCategory list (only those belonging to same category)
+      uiCategory.workoutSubCategoryDataList =
+          workoutController.workoutSubCategoryDataList.where((s) {
+        return s.id != null; // or apply mapping rule if needed
+      }).toList();
 
-          // Now ID from API maps to dropdown correctly
-          subRow.workoutDetailId = sub.workoutTrainingSubCategoryId;
+      // Fill sub categories
+      for (var apiSub in apiCategory.workoutDetailList ?? []) {
+        SubCategoryModel uiSub = SubCategoryModel();
 
-          // For display name
-          // subRow.workoutName =
-          //     getSubCategoryName(sub.workoutTrainingSubCategoryId);
+        uiSub.workoutDetailId = apiSub.workoutDetailId;
+        uiSub.sets = apiSub.sets ?? "0";
+        uiSub.repeatNo = apiSub.repeatNo ?? "0";
+        uiSub.repeatTime = apiSub.repeatTime ?? "0";
+        uiSub.remarks = apiSub.remarks ?? "";
 
-          subRow.sets = sub.sets ?? "";
-          subRow.repeatNo = sub.repeatNo ?? "";
-          subRow.repeatTime = sub.repeatTime ?? "";
-          subRow.remarks = sub.remarks ?? "";
-
-          categoryRow.subCategories.add(subRow);
-        }
-
-        workoutController.categoryList.add(categoryRow);
+        uiCategory.subCategories.add(uiSub);
       }
+
+      workoutController.categoryList.add(uiCategory);
     }
   }
 
