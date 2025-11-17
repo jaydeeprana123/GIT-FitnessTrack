@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:fitness_track/Screens/Customer/Workout/model/master_workout_list_response.dart';
 import 'package:fitness_track/Screens/Customer/Workout/model/workout_sub_category_list_response.dart';
 import 'package:flutter/material.dart';
@@ -7,8 +9,15 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import '../../../../Styles/my_colors.dart';
 import '../../../../Styles/my_font.dart';
 import '../controller/workout_controller.dart';
+import '../model/workout_training_add_edit_request.dart';
 
 class AddWorkoutTrainingScreen extends StatefulWidget {
+  final String workoutId;
+  final bool isEdit;
+  const AddWorkoutTrainingScreen(
+      {Key? key, required this.workoutId, required this.isEdit})
+      : super(key: key);
+
   @override
   State<AddWorkoutTrainingScreen> createState() =>
       _AddWorkoutTrainingScreenState();
@@ -22,6 +31,10 @@ class _AddWorkoutTrainingScreenState extends State<AddWorkoutTrainingScreen> {
     super.initState();
 
     workoutController.getAllMasterWorkoutListAPI(context);
+
+    if (widget.isEdit) {
+      prefillWorkoutTrainingUI();
+    }
   }
 
   @override
@@ -43,6 +56,17 @@ class _AddWorkoutTrainingScreenState extends State<AddWorkoutTrainingScreen> {
             padding: const EdgeInsets.all(12),
             child: Column(
               children: [
+                _buildTextField(
+                  "Days",
+                  workoutController.workoutDayController.value,
+                  fontInterSemiBold,
+                  keyboardType: TextInputType.number,
+                ),
+
+                SizedBox(
+                  height: 12,
+                ),
+
                 /// CATEGORY LIST
                 ListView.builder(
                   shrinkWrap: true,
@@ -57,7 +81,7 @@ class _AddWorkoutTrainingScreenState extends State<AddWorkoutTrainingScreen> {
                 ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: color_primary,
-                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                    padding: EdgeInsets.symmetric(vertical: 6, horizontal: 20),
                   ),
                   onPressed: () {
                     setState(() {
@@ -71,6 +95,30 @@ class _AddWorkoutTrainingScreenState extends State<AddWorkoutTrainingScreen> {
                       fontFamily: fontInterSemiBold,
                       fontSize: 15,
                       color: Colors.white,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+                InkWell(
+                  onTap: () {
+                    onSubmitWorkoutTraining();
+                  },
+                  child: Container(
+                    alignment: Alignment.center,
+                    padding:
+                        EdgeInsets.only(left: 12, right: 12, top: 4, bottom: 4),
+                    margin: EdgeInsets.only(left: 12),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        color: color_primary,
+                        border: Border.all(
+                          width: 0.5,
+                          color: Colors.grey,
+                        )),
+                    child: Text(
+                      "Submit",
+                      style: TextStyle(color: Colors.white),
                     ),
                   ),
                 )
@@ -335,8 +383,11 @@ class _AddWorkoutTrainingScreenState extends State<AddWorkoutTrainingScreen> {
         ),
         SizedBox(height: 6),
         TextFormField(
-          decoration: inputDecoration(label),
-          keyboardType: TextInputType.number,
+          decoration: inputDecoration(
+            label,
+          ),
+          keyboardType:
+              label == "Remarks" ? TextInputType.text : TextInputType.number,
           onChanged: onChanged,
           style: TextStyle(fontFamily: fontInterRegular),
         ),
@@ -358,7 +409,7 @@ class _AddWorkoutTrainingScreenState extends State<AddWorkoutTrainingScreen> {
       ),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
-        borderSide: BorderSide.none,
+        // borderSide: BorderSide.none,
       ),
       contentPadding: EdgeInsets.symmetric(horizontal: 14, vertical: 12),
     );
@@ -436,6 +487,127 @@ class _AddWorkoutTrainingScreenState extends State<AddWorkoutTrainingScreen> {
       }
     }
     return itemsHeights;
+  }
+
+  void onSubmitWorkoutTraining() {
+    workoutController.workoutTrainingAddEditRequest.value =
+        WorkoutTrainingAddEditRequest(
+      id: null,
+      clientId: workoutController.loginResponseModel.value.data?[0].id ?? "",
+      currentLoginId:
+          workoutController.loginResponseModel.value.data?[0].id ?? "",
+      workoutId: widget.workoutId,
+      days: int.parse(workoutController.workoutDayController.value.text),
+      status: "0",
+      workout: workoutController.categoryList.map((cat) {
+        return Workout(
+          workoutTrainingCategoryId: cat.categoryId,
+          workoutId: cat.workoutId,
+          workoutDetail: cat.subCategories.map((sub) {
+            return WorkoutDetail(
+              workoutTrainingSubCategoryId: sub.workoutDetailId,
+              workoutDetailId: null, // For new entries, pass null
+              sets: sub.sets,
+              repeatNo: sub.repeatNo,
+              repeatTime: sub.repeatTime,
+              remarks: sub.remarks,
+            );
+          }).toList(),
+        );
+      }).toList(),
+      removedWorkoutTrainingCategory: workoutController.removedCategoryIds
+          .map((id) => RemovedWorkoutTrainingCategory(
+                removedWorkoutTrainingCategoryId: id,
+              ))
+          .toList(),
+      removedWorkoutTrainingSubCategory: workoutController.removedSubCategoryIds
+          .map((id) => RemovedWorkoutTrainingSubCategory(
+                removedWorkoutTrainingSubCategoryId: id,
+              ))
+          .toList(),
+    );
+
+    /// Convert to JSON
+    String jsonBody = workoutTrainingAddEditRequestToJson(
+        workoutController.workoutTrainingAddEditRequest.value);
+
+    print("FINAL JSON TO SEND ===> $jsonBody");
+
+    /// Call API
+    workoutController.callAddEditWorkoutTrainingAPI(context, jsonBody);
+  }
+
+  Widget _buildTextField(
+      String label, TextEditingController controller, String fontFamily,
+      {TextInputType keyboardType = TextInputType.text}) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 16),
+      child: TextField(
+        controller: controller,
+        keyboardType: keyboardType,
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle: TextStyle(
+            fontFamily: fontFamily,
+            color: Colors.black,
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void prefillWorkoutTrainingUI() {
+    workoutController.categoryList.clear();
+
+    final editData = workoutController.selectedWorkoutData.value;
+
+    if (editData.workoutTrainingList == null) return;
+
+    for (var dayTraining in editData.workoutTrainingList!) {
+      for (var cat in dayTraining.workoutTrainingCategory ?? []) {
+        CategoryRowModel categoryRow = CategoryRowModel();
+        categoryRow.categoryId = cat.workoutTrainingCategoryId;
+
+        // Now category name also available
+        // categoryRow.categoryName =
+        //     getCategoryName(cat.workoutTrainingCategoryId);
+
+        for (var sub in cat.workoutTrainingSubCategory ?? []) {
+          SubCategoryModel subRow = SubCategoryModel();
+
+          // Now ID from API maps to dropdown correctly
+          subRow.workoutDetailId = sub.workoutTrainingSubCategoryId;
+
+          // For display name
+          // subRow.workoutName =
+          //     getSubCategoryName(sub.workoutTrainingSubCategoryId);
+
+          subRow.sets = sub.sets ?? "";
+          subRow.repeatNo = sub.repeatNo ?? "";
+          subRow.repeatTime = sub.repeatTime ?? "";
+          subRow.remarks = sub.remarks ?? "";
+
+          categoryRow.subCategories.add(subRow);
+        }
+
+        workoutController.categoryList.add(categoryRow);
+      }
+    }
+  }
+
+  String? getCategoryName(String? id) {
+    return workoutController.masterWorkoutDataList
+        .firstWhereOrNull((e) => e.id == id)
+        ?.name;
+  }
+
+  String? getSubCategoryName(String? id) {
+    return workoutController.workoutSubCategoryDataList
+        .firstWhereOrNull((e) => e.id == id)
+        ?.name;
   }
 }
 

@@ -44,6 +44,10 @@ const urlWorkoutList = '/member/workout/workout_list.php';
 const urlAddEditWorkout = '/member/workout/workout_add_edit.php';
 const urlDeleteWorkout = '/member/workout/workout_delete.php';
 
+const urlAddEditWorkoutTraining =
+    '/member/workout_day/workout_day_add_edit.php';
+const urlWorkoutTrainingList = '/member/workout_day/workout_day_list.php';
+
 const urlMasterWorkoutList = '/member/workout_warm_up/master_workout_list.php';
 const urlSubCategoryWorkoutList =
     '/member/workout_day/master_workout_detail_list.php';

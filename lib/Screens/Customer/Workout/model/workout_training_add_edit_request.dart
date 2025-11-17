@@ -1,19 +1,21 @@
 // To parse this JSON data, do
 //
-//     final workoutAddEditRequest = workoutAddEditRequestFromJson(jsonString);
+//     final workoutTrainingAddEditRequest = workoutTrainingAddEditRequestFromJson(jsonString);
 
 import 'dart:convert';
 
-WorkoutAddEditRequest workoutAddEditRequestFromJson(String str) =>
-    WorkoutAddEditRequest.fromJson(json.decode(str));
+WorkoutTrainingAddEditRequest workoutTrainingAddEditRequestFromJson(
+        String str) =>
+    WorkoutTrainingAddEditRequest.fromJson(json.decode(str));
 
-String workoutAddEditRequestToJson(WorkoutAddEditRequest data) =>
+String workoutTrainingAddEditRequestToJson(
+        WorkoutTrainingAddEditRequest data) =>
     json.encode(data.toJson());
 
-class WorkoutAddEditRequest {
+class WorkoutTrainingAddEditRequest {
   String? id;
-  int? clientId;
-  int? currentLoginId;
+  String? clientId;
+  String? currentLoginId;
   String? workoutId;
   int? days;
   String? status;
@@ -21,7 +23,7 @@ class WorkoutAddEditRequest {
   List<RemovedWorkoutTrainingCategory>? removedWorkoutTrainingCategory;
   List<RemovedWorkoutTrainingSubCategory>? removedWorkoutTrainingSubCategory;
 
-  WorkoutAddEditRequest({
+  WorkoutTrainingAddEditRequest({
     this.id,
     this.clientId,
     this.currentLoginId,
@@ -33,8 +35,8 @@ class WorkoutAddEditRequest {
     this.removedWorkoutTrainingSubCategory,
   });
 
-  factory WorkoutAddEditRequest.fromJson(Map<String, dynamic> json) =>
-      WorkoutAddEditRequest(
+  factory WorkoutTrainingAddEditRequest.fromJson(Map<String, dynamic> json) =>
+      WorkoutTrainingAddEditRequest(
         id: json["id"],
         clientId: json["client_id"],
         currentLoginId: json["current_login_id"],

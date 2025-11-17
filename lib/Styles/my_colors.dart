@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
 const color_primary = Color(0xff363584);
-const color_primary_transparent = Color(0x22363584);
+const color_primary_transparent = Color(0x11363584);
 const half_transparent = Color(0x80000000);
 const quater_transparent = Color(0x12000000);
 const title_black_15181e = Color(0xFF15181e);

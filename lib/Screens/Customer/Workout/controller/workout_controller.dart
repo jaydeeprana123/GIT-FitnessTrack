@@ -15,6 +15,7 @@ import '../../../../Utils/share_predata.dart';
 import '../../../Authentication/Login/model/customer_login_response_model.dart';
 import '../../Measurements/model/measurement_list_model.dart';
 import '../model/warmup_list_response.dart';
+import '../model/workout_training_add_edit_request.dart';
 import '../view/AddWorkoutTrainingScreen.dart';
 
 /// Controller
@@ -24,6 +25,9 @@ class WorkoutController extends GetxController {
   RxList<WorkoutData> workoutList = <WorkoutData>[].obs;
   Rx<WorkoutData> selectedWorkoutData = WorkoutData().obs;
   Rx<WarmupData> selectedWarmupData = WarmupData().obs;
+
+  Rx<WorkoutTrainingAddEditRequest> workoutTrainingAddEditRequest =
+      WorkoutTrainingAddEditRequest().obs;
 
   RxList<MeasurementData> measurementList = <MeasurementData>[].obs;
 
@@ -35,9 +39,13 @@ class WorkoutController extends GetxController {
   Rx<CustomerLoginResponseModel> loginResponseModel =
       CustomerLoginResponseModel().obs;
 
+  RxList<String> removedCategoryIds = <String>[].obs;
+
+  RxList<String> removedSubCategoryIds = <String>[].obs;
+
   RxBool workoutListApiCall = false.obs;
 
-  Rx<TextEditingController> clientIdController = TextEditingController().obs;
+  Rx<TextEditingController> workoutDayController = TextEditingController().obs;
   Rx<TextEditingController> measurementIdController =
       TextEditingController().obs;
   Rx<TextEditingController> durationController = TextEditingController().obs;
@@ -382,6 +390,56 @@ class WorkoutController extends GetxController {
 
     Navigator.pop(context);
 
+    if (response.statusCode == 200) {
+      await response.stream.bytesToString().then((valueData) async {
+        printData(runtimeType.toString(),
+            "callAddEditWarmupDaysAPI API value ${valueData}");
+
+        Map<String, dynamic> userModel = json.decode(valueData);
+        BaseModel baseModel = BaseModel.fromJson(userModel);
+
+        if (baseModel.status ?? false) {
+          snackBar(context, baseModel.message ?? "");
+
+          Navigator.pop(context);
+        } else {
+          snackBar(context, baseModel.message ?? "");
+        }
+      });
+    } else {
+      print(response.reasonPhrase);
+    }
+  }
+
+  /// Insert/Update Workout days api call
+  callAddEditWorkoutTrainingAPI(
+      BuildContext context, String workoutTrainingJson) async {
+    onLoading(context, "Loading..");
+
+    String url = urlBase + urlAddEditWorkoutTraining;
+    printData("callAddWorkoutDaysAPI url", url);
+    String token =
+        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+    printData("tokenn", token);
+
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
+    var request = http.Request('POST', Uri.parse(url));
+
+    printData("callAddEditWarmupDaysAPI headers", headers.toString());
+
+    request.body = workoutTrainingJson;
+    request.headers.addAll(headers);
+
+    printData("callAddEditWarmupDaysAPI boddyyy", request.body);
+
+    http.StreamedResponse response = await request.send();
+
+    Navigator.pop(context);
+    printData(runtimeType.toString(),
+        "callAddEditWarmupDaysAPI status code ${response.statusCode}");
     if (response.statusCode == 200) {
       await response.stream.bytesToString().then((valueData) async {
         printData(runtimeType.toString(),

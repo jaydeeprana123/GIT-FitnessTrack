@@ -211,7 +211,22 @@ class _WorkoutListViewState extends State<WorkoutListView> {
                                     onTap: () {
                                       controller.selectedWorkoutData.value =
                                           controller.workoutList[index];
-                                      Get.to(AddWorkoutTrainingScreen());
+
+                                      if ((controller.selectedWorkoutData.value
+                                                  .workoutTrainingList ??
+                                              [])
+                                          .isEmpty) {
+                                        Get.to(AddWorkoutTrainingScreen(
+                                          workoutId: controller
+                                                  .selectedWorkoutData
+                                                  .value
+                                                  .workoutId ??
+                                              "0",
+                                          isEdit: false,
+                                        ));
+                                      } else {
+                                        Get.to(WorkoutDetailsView());
+                                      }
                                     },
                                   ),
                                   const SizedBox(width: 16),
