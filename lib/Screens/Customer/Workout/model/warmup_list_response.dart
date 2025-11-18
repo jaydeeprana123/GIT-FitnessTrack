@@ -46,6 +46,7 @@ class WarmupListResponse {
 
 class WarmupData {
   String? id;
+  String? masterWorkoutId;
   String? workoutId;
   String? clientId;
   String? workoutName;
@@ -58,6 +59,7 @@ class WarmupData {
 
   WarmupData({
     this.id,
+    this.masterWorkoutId,
     this.workoutId,
     this.clientId,
     this.workoutName,
@@ -71,6 +73,7 @@ class WarmupData {
 
   factory WarmupData.fromJson(Map<String, dynamic> json) => WarmupData(
         id: json["id"],
+        masterWorkoutId: json["master_workout_id"],
         workoutId: json["workout_id"],
         clientId: json["client_id"],
         workoutName: json["workout_name"],
@@ -84,6 +87,7 @@ class WarmupData {
 
   Map<String, dynamic> toJson() => {
         "id": id,
+        "master_workout_id": masterWorkoutId,
         "workout_id": workoutId,
         "client_id": clientId,
         "workout_name": workoutName,

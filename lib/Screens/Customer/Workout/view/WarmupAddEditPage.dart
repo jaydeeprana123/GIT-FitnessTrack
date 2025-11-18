@@ -45,23 +45,19 @@ class _WarmupAddEditPageState extends State<WarmupAddEditPage> {
   void initState() {
     super.initState();
 
-
-    WidgetsBinding.instance.addPostFrameCallback((_) async{
-     await workoutController.getAllMasterWorkoutListAPI(context);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await workoutController.getAllMasterWorkoutListAPI(context);
 
       if (widget.isEdit) {
         final data = workoutController.selectedWarmupData.value;
-        selectedMasterWorkoutId = data.workoutId ?? "";
+        selectedMasterWorkoutId = data.masterWorkoutId ?? "";
 
         workoutController.setsController.value.text = data.sets ?? "";
         workoutController.repeatNoController.value.text = data.repeatNo ?? "";
-        workoutController.repeatTimeController.value.text = data.repeatTime ?? "";
+        workoutController.repeatTimeController.value.text =
+            data.repeatTime ?? "";
       }
-
     });
-
-
-
   }
 
   @override
