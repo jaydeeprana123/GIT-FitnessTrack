@@ -62,26 +62,8 @@ class _WorkoutListViewState extends State<WorkoutListView> {
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
           backgroundColor: color_primary,
-          titleSpacing: 0,
+          // titleSpacing: 0,
           automaticallyImplyLeading: true,
-          leading: Builder(
-            builder: (BuildContext context) {
-              return InkWell(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: Container(
-                  margin: EdgeInsets.all(14),
-                  child: Image.asset(
-                    width: double.infinity,
-                    height: double.infinity,
-                    icon_staklist_logo,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              );
-            },
-          ),
           iconTheme: IconThemeData(
             color: Colors.white, //change your color here
           ),
@@ -110,9 +92,10 @@ class _WorkoutListViewState extends State<WorkoutListView> {
                       "Add",
                       style: TextStyle(
                           color: Colors.white,
-                          fontSize: 16,
+                          fontSize: 14,
                           fontFamily: fontInterMedium),
-                    )
+                    ),
+                    // SizedBox(width: 12,)
                   ],
                 ),
               )
@@ -194,9 +177,23 @@ class _WorkoutListViewState extends State<WorkoutListView> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
+
+
+                                  _buildCircleMenuItem(
+                                    icon: Icons.remove_red_eye,
+                                    label: "View",
+                                    color: color_primary,
+                                    onTap: () {
+                                      controller.selectedWorkoutData.value =
+                                      controller.workoutList[index];
+                                      Get.to(WorkoutDetailsView());
+                                    },
+                                  ),
+                                  const SizedBox(width: 8),
+
                                   _buildCircleMenuItem(
                                     icon: Icons.local_fire_department,
-                                    label: "Warm up",
+                                    label: "Warmup",
                                     color: color_primary,
                                     onTap: () {
                                       controller.selectedWorkoutData.value =
@@ -204,7 +201,7 @@ class _WorkoutListViewState extends State<WorkoutListView> {
                                       Get.to(WarmupListView());
                                     },
                                   ),
-                                  const SizedBox(width: 16),
+                                  const SizedBox(width: 8),
                                   _buildCircleMenuItem(
                                     icon: Icons.fitness_center,
                                     label: "Workout",
@@ -232,7 +229,7 @@ class _WorkoutListViewState extends State<WorkoutListView> {
                                       // }
                                     },
                                   ),
-                                  const SizedBox(width: 16),
+                                  const SizedBox(width: 8),
                                   _buildCircleMenuItem(
                                     icon: Icons.edit,
                                     label: "Edit",
@@ -243,7 +240,7 @@ class _WorkoutListViewState extends State<WorkoutListView> {
                                       Get.to(WorkoutAddEditPage(isEdit: true));
                                     },
                                   ),
-                                  const SizedBox(width: 16),
+                                  const SizedBox(width: 8),
                                   _buildCircleMenuItem(
                                     icon: Icons.delete_forever,
                                     label: "Delete",
@@ -304,7 +301,7 @@ class _WorkoutListViewState extends State<WorkoutListView> {
                 color: color.withOpacity(0.15), // light background tint
                 border: Border.all(color: color, width: 0.5),
               ),
-              child: Icon(icon, color: color, size: 26),
+              child: Icon(icon, color: color, size: 24),
             ),
             const SizedBox(height: 6),
             Text(

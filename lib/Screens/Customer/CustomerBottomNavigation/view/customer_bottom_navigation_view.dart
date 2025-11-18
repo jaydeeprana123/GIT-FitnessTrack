@@ -73,190 +73,194 @@ class _CustomerBottomNavigationViewState extends State<CustomerBottomNavigationV
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() => Scaffold(
-          appBar: bottomNavController.currentIndex.value != 3 &&
-              bottomNavController.currentIndex.value != 2?AppBar(
-            automaticallyImplyLeading: true,
-            // leading: Builder(
-            //   builder: (BuildContext context) {
-            //     return InkWell(
-            //       onTap: () {
-            //         Scaffold.of(context).openDrawer();
-            //       },
-            //       child: Container(
-            //         margin: EdgeInsets.all(14),
-            //         child: Image.asset(
-            //           width: double.infinity,
-            //           height: double.infinity,
-            //           icon_staklist_logo,
-            //           fit: BoxFit.cover,
+    return Obx(() => SafeArea(
+      child: Scaffold(
+            appBar:
+            // bottomNavController.currentIndex.value != 3 &&
+            //     bottomNavController.currentIndex.value != 2?AppBar(
+            //   automaticallyImplyLeading: true,
+            //   // leading: Builder(
+            //   //   builder: (BuildContext context) {
+            //   //     return InkWell(
+            //   //       onTap: () {
+            //   //         Scaffold.of(context).openDrawer();
+            //   //       },
+            //   //       child: Container(
+            //   //         margin: EdgeInsets.all(14),
+            //   //         child: Image.asset(
+            //   //           width: double.infinity,
+            //   //           height: double.infinity,
+            //   //           icon_staklist_logo,
+            //   //           fit: BoxFit.cover,
+            //   //         ),
+            //   //       ),
+            //   //     );
+            //   //   },
+            //   // ),
+            //   iconTheme: IconThemeData(color: Colors.white),
+            //   title: Row(
+            //     children: [
+            //       Expanded(
+            //         child: Text(
+            //           bottomNavController.currentIndex.value == 0
+            //               ? "Measurements"
+            //               : bottomNavController.currentIndex.value == 1
+            //               ? "My Workout"
+            //               : bottomNavController.currentIndex.value == 2
+            //                   ? "Appointments"
+            //               : bottomNavController.currentIndex.value == 3
+            //               ? "Membership"
+            //                   : bottomNavController.currentIndex.value == 4
+            //                           ? "My Profile"
+            //                           : "My Profile",
+            //           style: TextStyle(
+            //               fontSize: 16,
+            //               color: Colors.white,
+            //               fontFamily: fontInterSemiBold),
             //         ),
             //       ),
-            //     );
-            //   },
+            //
+            //
+            //       bottomNavController.currentIndex.value == 0
+            //           ? InkWell(
+            //         onTap: () {
+            //           logoutFromTheApp();
+            //         },
+            //         child: SvgPicture.asset(
+            //           icon_logout,
+            //           width: 22,
+            //           height: 22,
+            //           color: Colors.white,
+            //         ),
+            //       )
+            //           : SizedBox(),
+            //     ],
+            //   ),
+            //   backgroundColor: color_primary,
+            // ):
+            null,
+            backgroundColor: Colors.white,
+            body: tabs[bottomNavController.currentIndex.value],
+            bottomNavigationBar:
+                // SizedBox(
+                //   height: 60.h,
+                //   child:
+            Obx(
+                  () => BottomNavigationBar(
+                key: _bottomNavigationKey,
+                backgroundColor: color_primary,
+                selectedItemColor: Colors.white,
+                unselectedItemColor: silver_9393aa,
+                currentIndex: bottomNavController.currentIndex.value,
+                // selectedFontSize: 12,
+                // unselectedFontSize: 12,
+                selectedLabelStyle: TextStyle(
+                    color: Colors.white,
+                    height: 1.5,
+                    fontSize: 9,
+                    fontFamily: fontInterBold,
+                    overflow: TextOverflow.visible),
+                unselectedLabelStyle: TextStyle(
+                    color: silver_9393aa,
+                    height: 1.5,
+                    fontSize: 9,
+                    fontFamily: fontInterRegular,
+                    overflow: TextOverflow.visible),
+                showSelectedLabels: true,
+                showUnselectedLabels: true,
+                elevation: 6,
+                type: BottomNavigationBarType.fixed,
+      
+                items: [
+                  BottomNavigationBarItem(
+                    icon: SvgPicture.asset(
+                      icon_measurement,
+                      width: 20,
+                      height: 20,
+                      color: silver_9393aa,
+                    ),
+                    activeIcon: SvgPicture.asset(
+                      icon_measurement,
+                      width: 20,
+                      height: 20,
+                      color: Colors.white,
+                    ),
+                    label: "Measurement",
+                  ),
+                  BottomNavigationBarItem(
+                    icon: SvgPicture.asset(
+                      icon_workout,
+                      width: 20,
+                      height: 20,
+                      color: silver_9393aa,
+                    ),
+                    activeIcon: SvgPicture.asset(
+                      icon_workout,
+                      width: 20,
+                      height: 20,
+                      color: Colors.white,
+                    ),
+                    label: "Workout",
+                  ),
+                  BottomNavigationBarItem(
+                    icon: SvgPicture.asset(
+                      icon_appointment,
+                      width: 20,
+                      height: 20,
+                      color: silver_9393aa,
+                    ),
+                    activeIcon: SvgPicture.asset(
+                      icon_appointment,
+                      width: 20,
+                      height: 20,
+                      color: Colors.white,
+                    ),
+                    label: "Appointments",
+                  ),
+      
+                  BottomNavigationBarItem(
+                    icon: SvgPicture.asset(
+                      icon_membership,
+                      width: 20,
+                      height: 20,
+                      color: silver_9393aa,
+                    ),
+                    activeIcon: SvgPicture.asset(
+                      icon_membership,
+                      width: 20,
+                      height: 20,
+                      color: Colors.white,
+                    ),
+                    label: "Membership",
+                  ),
+      
+                  BottomNavigationBarItem(
+                    icon: SvgPicture.asset(
+                      icon_settings,
+                      width: 20,
+                      height: 20,
+                      color: silver_9393aa,
+                    ),
+                    activeIcon: SvgPicture.asset(
+                      icon_settings,
+                      width: 20,
+                      height: 20,
+                      color: Colors.white,
+                    ),
+                    label: "Settings",
+                  ),
+                ],
+                onTap: (index) {
+                  setState(() {
+                    bottomNavController.currentIndex.value = index;
+                  });
+                },
+              ),
+            ),
+      
             // ),
-            iconTheme: IconThemeData(color: Colors.white),
-            title: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    bottomNavController.currentIndex.value == 0
-                        ? "Measurements"
-                        : bottomNavController.currentIndex.value == 1
-                        ? "My Workout"
-                        : bottomNavController.currentIndex.value == 2
-                            ? "Appointments"
-                        : bottomNavController.currentIndex.value == 3
-                        ? "Membership"
-                            : bottomNavController.currentIndex.value == 4
-                                    ? "My Profile"
-                                    : "My Profile",
-                    style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.white,
-                        fontFamily: fontInterSemiBold),
-                  ),
-                ),
-
-
-                bottomNavController.currentIndex.value == 0
-                    ? InkWell(
-                  onTap: () {
-                    logoutFromTheApp();
-                  },
-                  child: SvgPicture.asset(
-                    icon_logout,
-                    width: 22,
-                    height: 22,
-                    color: Colors.white,
-                  ),
-                )
-                    : SizedBox(),
-              ],
-            ),
-            backgroundColor: color_primary,
-          ):null,
-          backgroundColor: Colors.white,
-          body: tabs[bottomNavController.currentIndex.value],
-          bottomNavigationBar:
-              // SizedBox(
-              //   height: 60.h,
-              //   child:
-          Obx(
-                () => BottomNavigationBar(
-              key: _bottomNavigationKey,
-              backgroundColor: color_primary,
-              selectedItemColor: Colors.white,
-              unselectedItemColor: silver_9393aa,
-              currentIndex: bottomNavController.currentIndex.value,
-              // selectedFontSize: 12,
-              // unselectedFontSize: 12,
-              selectedLabelStyle: TextStyle(
-                  color: Colors.white,
-                  height: 1.5,
-                  fontSize: 9,
-                  fontFamily: fontInterBold,
-                  overflow: TextOverflow.visible),
-              unselectedLabelStyle: TextStyle(
-                  color: silver_9393aa,
-                  height: 1.5,
-                  fontSize: 9,
-                  fontFamily: fontInterRegular,
-                  overflow: TextOverflow.visible),
-              showSelectedLabels: true,
-              showUnselectedLabels: true,
-              elevation: 6,
-              type: BottomNavigationBarType.fixed,
-
-              items: [
-                BottomNavigationBarItem(
-                  icon: SvgPicture.asset(
-                    icon_measurement,
-                    width: 20,
-                    height: 20,
-                    color: silver_9393aa,
-                  ),
-                  activeIcon: SvgPicture.asset(
-                    icon_measurement,
-                    width: 20,
-                    height: 20,
-                    color: Colors.white,
-                  ),
-                  label: "Measurement",
-                ),
-                BottomNavigationBarItem(
-                  icon: SvgPicture.asset(
-                    icon_workout,
-                    width: 20,
-                    height: 20,
-                    color: silver_9393aa,
-                  ),
-                  activeIcon: SvgPicture.asset(
-                    icon_workout,
-                    width: 20,
-                    height: 20,
-                    color: Colors.white,
-                  ),
-                  label: "Workout",
-                ),
-                BottomNavigationBarItem(
-                  icon: SvgPicture.asset(
-                    icon_appointment,
-                    width: 20,
-                    height: 20,
-                    color: silver_9393aa,
-                  ),
-                  activeIcon: SvgPicture.asset(
-                    icon_appointment,
-                    width: 20,
-                    height: 20,
-                    color: Colors.white,
-                  ),
-                  label: "Appointments",
-                ),
-
-                BottomNavigationBarItem(
-                  icon: SvgPicture.asset(
-                    icon_membership,
-                    width: 20,
-                    height: 20,
-                    color: silver_9393aa,
-                  ),
-                  activeIcon: SvgPicture.asset(
-                    icon_membership,
-                    width: 20,
-                    height: 20,
-                    color: Colors.white,
-                  ),
-                  label: "Membership",
-                ),
-
-                BottomNavigationBarItem(
-                  icon: SvgPicture.asset(
-                    icon_settings,
-                    width: 20,
-                    height: 20,
-                    color: silver_9393aa,
-                  ),
-                  activeIcon: SvgPicture.asset(
-                    icon_settings,
-                    width: 20,
-                    height: 20,
-                    color: Colors.white,
-                  ),
-                  label: "Settings",
-                ),
-              ],
-              onTap: (index) {
-                setState(() {
-                  bottomNavController.currentIndex.value = index;
-                });
-              },
-            ),
           ),
-
-          // ),
-        ));
+    ));
   }
 
   /// logout from the app

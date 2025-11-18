@@ -309,63 +309,68 @@ class _CustomerProfileViewState extends State<CustomerProfileView> {
                           SizedBox(height: 15,),
 
 
-                          Padding(
-                            padding: const EdgeInsets.only(left: 24.0, bottom: 4),
-                            child: Text("EMAIL", style: TextStyle(color: text_color,fontSize: 12, fontFamily: fontInterMedium)),
-                          ),
-
-                          Container(
-                            margin: EdgeInsets.only(left: 24, right: 24),
-                            padding: EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              borderRadius:
-                              BorderRadius.all(Radius.circular(11.r)),
-                              border: Border.all(
-                                  width: 0.5, color: text_color),
-                            ),
-                            child: TextFormField(
-                              onChanged: (value) {
-
-                              },
-                              controller: controller
-                                  .emailEditingController.value,
-                              style: TextStyle(
-                                  color: text_color,
-                                  fontWeight: FontWeight.w500,
-                                  fontFamily: fontInterMedium,
-                                  fontStyle: FontStyle.normal,
-                                  fontSize: 13),
-                              decoration: InputDecoration(
-                                isDense: true,
-                                contentPadding: EdgeInsets.zero,
-                                hintStyle: TextStyle(
-                                    color: text_color,
-                                    fontWeight: FontWeight.w500,
-                                    fontFamily: fontInterMedium,
-                                    fontStyle: FontStyle.normal,
-                                    fontSize: 13),
-                                border: InputBorder.none,
+                         if(controller
+                             .emailEditingController.value.text.isNotEmpty) Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 24.0, bottom: 4),
+                                child: Text("EMAIL", style: TextStyle(color: text_color,fontSize: 12, fontFamily: fontInterMedium)),
                               ),
-                              textInputAction: TextInputAction.done,
-                              // inputFormatters: <TextInputFormatter>[
-                              //   FilteringTextInputFormatter
-                              //       .digitsOnly,
-                              //   LengthLimitingTextInputFormatter(
-                              //       10),
-                              // ],
-                              keyboardType: TextInputType.text,
-                              cursorColor: text_color,
-                              validator: (value) {
-                                if (value.toString().isNotEmpty) {
-                                  return null;
-                                } else {
-                                  return 'Enter your email';
-                                }
-                              },
-                            ),
-                          ),
 
-                          SizedBox(height: 15,),
+                              Container(
+                                margin: EdgeInsets.only(left: 24, right: 24),
+                                padding: EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  borderRadius:
+                                  BorderRadius.all(Radius.circular(11.r)),
+                                  border: Border.all(
+                                      width: 0.5, color: text_color),
+                                ),
+                                child: TextFormField(
+                                  onChanged: (value) {
+
+                                  },
+                                  controller: controller
+                                      .emailEditingController.value,
+                                  style: TextStyle(
+                                      color: text_color,
+                                      fontWeight: FontWeight.w500,
+                                      fontFamily: fontInterMedium,
+                                      fontStyle: FontStyle.normal,
+                                      fontSize: 13),
+                                  decoration: InputDecoration(
+                                    isDense: true,
+                                    contentPadding: EdgeInsets.zero,
+                                    hintStyle: TextStyle(
+                                        color: text_color,
+                                        fontWeight: FontWeight.w500,
+                                        fontFamily: fontInterMedium,
+                                        fontStyle: FontStyle.normal,
+                                        fontSize: 13),
+                                    border: InputBorder.none,
+                                  ),
+                                  textInputAction: TextInputAction.done,
+                                  // inputFormatters: <TextInputFormatter>[
+                                  //   FilteringTextInputFormatter
+                                  //       .digitsOnly,
+                                  //   LengthLimitingTextInputFormatter(
+                                  //       10),
+                                  // ],
+                                  keyboardType: TextInputType.text,
+                                  cursorColor: text_color,
+                                  validator: (value) {
+                                    if (value.toString().isNotEmpty) {
+                                      return null;
+                                    } else {
+                                      return 'Enter your email';
+                                    }
+                                  },
+                                ),
+                              ),
+
+                              SizedBox(height: 15,),
+                            ],
+                          ),
 
 
                           Padding(
@@ -583,6 +588,75 @@ class _CustomerProfileViewState extends State<CustomerProfileView> {
                               ),
                             ],
                           ):SizedBox(),
+
+
+                          if(controller
+                              .programmeNameController.value.text.isNotEmpty) Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 24.0, bottom: 4),
+                                child: Text("PROGRAMME NAME", style: TextStyle(color: text_color,fontSize: 12, fontFamily: fontInterMedium)),
+                              ),
+
+                              Container(
+                                margin: EdgeInsets.only(left: 24, right: 24),
+                                padding: EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  borderRadius:
+                                  BorderRadius.all(Radius.circular(11.r)),
+                                  border: Border.all(
+                                      width: 0.5, color: text_color),
+                                ),
+                                child: TextFormField(
+                                  onChanged: (value) {
+
+                                  },
+                                  controller: controller
+                                      .programmeNameController.value,
+                                  style: TextStyle(
+                                      color: text_color,
+                                      fontWeight: FontWeight.w500,
+                                      fontFamily: fontInterMedium,
+                                      fontStyle: FontStyle.normal,
+                                      fontSize: 13),
+                                  decoration: InputDecoration(
+                                    isDense: true,
+                                    contentPadding: EdgeInsets.zero,
+                                    hintStyle: TextStyle(
+                                        color: text_color,
+                                        fontWeight: FontWeight.w500,
+                                        fontFamily: fontInterMedium,
+                                        fontStyle: FontStyle.normal,
+                                        fontSize: 13),
+                                    border: InputBorder.none,
+                                  ),
+                                  textInputAction: TextInputAction.done,
+                                  // inputFormatters: <TextInputFormatter>[
+                                  //   FilteringTextInputFormatter
+                                  //       .digitsOnly,
+                                  //   LengthLimitingTextInputFormatter(
+                                  //       10),
+                                  // ],
+                                  keyboardType: TextInputType.text,
+                                  cursorColor: text_color,
+                                  validator: (value) {
+                                    if (value.toString().isNotEmpty) {
+                                      return null;
+                                    } else {
+                                      return 'Enter your email';
+                                    }
+                                  },
+                                ),
+                              ),
+
+                              SizedBox(height: 15,),
+                            ],
+                          ),
+
+
+
+
                           controller.dobEditingController.value.text.isNotEmpty?Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [

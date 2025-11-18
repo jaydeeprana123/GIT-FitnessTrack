@@ -82,6 +82,9 @@ class MeasurementController extends GetxController {
 
   Future<void> fillMeasurementControllers(MeasurementData data) async {
     // Create a map from your data (convert object → Map<String, dynamic>)
+
+    dateEditingController.value.text = getDateFormtYYYYMMDDOnly((data.date??DateTime(2025)).toString());
+
     final dataMap = data.toJson();
 
     for (var key in fieldControllers.keys) {

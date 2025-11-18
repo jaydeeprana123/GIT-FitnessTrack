@@ -58,67 +58,50 @@ class _WarmupListViewState extends State<WarmupListView> {
       child: Scaffold(
         backgroundColor: Colors.white,
         resizeToAvoidBottomInset: true,
+
         appBar: AppBar(
           backgroundColor: color_primary,
           titleSpacing: 0,
           automaticallyImplyLeading: true,
-          leading: Builder(
-            builder: (BuildContext context) {
-              return InkWell(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: Container(
-                  margin: EdgeInsets.all(14),
-                  child: Image.asset(
-                    width: double.infinity,
-                    height: double.infinity,
-                    icon_staklist_logo,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              );
-            },
-          ),
           iconTheme: IconThemeData(
             color: Colors.white, //change your color here
           ),
-          title: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  "Workout",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontFamily: fontInterMedium),
-                ),
-              ),
-              InkWell(
-                onTap: () {
-                  Get.to(WarmupAddEditPage(isEdit: false))?.then((value) {
-                    controller.getAllWarmupListAPI(context);
-                  });
-                },
-                child: Row(
-                  children: [
-                    Icon(Icons.add_circle),
-                    SizedBox(
-                      width: 4,
-                    ),
-                    Text(
-                      "Add",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontFamily: fontInterMedium),
-                    )
-                  ],
-                ),
-              )
-            ],
+          title: Text(
+            "Warm up",
+            style: TextStyle(
+                fontFamily: fontInterMedium,
+                fontSize: 16,
+                color: Colors.white
+            ),
           ),
+          actions: [
+            InkWell(
+              onTap: () {
+                Get.to(WarmupAddEditPage(isEdit: false))?.then((value) {
+                  controller.getAllWarmupListAPI(context);
+                });
+              },
+              child: Row(
+                children: [
+                  Icon(Icons.add_circle, color: Colors.white,),
+                  SizedBox(
+                    width: 4,
+                  ),
+                  Text(
+                    "Add",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontFamily: fontInterMedium),
+                  ),
+
+                  SizedBox(width: 12,)
+                ],
+              ),
+            )
+          ],
         ),
+
         body: Obx(() => !controller.isLoading.value
             ? (controller.warmupList ?? []).isNotEmpty
                 ? ListView.builder(

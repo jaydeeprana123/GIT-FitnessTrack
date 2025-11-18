@@ -35,6 +35,8 @@ class CustomerProfileController extends GetxController {
       TextEditingController().obs;
   Rx<TextEditingController> emailEditingController =
       TextEditingController().obs;
+  Rx<TextEditingController> programmeNameController =
+      TextEditingController().obs;
   Rx<TextEditingController> clientCodeEditingController =
       TextEditingController().obs;
   Rx<TextEditingController> dobEditingController = TextEditingController().obs;
@@ -188,6 +190,9 @@ class CustomerProfileController extends GetxController {
               loginResponseModel.value.data?[0].username ?? "";
           nameEditingController.value.text =
               loginResponseModel.value.data?[0].name ?? "";
+
+          programmeNameController.value.text = loginResponseModel.value.data?[0].programmeName ?? "";
+
           clientCodeEditingController.value.text =
               loginResponseModel.value.data?[0].clientCode ?? "";
           emailEditingController.value.text =

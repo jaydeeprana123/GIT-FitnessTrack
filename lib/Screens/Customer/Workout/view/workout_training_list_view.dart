@@ -32,11 +32,18 @@ class _WorkoutTrainingListScreenState extends State<WorkoutTrainingListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: color_primary,
+        titleSpacing: 0,
+        automaticallyImplyLeading: true,
+        iconTheme: IconThemeData(
+          color: Colors.white, //change your color here
+        ),
         title: Text(
           "Workout Training",
           style: TextStyle(
             fontFamily: fontInterMedium,
-            fontSize: 18,
+            fontSize: 16,
+            color: Colors.white
           ),
         ),
         actions: [
@@ -52,17 +59,19 @@ class _WorkoutTrainingListScreenState extends State<WorkoutTrainingListScreen> {
             },
             child: Row(
               children: [
-                Icon(Icons.add_circle),
+                Icon(Icons.add_circle, color: Colors.white,),
                 SizedBox(
                   width: 4,
                 ),
                 Text(
                   "Add",
                   style: TextStyle(
-                      color: text_color,
-                      fontSize: 16,
+                      color: Colors.white,
+                      fontSize: 14,
                       fontFamily: fontInterMedium),
-                )
+                ),
+
+                SizedBox(width: 12,)
               ],
             ),
           )
@@ -160,8 +169,6 @@ class _WorkoutTrainingListScreenState extends State<WorkoutTrainingListScreen> {
                         );
                       },
                     ),
-
-                    const SizedBox(height: 10),
 
                     Row(
                       children: [

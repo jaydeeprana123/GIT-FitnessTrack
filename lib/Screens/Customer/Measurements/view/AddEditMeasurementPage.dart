@@ -161,7 +161,9 @@ class _AddEditMeasurementPageState extends State<AddEditMeasurementPage> {
                                             decoration: const BoxDecoration(
                                                 shape: BoxShape.circle,
                                                 color: line_gray_e2e2e6),
-                                            child: Column(
+                                            child: (widget.isEdit && (measureController.selectedMeasurementData.value.frontView??"").isNotEmpty)?Image.network(height: 100,
+                                                width: 100,measureController.selectedMeasurementData.value.frontView??""
+                                            ):Column(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.center,
                                               children: [
@@ -243,7 +245,9 @@ class _AddEditMeasurementPageState extends State<AddEditMeasurementPage> {
                                             decoration: const BoxDecoration(
                                                 shape: BoxShape.circle,
                                                 color: line_gray_e2e2e6),
-                                            child: Column(
+                                            child: (widget.isEdit && (measureController.selectedMeasurementData.value.backView??"").isNotEmpty)?Image.network(height: 100,
+                                                width: 100,measureController.selectedMeasurementData.value.backView??""
+                                            ):Column(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.center,
                                               children: [
@@ -325,7 +329,9 @@ class _AddEditMeasurementPageState extends State<AddEditMeasurementPage> {
                                             decoration: const BoxDecoration(
                                                 shape: BoxShape.circle,
                                                 color: line_gray_e2e2e6),
-                                            child: Column(
+                                            child: (widget.isEdit && (measureController.selectedMeasurementData.value.leftView??"").isNotEmpty)?Image.network(height: 100,
+                                                width: 100,measureController.selectedMeasurementData.value.leftView??""
+                                            ):Column(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.center,
                                               children: [
@@ -407,7 +413,9 @@ class _AddEditMeasurementPageState extends State<AddEditMeasurementPage> {
                                             decoration: const BoxDecoration(
                                                 shape: BoxShape.circle,
                                                 color: line_gray_e2e2e6),
-                                            child: Column(
+                                            child: (widget.isEdit && (measureController.selectedMeasurementData.value.rightView??"").isNotEmpty)?Image.network(height: 100,
+                                                width: 100,measureController.selectedMeasurementData.value.rightView??""
+                                            ):Column(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.center,
                                               children: [
@@ -579,9 +587,9 @@ class _AddEditMeasurementPageState extends State<AddEditMeasurementPage> {
                   controller == measureController.fieldControllers['sign'])
               ? TextInputType.text
               : TextInputType.numberWithOptions(decimal: true),
-          inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))
-          ],
+          // inputFormatters: [
+          //   FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))
+          // ],
           cursorColor: text_color,
         ),
       ),
@@ -601,7 +609,7 @@ class _AddEditMeasurementPageState extends State<AddEditMeasurementPage> {
           );
           if (picked != null) {
             measureController.dateEditingController.value.text =
-                DateFormat('dd-MM-yyyy').format(picked);
+                DateFormat('MM-dd-yyyy').format(picked);
           }
         },
         child: Container(

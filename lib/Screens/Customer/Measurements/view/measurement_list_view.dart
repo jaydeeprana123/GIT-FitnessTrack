@@ -58,7 +58,7 @@ class _MeasurementListViewState extends State<MeasurementListView> {
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
           backgroundColor: color_primary,
-          titleSpacing: 0,
+          // titleSpacing: 0,
           automaticallyImplyLeading: true,
           iconTheme: IconThemeData(
             color: Colors.white, //change your color here
@@ -78,7 +78,9 @@ class _MeasurementListViewState extends State<MeasurementListView> {
                 onTap: () {
                   Get.to(AddEditMeasurementPage(
                     isEdit: false,
-                  ));
+                  ))?.then((value) {
+                    controller.getAllMeasurementListAPI(context);
+                  });
                 },
                 child: Row(
                   children: [
@@ -174,7 +176,9 @@ class _MeasurementListViewState extends State<MeasurementListView> {
                                             controller.measurementList[index];
 
                                         Get.to(AddEditMeasurementPage(
-                                            isEdit: true));
+                                            isEdit: true))?.then((value) {
+                                          controller.getAllMeasurementListAPI(context);
+                                        });
                                       },
                                       child: Row(
                                         children: [

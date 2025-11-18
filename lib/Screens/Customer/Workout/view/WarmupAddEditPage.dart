@@ -64,8 +64,22 @@ class _WarmupAddEditPageState extends State<WarmupAddEditPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.isEdit ? "Edit Warm-up" : "Add Warm-up"),
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: color_primary,
+        titleSpacing: 0,
+        automaticallyImplyLeading: true,
+        iconTheme: IconThemeData(
+          color: Colors.white, //change your color here
+        ),
+        title: Text(
+          widget.isEdit?"Edit Warm up":"Add Warm up",
+          style: TextStyle(
+              fontFamily: fontInterMedium,
+              fontSize: 16,
+              color: Colors.white
+          ),
+        ),
+        actions: [
+        ],
       ),
       body: Obx(
         () => SingleChildScrollView(
@@ -148,46 +162,49 @@ class _WarmupAddEditPageState extends State<WarmupAddEditPage> {
                 keyboardType: TextInputType.datetime,
               ),
 
-              const SizedBox(height: 30),
 
-              // 🔹 Submit Button
-              Center(
-                child: ElevatedButton(
-                  onPressed: workoutController.isLoading.value
-                      ? null
-                      : () {
-                          if (selectedMasterWorkoutId == null) {
-                            snackBar(context, "Select workout");
-                            return;
-                          }
 
-                          workoutController.callAddEditWarmupDaysAPI(
-                              context,
-                              widget.isEdit
-                                  ? workoutController
-                                          .selectedWarmupData.value.id ??
-                                      "0"
-                                  : "",
-                              selectedMasterWorkoutId ?? "");
-                        },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blueAccent,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 50, vertical: 14),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
+              Container(
+                width: double.infinity,
+                child: Padding(
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: 58.0, vertical: 20),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (selectedMasterWorkoutId == null) {
+                        snackBar(context, "Select workout");
+                        return;
+                      }
+
+                      workoutController.callAddEditWarmupDaysAPI(
+                          context,
+                          widget.isEdit
+                              ? workoutController
+                              .selectedWarmupData.value.id ??
+                              "0"
+                              : "",
+                          selectedMasterWorkoutId ?? "");
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: button_Color,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 50, vertical: 12),
+                    ),
+                    child: workoutController.isLoading.value
+                        ? const CircularProgressIndicator(color: Colors.white): Text("SUBMIT",
+                        style: TextStyle(
+                            fontFamily: fontInterMedium,
+                            color: Colors.white,
+                            fontSize: 14)),
                   ),
-                  child: workoutController.isLoading.value
-                      ? const CircularProgressIndicator(color: Colors.white)
-                      : Text(
-                          widget.isEdit ? "UPDATE" : "SUBMIT",
-                          style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white),
-                        ),
                 ),
               ),
+
+
+
+              // 🔹 Submit Button
             ],
           ),
         ),

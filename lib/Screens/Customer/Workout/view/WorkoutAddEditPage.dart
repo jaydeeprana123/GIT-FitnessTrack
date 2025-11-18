@@ -52,10 +52,19 @@ class _WorkoutAddEditPageState extends State<WorkoutAddEditPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       appBar: AppBar(
-        title: Text(widget.isEdit == "1" ? "Edit Workout" : "Add Workout"),
-        backgroundColor: Colors.blueAccent,
+        iconTheme: IconThemeData(
+          color: Colors.white, //change your color here
+        ),
+        backgroundColor: color_primary,
+        title: Text(
+          widget.isEdit == "1" ? "Edit Workout" : "Add Workout",
+          style: TextStyle(
+              color: Colors.white, fontSize: 16, fontFamily: fontInterRegular),
+        ),
       ),
+
       body: Obx(
         () => SingleChildScrollView(
           padding: const EdgeInsets.all(16),
@@ -212,38 +221,42 @@ class _WorkoutAddEditPageState extends State<WorkoutAddEditPage> {
                   workoutController.durationController.value,
                   readOnly: true),
               const SizedBox(height: 24),
-              Center(
-                child: ElevatedButton(
-                  onPressed: workoutController.isLoading.value
-                      ? null
-                      : () {
-                          workoutController.callAddEditWorkoutDaysAPI(
-                              context,
-                              strSelectedMeasurement ?? "",
-                              widget.isEdit
-                                  ? workoutController.selectedWorkoutData.value
-                                          .workoutId ??
-                                      "0"
-                                  : "");
-                        },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blueAccent,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 50, vertical: 14),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
+
+
+              Container(
+                width: double.infinity,
+                child: Padding(
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: 58.0, vertical: 20),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      workoutController.callAddEditWorkoutDaysAPI(
+                          context,
+                          strSelectedMeasurement ?? "",
+                          widget.isEdit
+                              ? workoutController.selectedWorkoutData.value
+                              .workoutId ??
+                              "0"
+                              : "");
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: button_Color,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 50, vertical: 12),
+                    ),
+                    child: workoutController.isLoading.value
+                        ? const CircularProgressIndicator(color: Colors.white): Text("SUBMIT",
+                        style: TextStyle(
+                            fontFamily: fontInterMedium,
+                            color: Colors.white,
+                            fontSize: 14)),
                   ),
-                  child: workoutController.isLoading.value
-                      ? const CircularProgressIndicator(color: color_primary)
-                      : const Text(
-                          "SUBMIT",
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white),
-                        ),
                 ),
               ),
+
+
             ],
           ),
         ),
