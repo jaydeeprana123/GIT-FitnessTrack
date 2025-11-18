@@ -80,17 +80,6 @@ class _WorkoutDetailsViewState extends State<WorkoutDetailsView> {
                       fontFamily: fontInterMedium),
                 ),
               ),
-              IconButton(
-                icon: Icon(Icons.edit_calendar_sharp),
-                color: Colors.white,
-                onPressed: () {
-                  Get.to(AddWorkoutTrainingScreen(
-                    workoutId:
-                        controller.selectedWorkoutData.value.workoutId ?? "0",
-                    isEdit: true,
-                  ));
-                },
-              )
             ],
           ),
         ),

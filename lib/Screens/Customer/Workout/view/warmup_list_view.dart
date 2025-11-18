@@ -96,7 +96,9 @@ class _WarmupListViewState extends State<WarmupListView> {
               ),
               InkWell(
                 onTap: () {
-                  Get.to(WarmupAddEditPage(isEdit: false));
+                  Get.to(WarmupAddEditPage(isEdit: false))?.then((value) {
+                    controller.getAllWarmupListAPI(context);
+                  });
                 },
                 child: Row(
                   children: [
@@ -174,7 +176,10 @@ class _WarmupListViewState extends State<WarmupListView> {
                                   onTap: () {
                                     controller.selectedWarmupData.value =
                                         controller.warmupList[index];
-                                    Get.to(WarmupAddEditPage(isEdit: true));
+                                    Get.to(WarmupAddEditPage(isEdit: true))
+                                        ?.then((value) {
+                                      controller.getAllWarmupListAPI(context);
+                                    });
                                   },
                                   child: Row(
                                     children: [

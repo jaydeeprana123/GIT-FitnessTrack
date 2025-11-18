@@ -43,9 +43,12 @@ class _WorkoutTrainingListScreenState extends State<WorkoutTrainingListScreen> {
           InkWell(
             onTap: () {
               Get.to(AddWorkoutTrainingScreen(
-                  workoutId:
-                      controller.selectedWorkoutData.value.workoutId ?? "0",
-                  isEdit: false));
+                      workoutId:
+                          controller.selectedWorkoutData.value.workoutId ?? "0",
+                      isEdit: false))
+                  ?.then((value) {
+                controller.getAllWorkoutTrainingListAPI(context);
+              });
             },
             child: Row(
               children: [
@@ -167,11 +170,15 @@ class _WorkoutTrainingListScreenState extends State<WorkoutTrainingListScreen> {
                             controller.selectedWorkoutTrainingData.value =
                                 controller.workoutTrainingList[mainIndex];
                             Get.to(AddWorkoutTrainingScreen(
-                                workoutId: controller
-                                        .workoutTrainingList[mainIndex]
-                                        .workoutId ??
-                                    "",
-                                isEdit: true));
+                                    workoutId: controller
+                                            .workoutTrainingList[mainIndex]
+                                            .workoutId ??
+                                        "",
+                                    isEdit: true))
+                                ?.then((value) {
+                              controller.getAllWorkoutTrainingListAPI(context);
+                            });
+                            ;
                           },
                           child: Row(
                             children: [
