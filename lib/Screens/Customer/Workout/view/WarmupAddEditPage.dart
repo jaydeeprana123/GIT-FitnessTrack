@@ -39,21 +39,29 @@ class WarmupAddEditPage extends StatefulWidget {
 class _WarmupAddEditPageState extends State<WarmupAddEditPage> {
   final WorkoutController workoutController = Get.find<WorkoutController>();
 
-  String? selectedWorkoutName;
+  String? selectedMasterWorkoutId;
 
   @override
   void initState() {
     super.initState();
-    workoutController.getAllMasterWorkoutListAPI(context);
 
-    if (widget.isEdit) {
-      final data = workoutController.selectedWarmupData.value;
-      selectedWorkoutName = data.workoutName ?? "";
 
-      workoutController.setsController.value.text = data.sets ?? "";
-      workoutController.repeatNoController.value.text = data.repeatNo ?? "";
-      workoutController.repeatTimeController.value.text = data.repeatTime ?? "";
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) async{
+     await workoutController.getAllMasterWorkoutListAPI(context);
+
+      if (widget.isEdit) {
+        final data = workoutController.selectedWarmupData.value;
+        selectedMasterWorkoutId = data.workoutId ?? "";
+
+        workoutController.setsController.value.text = data.sets ?? "";
+        workoutController.repeatNoController.value.text = data.repeatNo ?? "";
+        workoutController.repeatTimeController.value.text = data.repeatTime ?? "";
+      }
+
+    });
+
+
+
   }
 
   @override
@@ -94,13 +102,13 @@ class _WarmupAddEditPageState extends State<WarmupAddEditPage> {
                       padding: EdgeInsets.symmetric(horizontal: 12),
                       child: Text('Select Warm-up'),
                     ),
-                    value: selectedWorkoutName?.isEmpty == true
+                    value: selectedMasterWorkoutId?.isEmpty == true
                         ? null
-                        : selectedWorkoutName,
+                        : selectedMasterWorkoutId,
                     items: workoutController.masterWorkoutDataList
                         .map((MasterWorkoutData item) =>
                             DropdownMenuItem<String>(
-                              value: item.name,
+                              value: item.id,
                               child: Padding(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 12),
@@ -113,7 +121,7 @@ class _WarmupAddEditPageState extends State<WarmupAddEditPage> {
                         .toList(),
                     onChanged: (value) {
                       setState(() {
-                        selectedWorkoutName = value;
+                        selectedMasterWorkoutId = value;
                       });
                     },
                   ),
@@ -152,14 +160,19 @@ class _WarmupAddEditPageState extends State<WarmupAddEditPage> {
                   onPressed: workoutController.isLoading.value
                       ? null
                       : () {
+                          if (selectedMasterWorkoutId == null) {
+                            snackBar(context, "Select workout");
+                            return;
+                          }
+
                           workoutController.callAddEditWarmupDaysAPI(
-                            context,
-                            widget.isEdit
-                                ? workoutController
-                                        .selectedWarmupData.value.id ??
-                                    "0"
-                                : "",
-                          );
+                              context,
+                              widget.isEdit
+                                  ? workoutController
+                                          .selectedWarmupData.value.id ??
+                                      "0"
+                                  : "",
+                              selectedMasterWorkoutId ?? "");
                         },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blueAccent,

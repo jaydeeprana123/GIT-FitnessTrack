@@ -104,6 +104,8 @@ class WorkoutController extends GetxController {
 
     String url = urlBase + urlDeleteWarmup;
 
+    printData("url", url);
+
     String token =
         await MySharedPref().getStringValue(SharePreData.keyAccessToken);
     printData("tokenn", token);
@@ -122,6 +124,8 @@ class WorkoutController extends GetxController {
     var request = http.Request('POST', Uri.parse(url));
     request.body = json.encode({
       "id": id,
+      "current_login_id": loginResponseModel.value.data?[0].id,
+      "client_id": loginResponseModel.value.data?[0].id,
     });
     request.headers.addAll(headers);
 
@@ -134,7 +138,7 @@ class WorkoutController extends GetxController {
     if (response.statusCode == 200) {
       await response.stream.bytesToString().then((valueData) async {
         printData(runtimeType.toString(),
-            "callInsertFavCommentAPI API value ${valueData}");
+            "callDeleteWarmupAPI API value ${valueData}");
 
         Map<String, dynamic> userModel = json.decode(valueData);
         BaseModel baseModel = BaseModel.fromJson(userModel);
@@ -189,7 +193,7 @@ class WorkoutController extends GetxController {
     if (response.statusCode == 200) {
       await response.stream.bytesToString().then((valueData) async {
         printData(runtimeType.toString(),
-            "callInsertFavCommentAPI API value ${valueData}");
+            "callDeleteWarmupAPI API value ${valueData}");
 
         Map<String, dynamic> userModel = json.decode(valueData);
         BaseModel baseModel = BaseModel.fromJson(userModel);
@@ -262,7 +266,7 @@ class WorkoutController extends GetxController {
   }
 
   /// get Master Workout list
-  getAllMasterWorkoutListAPI(BuildContext context) async {
+  Future<void> getAllMasterWorkoutListAPI(BuildContext context) async {
     isLoading.value = true;
     String url = urlBase + urlMasterWorkoutList;
 
@@ -313,7 +317,7 @@ class WorkoutController extends GetxController {
   }
 
   /// get Sub category Workout list
-  getAllWorkoutSubCategoryListAPI(
+  Future<void> getAllWorkoutSubCategoryListAPI(
       BuildContext context, String masterWorkoutId, int categoryIndex) async {
     isLoading.value = true;
     String url = urlBase + urlSubCategoryWorkoutList;
@@ -462,7 +466,8 @@ class WorkoutController extends GetxController {
   }
 
   /// Insert Workout days api call
-  callAddEditWarmupDaysAPI(BuildContext context, String warmupId) async {
+  callAddEditWarmupDaysAPI(
+      BuildContext context, String warmupId, String masterWorkoutId) async {
     onLoading(context, "Loading..");
 
     String url = urlBase + urlAddEditWarmup;
@@ -484,7 +489,7 @@ class WorkoutController extends GetxController {
       "current_login_id": loginResponseModel.value.data?[0].id ?? "0",
       "client_id": loginResponseModel.value.data?[0].id ?? "0",
       "workout_id": selectedWorkoutData.value.workoutId ?? "",
-      "master_workout_id": "32014",
+      "master_workout_id": masterWorkoutId,
       "sets": setsController.value.text,
       "repeat_no": repeatNoController.value.text,
       "repeat_time": repeatTimeController.value.text,

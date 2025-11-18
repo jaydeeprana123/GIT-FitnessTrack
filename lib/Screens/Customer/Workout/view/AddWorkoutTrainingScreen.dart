@@ -1,5 +1,6 @@
 import 'dart:ffi';
 
+import 'package:fitness_track/CommonWidgets/common_widget.dart';
 import 'package:fitness_track/Screens/Customer/Workout/model/master_workout_list_response.dart';
 import 'package:fitness_track/Screens/Customer/Workout/model/workout_sub_category_list_response.dart';
 import 'package:flutter/material.dart';
@@ -30,11 +31,15 @@ class _AddWorkoutTrainingScreenState extends State<AddWorkoutTrainingScreen> {
   void initState() {
     super.initState();
 
-    workoutController.getAllMasterWorkoutListAPI(context);
+    workoutController.categoryList.clear();
+    workoutController.workoutDayController.value.text = "";
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await workoutController.getAllMasterWorkoutListAPI(context);
 
-    if (widget.isEdit) {
-      prefillWorkoutTrainingUI();
-    }
+      if (widget.isEdit) {
+        prefillWorkoutTrainingUI();
+      }
+    });
   }
 
   @override
@@ -52,78 +57,88 @@ class _AddWorkoutTrainingScreenState extends State<AddWorkoutTrainingScreen> {
         backgroundColor: Colors.white,
         elevation: 1,
       ),
-      body: Obx(() => SingleChildScrollView(
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              children: [
-                _buildTextField(
-                  "Days",
-                  workoutController.workoutDayController.value,
-                  fontInterSemiBold,
-                  keyboardType: TextInputType.number,
-                ),
-
-                SizedBox(
-                  height: 12,
-                ),
-
-                /// CATEGORY LIST
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: workoutController.categoryList.length,
-                  itemBuilder: (context, index) => _buildCategoryRow(index),
-                ),
-
-                const SizedBox(height: 16),
-
-                /// ADD CATEGORY BUTTON
-                ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: color_primary,
-                    padding: EdgeInsets.symmetric(vertical: 6, horizontal: 20),
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      workoutController.categoryList.add(CategoryRowModel());
-                    });
-                  },
-                  icon: Icon(Icons.add, color: Colors.white),
-                  label: Text(
-                    "Add Category",
-                    style: TextStyle(
-                      fontFamily: fontInterSemiBold,
-                      fontSize: 15,
-                      color: Colors.white,
+      body: Obx(() => Stack(
+            children: [
+              SingleChildScrollView(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  children: [
+                    _buildTextField(
+                      "Days",
+                      workoutController.workoutDayController.value,
+                      fontInterSemiBold,
+                      keyboardType: TextInputType.number,
                     ),
-                  ),
-                ),
 
-                const SizedBox(height: 20),
-                InkWell(
-                  onTap: () {
-                    onSubmitWorkoutTraining();
-                  },
-                  child: Container(
-                    alignment: Alignment.center,
-                    padding:
-                        EdgeInsets.only(left: 12, right: 12, top: 4, bottom: 4),
-                    margin: EdgeInsets.only(left: 12),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color: color_primary,
-                        border: Border.all(
-                          width: 0.5,
-                          color: Colors.grey,
-                        )),
-                    child: Text(
-                      "Submit",
-                      style: TextStyle(color: Colors.white),
+                    SizedBox(
+                      height: 12,
                     ),
-                  ),
+
+                    /// CATEGORY LIST
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: workoutController.categoryList.length,
+                      itemBuilder: (context, index) => _buildCategoryRow(index),
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    /// ADD CATEGORY BUTTON
+                    ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: color_primary,
+                        padding:
+                            EdgeInsets.symmetric(vertical: 6, horizontal: 20),
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          workoutController.categoryList
+                              .add(CategoryRowModel());
+                        });
+                      },
+                      icon: Icon(Icons.add, color: Colors.white),
+                      label: Text(
+                        "Add Category",
+                        style: TextStyle(
+                          fontFamily: fontInterSemiBold,
+                          fontSize: 15,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 20),
+                    InkWell(
+                      onTap: () {
+                        onSubmitWorkoutTraining();
+                      },
+                      child: Container(
+                        alignment: Alignment.center,
+                        padding: EdgeInsets.only(
+                            left: 16, right: 16, top: 8, bottom: 8),
+                        margin: EdgeInsets.only(left: 12),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: color_primary,
+                            border: Border.all(
+                              width: 0.5,
+                              color: Colors.grey,
+                            )),
+                        child: Text(
+                          "Submit",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              if (workoutController.isLoading.value)
+                Center(
+                  child: CircularProgressIndicator(),
                 )
-              ],
-            ),
+            ],
           )),
     );
   }
@@ -332,20 +347,26 @@ class _AddWorkoutTrainingScreenState extends State<AddWorkoutTrainingScreen> {
             Row(
               children: [
                 Expanded(
-                    child: buildTextField("Sets",
-                        (v) => category.subCategories[subIndex].sets = v)),
+                    child: buildTextField(
+                        "Sets",
+                        (v) => category.subCategories[subIndex].sets = v,
+                        category.subCategories[subIndex].setController)),
                 Expanded(
-                    child: buildTextField("Repeat No",
-                        (v) => category.subCategories[subIndex].repeatNo = v)),
+                    child: buildTextField(
+                        "Repeat No",
+                        (v) => category.subCategories[subIndex].repeatNo = v,
+                        category.subCategories[subIndex].repeatNoController)),
                 Expanded(
                     child: buildTextField(
                         "Repeat Time",
-                        (v) =>
-                            category.subCategories[subIndex].repeatTime = v)),
+                        (v) => category.subCategories[subIndex].repeatTime = v,
+                        category.subCategories[subIndex].repeatTimeController)),
               ],
             ),
             buildTextField(
-                "Remarks", (v) => category.subCategories[subIndex].remarks = v),
+                "Remarks",
+                (v) => category.subCategories[subIndex].remarks = v,
+                category.subCategories[subIndex].remarksController),
             SizedBox(height: 6),
             Align(
               alignment: Alignment.centerRight,
@@ -370,7 +391,8 @@ class _AddWorkoutTrainingScreenState extends State<AddWorkoutTrainingScreen> {
   }
 
   /// COMMON TEXTFIELD
-  Widget buildTextField(String label, Function(String) onChanged) {
+  Widget buildTextField(String label, Function(String) onChanged,
+      TextEditingController controller) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -383,6 +405,7 @@ class _AddWorkoutTrainingScreenState extends State<AddWorkoutTrainingScreen> {
         ),
         SizedBox(height: 6),
         TextFormField(
+          controller: controller,
           decoration: inputDecoration(
             label,
           ),
@@ -490,23 +513,80 @@ class _AddWorkoutTrainingScreenState extends State<AddWorkoutTrainingScreen> {
   }
 
   void onSubmitWorkoutTraining() {
+    if (workoutController.workoutDayController.value.text.isEmpty) {
+      snackBar(context, "Please enter workout days");
+      return;
+    }
+
+    if (workoutController.categoryList.isEmpty) {
+      snackBar(context, "Please add category");
+      return;
+    }
+
+    if (workoutController.categoryList.isNotEmpty) {
+      for (int i = 0; i < workoutController.categoryList.length; i++) {
+        if (workoutController.categoryList[i].categoryId == null) {
+          snackBar(context, "Please select category");
+          return;
+        }
+
+        for (int j = 0;
+            j < workoutController.categoryList[i].subCategories.length;
+            j++) {
+          if (workoutController
+                  .categoryList[i].subCategories[j].workoutDetailId ==
+              null) {
+            snackBar(context, "Please select workout detail");
+            return;
+          }
+
+          if (workoutController.categoryList[i].subCategories[j].sets == "0" ||
+              workoutController.categoryList[i].subCategories[j].sets == "") {
+            snackBar(context, "Please enter sets value");
+            return;
+          }
+
+          if (workoutController.categoryList[i].subCategories[j].repeatNo ==
+                  "0" ||
+              workoutController.categoryList[i].subCategories[j].repeatNo ==
+                  "") {
+            snackBar(context, "Please enter Repeat No value");
+            return;
+          }
+
+          if (workoutController.categoryList[i].subCategories[j].repeatTime ==
+                  "0" ||
+              workoutController.categoryList[i].subCategories[j].repeatTime ==
+                  "") {
+            snackBar(context, "Please enter Repeat Time value");
+            return;
+          }
+        }
+      }
+    }
+
     workoutController.workoutTrainingAddEditRequest.value =
         WorkoutTrainingAddEditRequest(
-      id: null,
+      id: widget.isEdit
+          ? workoutController
+                  .selectedWorkoutTrainingData.value.workoutTrainingId ??
+              ""
+          : null,
       clientId: workoutController.loginResponseModel.value.data?[0].id ?? "",
       currentLoginId:
           workoutController.loginResponseModel.value.data?[0].id ?? "",
       workoutId: widget.workoutId,
       days: int.parse(workoutController.workoutDayController.value.text),
-      status: "0",
+      status: widget.isEdit ? "1" : "0",
       workout: workoutController.categoryList.map((cat) {
         return Workout(
-          workoutTrainingCategoryId: cat.categoryId,
-          workoutId: cat.workoutId,
+          workoutId: cat.categoryId,
+          workoutTrainingCategoryId: cat.workoutTrainingCategoryId,
           workoutDetail: cat.subCategories.map((sub) {
             return WorkoutDetail(
-              workoutTrainingSubCategoryId: sub.workoutDetailId,
-              workoutDetailId: null, // For new entries, pass null
+              workoutDetailId: sub.workoutDetailId,
+              workoutTrainingSubCategoryId: sub
+                  .workoutTrainingSubCategoryId, // For new entries, pass null
               sets: sub.sets,
               repeatNo: sub.repeatNo,
               repeatTime: sub.repeatTime,
@@ -545,12 +625,12 @@ class _AddWorkoutTrainingScreenState extends State<AddWorkoutTrainingScreen> {
       child: TextField(
         controller: controller,
         keyboardType: keyboardType,
+        style:
+            TextStyle(fontFamily: fontFamily, color: text_color, fontSize: 15),
         decoration: InputDecoration(
           labelText: label,
           labelStyle: TextStyle(
-            fontFamily: fontFamily,
-            color: Colors.black,
-          ),
+              fontFamily: fontFamily, color: hint_txt_909196, fontSize: 13),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
           ),
@@ -559,41 +639,114 @@ class _AddWorkoutTrainingScreenState extends State<AddWorkoutTrainingScreen> {
     );
   }
 
-  void prefillWorkoutTrainingUI() {
+  void prefillWorkoutTrainingUI() async {
     final data = workoutController.selectedWorkoutTrainingData.value;
+
+    workoutController.workoutDayController.value.text = data.day ?? "";
 
     if (data.workoutList == null || data.workoutList!.isEmpty) return;
 
-    for (var apiCategory in data.workoutList!) {
+    for (int j = 0; j < (data.workoutList ?? []).length; j++) {
       CategoryRowModel uiCategory = CategoryRowModel();
 
       // Category ID for dropdown
-      uiCategory.categoryId = apiCategory.masterWorkoutId;
+      uiCategory.categoryId = data.workoutList?[j].masterWorkoutId;
+      uiCategory.workoutTrainingCategoryId =
+          data.workoutList?[j].workoutTrainingCategoryId;
+      workoutController.categoryList.add(uiCategory);
+      await workoutController.getAllWorkoutSubCategoryListAPI(
+          context, uiCategory.categoryId ?? "", j);
 
-      // workout_training_category_id (for editing existing)
-      uiCategory.workoutId = apiCategory.workoutTrainingCategoryId;
+      for (int i = 0;
+          i < (data.workoutList?[j].workoutDetailList ?? []).length;
+          i++) {
+        printData("sub category",
+            data.workoutList?[j].workoutDetailList?[i].workoutDetailId ?? "");
 
-      // Filter subCategory list (only those belonging to same category)
-      uiCategory.workoutSubCategoryDataList =
-          workoutController.workoutSubCategoryDataList.where((s) {
-        return s.id != null; // or apply mapping rule if needed
-      }).toList();
-
-      // Fill sub categories
-      for (var apiSub in apiCategory.workoutDetailList ?? []) {
         SubCategoryModel uiSub = SubCategoryModel();
+        uiSub.workoutTrainingSubCategoryId = data
+            .workoutList?[j].workoutDetailList?[i].workoutTrainingSubCategoryId;
+        uiSub.workoutDetailId =
+            data.workoutList?[j].workoutDetailList?[i].workoutDetailId;
+        uiSub.sets = data.workoutList?[j].workoutDetailList?[i].sets ?? "0";
+        uiSub.setController.text =
+            data.workoutList?[j].workoutDetailList?[i].sets ?? "0";
+        uiSub.repeatNo =
+            data.workoutList?[j].workoutDetailList?[i].repeatNo ?? "0";
+        uiSub.repeatNoController.text =
+            data.workoutList?[j].workoutDetailList?[i].repeatNo ?? "0";
+        uiSub.repeatTime =
+            data.workoutList?[j].workoutDetailList?[i].repeatTime ?? "0";
+        uiSub.repeatTimeController.text =
+            data.workoutList?[j].workoutDetailList?[i].repeatTime ?? "0";
+        uiSub.remarks =
+            data.workoutList?[j].workoutDetailList?[i].remarks ?? "";
+        uiSub.remarksController.text =
+            data.workoutList?[j].workoutDetailList?[i].remarks ?? "";
 
-        uiSub.workoutDetailId = apiSub.workoutDetailId;
-        uiSub.sets = apiSub.sets ?? "0";
-        uiSub.repeatNo = apiSub.repeatNo ?? "0";
-        uiSub.repeatTime = apiSub.repeatTime ?? "0";
-        uiSub.remarks = apiSub.remarks ?? "";
+        setState(() {});
 
         uiCategory.subCategories.add(uiSub);
       }
-
-      workoutController.categoryList.add(uiCategory);
     }
+
+    // for (var apiCategory in data.workoutList!) {
+    //   CategoryRowModel uiCategory = CategoryRowModel();
+    //
+    //   // Category ID for dropdown
+    //   uiCategory.categoryId = apiCategory.masterWorkoutId;
+    //
+    //
+    //   workoutController.categoryList[index].categoryId =
+    //       value;
+    //
+    //   workoutController.getAllWorkoutSubCategoryListAPI(
+    //       context, value ?? "", index);
+    //
+    //
+    //   // workout_training_category_id (for editing existing)
+    //   // uiCategory.workoutId = apiCategory.workoutTrainingCategoryId;
+    //
+    //   // Filter subCategory list (only those belonging to same category)
+    //   // uiCategory.workoutSubCategoryDataList =
+    //   //     workoutController.workoutSubCategoryDataList.where((s) {
+    //   //   return s.id != null; // or apply mapping rule if needed
+    //   // }).toList();
+    //
+    //   // Fill sub categories
+    //   for (int i = 0; i < (apiCategory.workoutDetailList ?? []).length; i++) {
+    //     printData("sub category",
+    //         apiCategory.workoutDetailList?[i].workoutDetailId ?? "");
+    //
+    //     SubCategoryModel uiSub = SubCategoryModel();
+    //
+    //     uiSub.workoutDetailId =
+    //         apiCategory.workoutDetailList?[i].workoutDetailId;
+    //     uiSub.sets = apiCategory.workoutDetailList?[i].sets ?? "0";
+    //     uiSub.repeatNo = apiCategory.workoutDetailList?[i].repeatNo ?? "0";
+    //     uiSub.repeatTime = apiCategory.workoutDetailList?[i].repeatTime ?? "0";
+    //     uiSub.remarks = apiCategory.workoutDetailList?[i].remarks ?? "";
+    //
+    //     uiCategory.subCategories.add(uiSub);
+    //     setState(() {});
+    //   }
+    //
+    //   // for (var apiSub in apiCategory.workoutDetailList ?? []) {
+    //   //   SubCategoryModel uiSub = SubCategoryModel();
+    //   //
+    //   //   uiSub.workoutDetailId = apiSub.workoutDetailId;
+    //   //   uiSub.sets = apiSub.sets ?? "0";
+    //   //   uiSub.repeatNo = apiSub.repeatNo ?? "0";
+    //   //   uiSub.repeatTime = apiSub.repeatTime ?? "0";
+    //   //   uiSub.remarks = apiSub.remarks ?? "";
+    //   //
+    //   //   uiCategory.subCategories.add(uiSub);
+    //   // }
+    //
+    //   workoutController.categoryList.add(uiCategory);
+    //
+    //   setState(() {});
+    // }
   }
 
   String? getCategoryName(String? id) {
@@ -612,15 +765,20 @@ class _AddWorkoutTrainingScreenState extends State<AddWorkoutTrainingScreen> {
 /// MODELS
 class CategoryRowModel {
   String? categoryId;
-  String? workoutId;
+  String? workoutTrainingCategoryId;
   List<SubCategoryModel> subCategories = [];
   List<WorkoutSubCategoryData> workoutSubCategoryDataList = [];
 }
 
 class SubCategoryModel {
   String? workoutDetailId;
+  String? workoutTrainingSubCategoryId;
   String sets = "0";
   String repeatNo = "0";
   String repeatTime = "0";
   String remarks = "";
+  TextEditingController setController = TextEditingController();
+  TextEditingController repeatNoController = TextEditingController();
+  TextEditingController repeatTimeController = TextEditingController();
+  TextEditingController remarksController = TextEditingController();
 }
