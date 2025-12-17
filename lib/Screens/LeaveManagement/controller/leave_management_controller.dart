@@ -44,7 +44,7 @@ class LeaveManagementController extends GetxController {
 
   getUserInfo() async {
     /// Set login model into shared preference
-    loginResponseModel.value = (await MySharedPref()
+    loginResponseModel.value = (await MySharedPrefNew()
             .getEmployeeLoginModel(SharePreData.keySaveLoginModel)) ??
         EmployeeLoginResponseModel();
   }
@@ -58,7 +58,7 @@ class LeaveManagementController extends GetxController {
     printData("urrllll", url);
 
     String token =
-        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+        await MySharedPrefNew().getString(SharePreData.keyAccessToken);
     printData("tokenn", token);
     var headers = {
       'Content-Type': 'application/json',
@@ -151,7 +151,7 @@ class LeaveManagementController extends GetxController {
     printData("urrllll", url);
 
     String token =
-        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+        await MySharedPrefNew().getString(SharePreData.keyAccessToken);
     printData("tokenn", token);
     var headers = {
       'Content-Type': 'application/json',
@@ -239,7 +239,7 @@ class LeaveManagementController extends GetxController {
     String url = urlBase + urlLeaveAdd;
     printData("callAddLeaveAPI url", url);
     String token =
-        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+        await MySharedPrefNew().getString(SharePreData.keyAccessToken);
     printData("tokenn", token);
 
     var headers = {
@@ -329,7 +329,7 @@ class LeaveManagementController extends GetxController {
     String url = urlBase + urlLeaveEdit;
     printData("callEditLeaveAPI url", url);
     String token =
-        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+        await MySharedPrefNew().getString(SharePreData.keyAccessToken);
     printData("tokenn", token);
 
     var headers = {
@@ -421,7 +421,7 @@ class LeaveManagementController extends GetxController {
     printData("urrllll", url);
 
     String token =
-        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+        await MySharedPrefNew().getString(SharePreData.keyAccessToken);
     printData("tokenn", token);
     var headers = {
       'Content-Type': 'application/json',
@@ -510,7 +510,7 @@ class LeaveManagementController extends GetxController {
     printData("urrllll", url);
 
     String token =
-        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+        await MySharedPrefNew().getString(SharePreData.keyAccessToken);
     printData("tokenn", token);
     var headers = {
       'Content-Type': 'application/json',
@@ -597,7 +597,7 @@ class LeaveManagementController extends GetxController {
     String url = urlBase + urlLeaveDelete;
 
     String token =
-        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+        await MySharedPrefNew().getString(SharePreData.keyAccessToken);
     printData("tokenn", token);
 
     var headers = {
@@ -698,7 +698,7 @@ class LeaveManagementController extends GetxController {
     String url = urlBase + urlLeaveDeleteDate;
 
     String token =
-        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+        await MySharedPrefNew().getString(SharePreData.keyAccessToken);
     printData("tokenn", token);
 
     var headers = {

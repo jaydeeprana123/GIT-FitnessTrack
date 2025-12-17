@@ -69,7 +69,7 @@ class WorkoutController extends GetxController {
 
   getUserInfo() async {
     /// Set login model into shared preference
-    loginResponseModel.value = (await MySharedPref()
+    loginResponseModel.value = (await MySharedPrefNew()
             .getCustomerLoginModel(SharePreData.keySaveLoginModel)) ??
         CustomerLoginResponseModel();
   }
@@ -107,7 +107,7 @@ class WorkoutController extends GetxController {
     printData("url", url);
 
     String token =
-        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+        await MySharedPrefNew().getString(SharePreData.keyAccessToken);
     printData("tokenn", token);
 
     var headers = {
@@ -163,7 +163,7 @@ class WorkoutController extends GetxController {
     String url = urlBase + urlDeleteWorkoutTraining;
 
     String token =
-        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+        await MySharedPrefNew().getString(SharePreData.keyAccessToken);
     printData("tokenn", token);
 
     var headers = {
@@ -218,7 +218,7 @@ class WorkoutController extends GetxController {
     String url = urlBase + urlDeleteWorkout;
 
     String token =
-        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+        await MySharedPrefNew().getString(SharePreData.keyAccessToken);
     printData("tokenn", token);
 
     var headers = {
@@ -273,7 +273,7 @@ class WorkoutController extends GetxController {
     printData("urrllll", url);
 
     String token =
-        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+        await MySharedPrefNew().getString(SharePreData.keyAccessToken);
     printData("tokenn", token);
 
     var headers = {
@@ -325,7 +325,7 @@ class WorkoutController extends GetxController {
     printData("urrllll", url);
 
     String token =
-        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+        await MySharedPrefNew().getString(SharePreData.keyAccessToken);
     printData("tokenn", token);
 
     var headers = {
@@ -374,7 +374,7 @@ class WorkoutController extends GetxController {
     printData("urrllll", url);
 
     String token =
-        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+        await MySharedPrefNew().getString(SharePreData.keyAccessToken);
     printData("tokenn", token);
 
     var headers = {
@@ -426,7 +426,7 @@ class WorkoutController extends GetxController {
     printData("urrllll", url);
 
     String token =
-        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+        await MySharedPrefNew().getString(SharePreData.keyAccessToken);
     printData("tokenn", token);
 
     var headers = {
@@ -473,7 +473,7 @@ class WorkoutController extends GetxController {
     String url = urlBase + urlAddEditWarmup;
     printData("callAddWorkoutDaysAPI url", url);
     String token =
-        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+        await MySharedPrefNew().getString(SharePreData.keyAccessToken);
     printData("tokenn", token);
 
     var headers = {
@@ -532,7 +532,7 @@ class WorkoutController extends GetxController {
     String url = urlBase + urlAddEditWorkoutTraining;
     printData("callAddWorkoutDaysAPI url", url);
     String token =
-        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+        await MySharedPrefNew().getString(SharePreData.keyAccessToken);
     printData("tokenn", token);
 
     var headers = {
@@ -583,7 +583,7 @@ class WorkoutController extends GetxController {
     printData("urrllll", url);
 
     String token =
-        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+        await MySharedPrefNew().getString(SharePreData.keyAccessToken);
     printData("tokenn", token);
 
     var headers = {
@@ -635,7 +635,7 @@ class WorkoutController extends GetxController {
     printData("urrllll", url);
 
     String token =
-        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+        await MySharedPrefNew().getString(SharePreData.keyAccessToken);
     printData("tokenn", token);
 
     var headers = {
@@ -685,7 +685,7 @@ class WorkoutController extends GetxController {
     String url = urlBase + urlAddEditWorkout;
     printData("callAddWorkoutDaysAPI url", url);
     String token =
-        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+        await MySharedPrefNew().getString(SharePreData.keyAccessToken);
     printData("tokenn", token);
 
     var headers = {

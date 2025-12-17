@@ -34,7 +34,7 @@ class EmployeeLoginController extends GetxController {
 
   getUserInfo() async{
     /// Set login model into shared preference
-    loginResponseModel.value = (await MySharedPref().getEmployeeLoginModel(SharePreData.keySaveLoginModel))??EmployeeLoginResponseModel();
+    loginResponseModel.value = (await MySharedPrefNew().getEmployeeLoginModel(SharePreData.keySaveLoginModel))??EmployeeLoginResponseModel();
 
   }
 
@@ -241,9 +241,9 @@ class EmployeeLoginController extends GetxController {
 
         if (loginResponseModel.value.status ?? false) {
           /// Set login model into shared preference
-         await MySharedPref().setString(SharePreData.keyUserType, UserTypeEnum.employee.outputVal);
-          await MySharedPref().setEmployeeLoginModel(loginResponseModel.value, SharePreData.keySaveLoginModel);
-          await MySharedPref().setString(SharePreData.keyAccessToken, loginResponseModel.value.accessToken??"");
+         await MySharedPrefNew().setString(SharePreData.keyUserType, UserTypeEnum.employee.outputVal);
+          await MySharedPrefNew().setEmployeeLoginModel(loginResponseModel.value, SharePreData.keySaveLoginModel);
+          await MySharedPrefNew().setString(SharePreData.keyAccessToken, loginResponseModel.value.accessToken??"");
 
           if((loginResponseModel.value.data?[0].termsAndConditionAccept??"false") == "true"){
          //   Get.offAll(DayInOutViewDemo());
@@ -309,7 +309,7 @@ class EmployeeLoginController extends GetxController {
 
     printData("urrllll", url);
 
-    String token = await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+    String token = await MySharedPrefNew().getString(SharePreData.keyAccessToken);
     printData("tokenn", token);
     var headers = {'Content-Type': 'application/json',
       'Authorization': 'Bearer $token'};
@@ -343,9 +343,9 @@ class EmployeeLoginController extends GetxController {
 
         if (loginResponseModel.value.status ?? false) {
           /// Set login model into shared preference
-          MySharedPref().setEmployeeLoginModel(loginResponseModel.value??EmployeeLoginResponseModel(), SharePreData.keySaveLoginModel);
-          MySharedPref().setString(SharePreData.keyAccessToken, loginResponseModel.value.accessToken??"");
-          MySharedPref().setString(SharePreData.keyUserType, UserTypeEnum.employee.outputVal);
+          MySharedPrefNew().setEmployeeLoginModel(loginResponseModel.value??EmployeeLoginResponseModel(), SharePreData.keySaveLoginModel);
+          MySharedPrefNew().setString(SharePreData.keyAccessToken, loginResponseModel.value.accessToken??"");
+          MySharedPrefNew().setString(SharePreData.keyUserType, UserTypeEnum.employee.outputVal);
           if((loginResponseModel.value.data?[0].termsAndConditionAccept??"false") == "true"){
             Get.offAll(BottomNavigationView(selectTabPosition: 0));
           }else{

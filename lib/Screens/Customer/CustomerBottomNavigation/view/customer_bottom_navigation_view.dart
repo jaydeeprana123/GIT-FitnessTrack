@@ -265,9 +265,9 @@ class _CustomerBottomNavigationViewState extends State<CustomerBottomNavigationV
 
   /// logout from the app
   logoutFromTheApp() async {
-    var preferences = MySharedPref();
-    await preferences.clearData(SharePreData.keySaveLoginModel);
-    await preferences.clearData(SharePreData.keyUserType);
+    var preferences = MySharedPrefNew();
+    await preferences.clearKey(SharePreData.keySaveLoginModel);
+    await preferences.clearKey(SharePreData.keyUserType);
     Get.offAll(() => const WelcomeScreenView());
   }
 }

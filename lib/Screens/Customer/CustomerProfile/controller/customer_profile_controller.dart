@@ -88,7 +88,7 @@ class CustomerProfileController extends GetxController {
 
   getUserInfo() async {
     /// Set login model into shared preference
-    loginResponseModel.value = (await MySharedPref()
+    loginResponseModel.value = (await MySharedPrefNew()
             .getCustomerLoginModel(SharePreData.keySaveLoginModel)) ??
         CustomerLoginResponseModel();
     nameEditingController.value.text =
@@ -147,7 +147,7 @@ class CustomerProfileController extends GetxController {
     String url = urlBase + urlGetCustomerProfileDetails;
 
     String token =
-        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+        await MySharedPrefNew().getString(SharePreData.keyAccessToken);
     printData("tokenn", token);
     var headers = {
       'Content-Type': 'application/json',
@@ -184,7 +184,7 @@ class CustomerProfileController extends GetxController {
 
         if (loginResponseModel.value.status ?? false) {
           /// Set login model into shared preference
-          MySharedPref().setCustomerLoginModel(
+          MySharedPrefNew().setCustomerLoginModel(
               loginResponseModel.value, SharePreData.keySaveLoginModel);
           userNameEditingController.value.text =
               loginResponseModel.value.data?[0].username ?? "";
@@ -263,7 +263,7 @@ class CustomerProfileController extends GetxController {
 
     String url = urlBase + urlEditCustomerProfileDetails;
     String token =
-        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+        await MySharedPrefNew().getString(SharePreData.keyAccessToken);
     var request = http.MultipartRequest('POST', Uri.parse(url));
     request.headers['authorization'] = 'Bearer $token';
 
@@ -320,7 +320,7 @@ class CustomerProfileController extends GetxController {
 
         if (loginResponseModel.status ?? false) {
           /// Set login model into shared preference
-          MySharedPref().setCustomerLoginModel(
+          MySharedPrefNew().setCustomerLoginModel(
               loginResponseModel, SharePreData.keySaveLoginModel);
           printData(runtimeType.toString(),
               "callEditProfileUpAPI Message ${loginResponseModel.message}");
@@ -388,7 +388,7 @@ class CustomerProfileController extends GetxController {
 
     var headers = {
       'Content-Type': 'application/json',
-      'lang': (await MySharedPref().getStringValue(SharePreData.keyLanguage))
+      'lang': (await MySharedPrefNew().getString(SharePreData.keyLanguage))
           .toString()
     };
     var request = http.Request('POST', Uri.parse(url));
@@ -477,7 +477,7 @@ class CustomerProfileController extends GetxController {
     String url = urlBase + urlStateList;
 
     String token =
-        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+        await MySharedPrefNew().getString(SharePreData.keyAccessToken);
     printData("tokenn", token);
     var headers = {
       'Content-Type': 'application/json',
@@ -515,7 +515,7 @@ class CustomerProfileController extends GetxController {
     String url = urlBase + urlCityList;
 
     String token =
-        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+        await MySharedPrefNew().getString(SharePreData.keyAccessToken);
     printData("tokenn", token);
     var headers = {
       'Content-Type': 'application/json',
@@ -553,7 +553,7 @@ class CustomerProfileController extends GetxController {
     String url = urlBase + urlAreaList;
 
     String token =
-        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+        await MySharedPrefNew().getString(SharePreData.keyAccessToken);
     printData("tokenn", token);
     var headers = {
       'Content-Type': 'application/json',

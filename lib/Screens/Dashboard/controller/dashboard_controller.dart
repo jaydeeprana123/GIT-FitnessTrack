@@ -26,7 +26,7 @@ class DashboardController extends GetxController {
 
   getUserInfo() async {
     /// Set login model into shared preference
-    loginResponseModel.value = (await MySharedPref()
+    loginResponseModel.value = (await MySharedPrefNew()
             .getEmployeeLoginModel(SharePreData.keySaveLoginModel)) ??
         EmployeeLoginResponseModel();
   }
@@ -37,7 +37,7 @@ class DashboardController extends GetxController {
 
     String url = urlBase + urlDashboardCounter;
     String token =
-        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+         MySharedPrefNew().getString(SharePreData.keyAccessToken);
     printData("tokenn", token);
 
     var headers = {
@@ -78,7 +78,7 @@ class DashboardController extends GetxController {
           dashboardCounterModel.value =
               DashboardCounterModel.fromJson(userModel);
           if (dashboardCounterModel.value.status ?? false) {
-            MySharedPref().setDashboardModel(
+            MySharedPrefNew().setDashboardModel(
               dashboardCounterModel.value.data?[0] ?? DashboardData(),
               SharePreData.keyDashboardData,
             );

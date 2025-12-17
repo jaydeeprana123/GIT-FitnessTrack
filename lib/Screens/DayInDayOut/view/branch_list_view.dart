@@ -122,7 +122,7 @@ class _BranchListViewState extends State<BranchListView> {
                               dashboardData.branchLatData = controller.branchList[index].lat??"";
                               dashboardData.branchLongData = controller.branchList[index].long??"";
 
-                              MySharedPref().setDashboardModel(dashboardData, SharePreData.keyDashboardData);
+                              MySharedPrefNew().setDashboardModel(dashboardData, SharePreData.keyDashboardData);
 
 
                               Get.to(ShiftListView(isFromBottomNavigation: false,branchId: controller.branchList[index].id??"",branchName: controller.branchList[index].name??""));

@@ -136,9 +136,9 @@ class CustomerLoginController extends GetxController {
 
         if (loginResponseModel?.status ?? false) {
           /// Set login model into shared preference
-          MySharedPref().setString(SharePreData.keyUserType, UserTypeEnum.member.outputVal);
-          MySharedPref().setCustomerLoginModel(loginResponseModel??CustomerLoginResponseModel(), SharePreData.keySaveLoginModel);
-          MySharedPref().setString(SharePreData.keyAccessToken, loginResponseModel?.accessToken??"");
+          MySharedPrefNew().setString(SharePreData.keyUserType, UserTypeEnum.member.outputVal);
+          MySharedPrefNew().setCustomerLoginModel(loginResponseModel??CustomerLoginResponseModel(), SharePreData.keySaveLoginModel);
+          MySharedPrefNew().setString(SharePreData.keyAccessToken, loginResponseModel?.accessToken??"");
           Get.offAll(CustomerBottomNavigationView(selectTabPosition: 0));
 
         } else {

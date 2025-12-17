@@ -35,7 +35,7 @@ class AttendanceController extends GetxController {
 
   getUserInfo(bool isShowTodayAttendance) async {
     /// Set login model into shared preference
-    loginResponseModel.value = (await MySharedPref()
+    loginResponseModel.value = (await MySharedPrefNew()
             .getEmployeeLoginModel(SharePreData.keySaveLoginModel)) ??
         EmployeeLoginResponseModel();
 
@@ -70,7 +70,7 @@ class AttendanceController extends GetxController {
     printData("urrllll", url);
 
     String token =
-        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+        await MySharedPrefNew().getString(SharePreData.keyAccessToken);
     printData("tokenn", token);
     var headers = {
       'Content-Type': 'application/json',
@@ -170,7 +170,7 @@ class AttendanceController extends GetxController {
     printData("urrllll", url);
 
     String token =
-        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+        await MySharedPrefNew().getString(SharePreData.keyAccessToken);
     printData("tokenn", token);
     var headers = {
       'Content-Type': 'application/json',
@@ -267,7 +267,7 @@ class AttendanceController extends GetxController {
     printData("urrllll", url);
 
     String token =
-        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+        await MySharedPrefNew().getString(SharePreData.keyAccessToken);
     printData("tokenn", token);
     var headers = {
       'Content-Type': 'application/json',

@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
@@ -23,7 +23,7 @@ class OtpVerificationView extends StatefulWidget {
 
 class _OtpVerificationViewState extends State<OtpVerificationView> {
 
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  // final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   TextEditingController controller = TextEditingController();
   EmployeeLoginController loginController = Get.find<EmployeeLoginController>();
   // late OTPTextEditController controller;
@@ -46,10 +46,10 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
     //   // Error getting token.
     // });
 
-    _firebaseMessaging.getToken().then((token) {
-      loginController.deviceToken = token;
-      printData(runtimeType.toString(), token.toString());
-    });
+    // _firebaseMessaging.getToken().then((token) {
+    //   loginController.deviceToken = token;
+    //   printData(runtimeType.toString(), token.toString());
+    // });
     loginController.otpText.value = TextEditingController();
     // autoFillPin();
   }

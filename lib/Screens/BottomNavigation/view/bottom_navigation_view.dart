@@ -720,8 +720,8 @@ class _BottomNavigationViewState extends State<BottomNavigationView> {
 
   /// logout from the app
   logoutFromTheApp() async {
-    var preferences = MySharedPref();
-    await preferences.clearData(SharePreData.keySaveLoginModel);
+    var preferences = MySharedPrefNew();
+    await preferences.clearKey(SharePreData.keySaveLoginModel);
     Get.offAll(() => const WelcomeScreenView());
   }
 }

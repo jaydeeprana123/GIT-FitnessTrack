@@ -24,7 +24,7 @@ class HolidayController extends GetxController {
   Rx<EmployeeLoginResponseModel> loginResponseModel = EmployeeLoginResponseModel().obs;
   getUserInfo() async{
     /// Set login model into shared preference
-    loginResponseModel.value = (await MySharedPref().getEmployeeLoginModel(SharePreData.keySaveLoginModel))??EmployeeLoginResponseModel();
+    loginResponseModel.value = (await MySharedPrefNew().getEmployeeLoginModel(SharePreData.keySaveLoginModel))??EmployeeLoginResponseModel();
 
   }
 
@@ -36,7 +36,7 @@ class HolidayController extends GetxController {
 
     printData("urrllll", url);
 
-    String token = await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+    String token = await MySharedPrefNew().getString(SharePreData.keyAccessToken);
     printData("tokenn", token);
     var headers = {'Content-Type': 'application/json',
       'Authorization': 'Bearer $token'};

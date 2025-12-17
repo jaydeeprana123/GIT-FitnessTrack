@@ -57,7 +57,7 @@ class CusteomerBottomNavigationController extends GetxController {
   getUserInfo() async {
     /// Set login model into shared preference
     loginResponseModel.value =
-        await MySharedPref().getCustomerLoginModel(SharePreData.keySaveLoginModel)??CustomerLoginResponseModel();
+        await MySharedPrefNew().getCustomerLoginModel(SharePreData.keySaveLoginModel)??CustomerLoginResponseModel();
   }
 
 
