@@ -224,9 +224,9 @@ class Request {
   // // logout from the app
   // logoutFromTheApp() async {
   //   printData("Session out", '403');
-  //   var preferences = MySharedPrefNew();
-  //   await preferences.clearKey(SharePreData.keySaveLoginModel);
-  //   await preferences.clearKey(SharePreData.keyToken);
+  //   var preferences = MySharedPref();
+  //   await preferences.clearData(SharePreData.keySaveLoginModel);
+  //   await preferences.clearData(SharePreData.keyToken);
   //   Get.offAll(const LoginViaMobileNumView());
   //
   // }

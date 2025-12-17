@@ -28,7 +28,7 @@ class ForgotPasswordController extends GetxController {
     String url = urlBase + urlForgotPassword;
 
     var headers = {'Content-Type': 'application/json',
-      'lang': ( MySharedPrefNew().getString(SharePreData.keyLanguage)).toString()};
+      'lang': (await MySharedPref().getStringValue(SharePreData.keyLanguage)).toString()};
     var request = http.Request(
         'POST', Uri.parse(url));
     request.body = json.encode({

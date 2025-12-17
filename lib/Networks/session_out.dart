@@ -15,7 +15,7 @@
 // class SessionOut {
 //   SigninModel? myModel;
 //
-//   var preferences = MySharedPrefNew();
+//   var preferences = MySharedPref();
 //
 //   userLogout() async {
 //     printData(SharePreData.key_Checker, "Called session out ");

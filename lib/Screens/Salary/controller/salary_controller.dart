@@ -27,7 +27,7 @@ class SalaryController extends GetxController {
 
   getUserInfo() async{
     /// Set login model into shared preference
-    loginResponseModel.value = (await MySharedPrefNew().getEmployeeLoginModel(SharePreData.keySaveLoginModel))??EmployeeLoginResponseModel();
+    loginResponseModel.value = (await MySharedPref().getEmployeeLoginModel(SharePreData.keySaveLoginModel))??EmployeeLoginResponseModel();
 
   }
 
@@ -38,7 +38,7 @@ class SalaryController extends GetxController {
 
     printData("urrllll", url);
 
-    String token = await MySharedPrefNew().getString(SharePreData.keyAccessToken);
+    String token = await MySharedPref().getStringValue(SharePreData.keyAccessToken);
     printData("tokenn", token);
     var headers = {'Content-Type': 'application/json',
       'Authorization': 'Bearer $token'};

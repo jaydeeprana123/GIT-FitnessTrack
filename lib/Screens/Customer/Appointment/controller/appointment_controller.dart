@@ -27,7 +27,7 @@ class AppointmentController extends GetxController {
 
   getUserInfo() async{
     /// Set login model into shared preference
-    loginResponseModel.value = (await MySharedPrefNew().getCustomerLoginModel(SharePreData.keySaveLoginModel))??CustomerLoginResponseModel();
+    loginResponseModel.value = (await MySharedPref().getCustomerLoginModel(SharePreData.keySaveLoginModel))??CustomerLoginResponseModel();
   }
 
   /// get measurement list
@@ -38,7 +38,7 @@ class AppointmentController extends GetxController {
 
     printData("urrllll", url);
 
-    String token = await MySharedPrefNew().getString(SharePreData.keyAccessToken);
+    String token = await MySharedPref().getStringValue(SharePreData.keyAccessToken);
     printData("tokenn", token);
 
     var headers = {'Content-Type': 'application/json',
@@ -84,7 +84,7 @@ class AppointmentController extends GetxController {
 
     String url = urlBase + urlBookAppointment;
     printData("callBookAppointmentAPI url", url);
-    String token = await MySharedPrefNew().getString(SharePreData.keyAccessToken);
+    String token = await MySharedPref().getStringValue(SharePreData.keyAccessToken);
     printData("tokenn", token);
 
     var headers = {'Content-Type': 'application/json',
@@ -142,7 +142,7 @@ class AppointmentController extends GetxController {
 
     String url = urlBase + urlDeleteAppointment;
 
-    String token = await MySharedPrefNew().getString(SharePreData.keyAccessToken);
+    String token = await MySharedPref().getStringValue(SharePreData.keyAccessToken);
     printData("tokenn", token);
 
     var headers = {'Content-Type': 'application/json',
@@ -198,7 +198,7 @@ class AppointmentController extends GetxController {
 
     String url = urlBase + urlUpdateAppointment;
 
-    String token = await MySharedPrefNew().getString(SharePreData.keyAccessToken);
+    String token = await MySharedPref().getStringValue(SharePreData.keyAccessToken);
     printData("tokenn", token);
 
     var headers = {'Content-Type': 'application/json',

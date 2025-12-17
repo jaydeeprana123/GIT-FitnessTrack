@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:isolate';
 
 import 'package:fitness_track/Screens/Dashboard/model/dashboard_counter_model.dart';
 import 'package:get_it/get_it.dart';
@@ -12,117 +11,96 @@ import '../Screens/Authentication/Login/model/employee_login_response_model.dart
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
+class MySharedPref {
+  static MySharedPref? classInstance;
+  static SharedPreferences? preferences;
 
-class MySharedPrefNew {
-  MySharedPrefNew._internal();
-  static final MySharedPrefNew _instance = MySharedPrefNew._internal();
-
-  factory MySharedPrefNew() => _instance;
-
-  static SharedPreferences? _prefs;
-  static bool _initialized = false;
-
-  /// MUST be called once from UI isolate (after runApp)
-  static Future<void> init() async {
-    if (_initialized) return;
-    _prefs = await SharedPreferences.getInstance();
-    _initialized = true;
+  static Future<MySharedPref?> getInstance() async {
+    classInstance ??= MySharedPref();
+    preferences ??= await SharedPreferences.getInstance();
+    return classInstance;
   }
-
-  /// Internal safety check
-  bool get _isReady => _prefs != null;
 
   // ---------------- BASIC ----------------
 
-  Future<void> setString(String key, String value) async {
-    if (!_isReady) return;
-    await _prefs!.setString(key, value);
+  _getFromDisk(String key) async {
+    var value = preferences?.get(key);
+    print("Value Model got... .... $value");
+    return value;
   }
 
-  String getString(String key) {
-    if (!_isReady) return "";
-    return _prefs!.getString(key) ?? "";
+  Future<void> setString(String key, String content) async {
+    print("Value Set ::::::$content");
+    await preferences?.setString(key, content);
   }
 
   Future<void> setBool(String key, bool value) async {
-    if (!_isReady) return;
-    await _prefs!.setBool(key, value);
+    print("Value set ::::::$value");
+    await preferences?.setBool(key, value);
   }
 
-  bool getBool(String key) {
-    if (!_isReady) return false;
-    return _prefs!.getBool(key) ?? false;
+  getStringValue(String key) async {
+    String stringValue = preferences?.getString(key) ?? "";
+    print("Value get ::::::$stringValue");
+    return stringValue;
+  }
+
+  getBoolValue(String key) async {
+    bool boolVal = preferences?.getBool(key) ?? false;
+    print("Value get ::::::$boolVal");
+    return boolVal;
   }
 
   // ---------------- CLEAR ----------------
 
-  Future<void> clearKey(String key) async {
-    if (!_isReady) return;
-    await _prefs!.remove(key);
+  Future<void> clearData(String key) async {
+    await preferences?.remove(key);
   }
 
-  Future<void> clearAll() async {
-    if (!_isReady) return;
-    await _prefs!.clear();
+  Future<void> clear() async {
+    await preferences?.clear();
   }
 
   // ---------------- MODELS ----------------
 
-  Future<void> setCustomerLoginModel(
-      CustomerLoginResponseModel model, String key) async {
-    if (!_isReady) return;
-    await _prefs!.setString(key, jsonEncode(model.toJson()));
+  setCustomerLoginModel(CustomerLoginResponseModel model, String key) async {
+    print("Value set model ::::::${model.data?.first ?? ""}");
+    await preferences?.setString(key, json.encode(model.toJson()));
   }
 
-  CustomerLoginResponseModel? getCustomerLoginModel(String key) {
-    if (!_isReady) return null;
-    final data = _prefs!.getString(key);
-    if (data == null || data.isEmpty) return null;
-    return CustomerLoginResponseModel.fromJson(jsonDecode(data));
+  Future<CustomerLoginResponseModel?> getCustomerLoginModel(String key) async {
+    var myJson = preferences?.getString(key);
+    if (myJson == null) return null;
+    return CustomerLoginResponseModel.fromJson(json.decode(myJson));
   }
 
-  Future<void> setEmployeeLoginModel(
-      EmployeeLoginResponseModel model, String key) async {
-    if (!_isReady) return;
-    await _prefs!.setString(key, jsonEncode(model.toJson()));
+  setEmployeeLoginModel(EmployeeLoginResponseModel model, String key) async {
+    print("Value set model ::::::${model.data?.first ?? ""}");
+    await preferences?.setString(key, json.encode(model.toJson()));
   }
 
-  EmployeeLoginResponseModel? getEmployeeLoginModel(String key) {
-    if (!_isReady) return null;
-    final data = _prefs!.getString(key);
-    if (data == null || data.isEmpty) return null;
-    return EmployeeLoginResponseModel.fromJson(jsonDecode(data));
+  Future<EmployeeLoginResponseModel?> getEmployeeLoginModel(String key) async {
+    var myJson = preferences?.getString(key);
+    if (myJson == null) return null;
+    return EmployeeLoginResponseModel.fromJson(json.decode(myJson));
   }
 
-  // ---------------- DASHBOARD ----------------
-
-  Future<void> setDashboardModel(
-      DashboardData model, String key) async {
-    if (!_isReady) return;
-    await _prefs!.setString(key, jsonEncode(model.toJson()));
+  setDashboardModel(DashboardData model, String key) async {
+    await preferences?.setString(key, json.encode(model.toJson()));
   }
 
-  DashboardData? getDashboardData(String key) {
-    if (!_isReady) return null;
-    final data = _prefs!.getString(key);
-    if (data == null || data.isEmpty) return null;
-    return DashboardData.fromJson(jsonDecode(data));
+  Future<DashboardData?> getDashboardData(String key) async {
+    var myJson = preferences?.getString(key);
+    if (myJson == null) return null;
+    return DashboardData.fromJson(json.decode(myJson));
   }
 
-  // ---------------- ACCESS TOKEN ----------------
-
-  Future<void> setAccessToken(String token, String key) async {
-    if (!_isReady) return;
-    await _prefs!.setString(key, token);
+  setAccessToken(String accessToken, String key) async {
+    await preferences?.setString(key, accessToken);
   }
 
-  String getAccessToken(String key) {
-    if (!_isReady) return "";
-    return _prefs!.getString(key) ?? "";
+  Future<String> getAccessToken(String key) async {
+    return preferences?.getString(key) ?? "";
   }
 }
-
-
 

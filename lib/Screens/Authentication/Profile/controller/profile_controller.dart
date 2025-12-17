@@ -116,7 +116,7 @@ class ProfileController extends GetxController {
 
   getUserInfo() async {
     /// Set login model into shared preference
-    loginResponseModel.value = (await MySharedPrefNew()
+    loginResponseModel.value = (await MySharedPref()
             .getEmployeeLoginModel(SharePreData.keySaveLoginModel)) ??
         EmployeeLoginResponseModel();
 
@@ -137,7 +137,7 @@ class ProfileController extends GetxController {
     String url = urlBase + urlGetProfileDetails;
 
     String token =
-        await MySharedPrefNew().getString(SharePreData.keyAccessToken);
+        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
     printData(url, url);
     printData("tokenn", token);
     var headers = {
@@ -176,7 +176,7 @@ class ProfileController extends GetxController {
 
           if (loginResponseModel.value.status ?? false) {
             /// Set login model into shared preference
-            MySharedPrefNew().setEmployeeLoginModel(
+            MySharedPref().setEmployeeLoginModel(
                 loginResponseModel.value, SharePreData.keySaveLoginModel);
 
             nameEditingController.value.text =
@@ -288,7 +288,7 @@ class ProfileController extends GetxController {
     isLoading.value = true;
     String url = urlBase + urlEditProfileDetails;
     String token =
-        await MySharedPrefNew().getString(SharePreData.keyAccessToken);
+        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
     var request = http.MultipartRequest('POST', Uri.parse(url));
     request.headers['authorization'] = 'Bearer $token';
 
@@ -355,7 +355,7 @@ class ProfileController extends GetxController {
 
           if (loginResponseModel.status ?? false) {
             /// Set login model into shared preference
-            MySharedPrefNew().setEmployeeLoginModel(
+            MySharedPref().setEmployeeLoginModel(
                 loginResponseModel, SharePreData.keySaveLoginModel);
             printData(runtimeType.toString(),
                 "callEditProfileUpAPI Message ${loginResponseModel.message}");
@@ -416,7 +416,7 @@ class ProfileController extends GetxController {
 
     var headers = {
       'Content-Type': 'application/json',
-      'lang': (await MySharedPrefNew().getString(SharePreData.keyLanguage))
+      'lang': (await MySharedPref().getStringValue(SharePreData.keyLanguage))
           .toString()
     };
     var request = http.Request('POST', Uri.parse(url));
@@ -514,7 +514,7 @@ class ProfileController extends GetxController {
     String url = urlBase + urlStateList;
 
     String token =
-        await MySharedPrefNew().getString(SharePreData.keyAccessToken);
+        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
     printData("tokenn", token);
     var headers = {
       'Content-Type': 'application/json',
@@ -596,7 +596,7 @@ class ProfileController extends GetxController {
     String url = urlBase + urlCityList;
 
     String token =
-        await MySharedPrefNew().getString(SharePreData.keyAccessToken);
+        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
     printData("tokenn", token);
     var headers = {
       'Content-Type': 'application/json',
@@ -678,7 +678,7 @@ class ProfileController extends GetxController {
     String url = urlBase + urlAreaList;
 
     String token =
-        await MySharedPrefNew().getString(SharePreData.keyAccessToken);
+        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
     printData("tokenn", token);
     var headers = {
       'Content-Type': 'application/json',

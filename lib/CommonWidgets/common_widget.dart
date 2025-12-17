@@ -126,9 +126,9 @@ snackBarRapid(BuildContext context, String message) {
 }
 
 goToWelcomeScreen() async {
-  var preferences = MySharedPrefNew();
-  await preferences.clearKey(SharePreData.keySaveLoginModel);
-  await preferences.clearKey(SharePreData.keySaveCart);
+  var preferences = MySharedPref();
+  await preferences.clearData(SharePreData.keySaveLoginModel);
+  await preferences.clearData(SharePreData.keySaveCart);
   Get.offAll(() => const WelcomeScreenView());
 }
 

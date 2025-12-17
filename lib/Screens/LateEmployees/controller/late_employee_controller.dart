@@ -38,7 +38,7 @@ class LateEmployeeController extends GetxController {
 
   getUserInfo() async {
     /// Set login model into shared preference
-    loginResponseModel.value = (await MySharedPrefNew()
+    loginResponseModel.value = (await MySharedPref()
             .getEmployeeLoginModel(SharePreData.keySaveLoginModel)) ??
         EmployeeLoginResponseModel();
     // var now = DateTime.now();
@@ -56,7 +56,7 @@ class LateEmployeeController extends GetxController {
     printData("urrllll", url);
 
     String token =
-        await MySharedPrefNew().getString(SharePreData.keyAccessToken);
+        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
     printData("tokenn", token);
     var headers = {
       'Content-Type': 'application/json',
@@ -141,7 +141,7 @@ class LateEmployeeController extends GetxController {
     printData("urrllll", url);
     isLoading.value = true;
     String token =
-        await MySharedPrefNew().getString(SharePreData.keyAccessToken);
+        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
     printData("tokenn", token);
     var headers = {
       'Content-Type': 'application/json',

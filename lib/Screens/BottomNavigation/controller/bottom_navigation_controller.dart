@@ -67,7 +67,7 @@ class BottomNavigationController extends GetxController {
   getUserInfo() async {
     /// Set login model into shared preference
     loginResponseModel.value =
-        await MySharedPrefNew().getEmployeeLoginModel(SharePreData.keySaveLoginModel)??EmployeeLoginResponseModel();
+        await MySharedPref().getEmployeeLoginModel(SharePreData.keySaveLoginModel)??EmployeeLoginResponseModel();
   }
 
 
@@ -122,7 +122,7 @@ Future callGetAppUpdateRequired(BuildContext context ) async {
   printData("callGetAppUpdateRequired", "callGetAppUpdateRequired");
   String url = urlBase + urlAppUpdateCheck;
 
-  String token = await MySharedPrefNew().getString(SharePreData.keyAccessToken);
+  String token = await MySharedPref().getStringValue(SharePreData.keyAccessToken);
   printData("tokenn", token);
 
   var headers = {'Content-Type': 'application/json',

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:math';
-
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:fitness_track/CommonWidgets/not_at_location_dialog.dart';
 import 'package:fitness_track/Screens/Dashboard/model/dashboard_counter_model.dart';
 import 'package:fitness_track/Utils/share_predata.dart';
@@ -57,7 +57,7 @@ class _DayInOutViewState extends State<DayInOutView> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       controller.isButtonHide.value = false;
       controller.imagePath.value = "";
-      controller.dashboardData.value = await MySharedPrefNew()
+      controller.dashboardData.value = await MySharedPref()
               .getDashboardData(SharePreData.keyDashboardData) ??
           DashboardData();
       controller.statusResponse.value = widget.status;

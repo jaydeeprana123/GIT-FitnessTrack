@@ -25,7 +25,7 @@ class PackageController extends GetxController {
   /// get user info
   getUserInfo() async{
     /// Set login model into shared preference
-    loginResponseModel.value = (await MySharedPrefNew().getCustomerLoginModel(SharePreData.keySaveLoginModel))??CustomerLoginResponseModel();
+    loginResponseModel.value = (await MySharedPref().getCustomerLoginModel(SharePreData.keySaveLoginModel))??CustomerLoginResponseModel();
 
   }
 

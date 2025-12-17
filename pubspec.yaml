@@ -54,7 +54,7 @@ dev_dependencies:
   intl: ^0.19.0
   http: ^1.1.1
   get_it: ^7.2.0
-  shared_preferences: ^2.5.4
+  shared_preferences: ^2.3.2
   image_picker: ^1.1.2
   dotted_border: ^2.0.0+3
   cached_network_image: ^3.4.0
@@ -73,8 +73,9 @@ dev_dependencies:
   geocoding:
   permission_handler:
   flutter_local_notifications: ^17.2.1+1
-#  firebase_core: ^3.4.0
-#  firebase_messaging: ^15.0.0
+  firebase_core:
+  firebase_auth:
+  firebase_messaging:
   package_info_plus: ^8.0.3
   video_player:
   video_thumbnail: ^0.5.6

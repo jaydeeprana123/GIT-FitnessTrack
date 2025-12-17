@@ -61,12 +61,12 @@ class _SplashScreenViewState extends State<SplashScreenView>
   void redirectOnPendingState() {
     Future.delayed(const Duration(seconds: 2), () async {
       String userType =
-           MySharedPrefNew().getString(SharePreData.keyUserType);
+          await MySharedPref().getStringValue(SharePreData.keyUserType);
 
       printData("hhhuh", userType);
 
       if (userType == UserTypeEnum.employee.outputVal) {
-        EmployeeLoginResponseModel? loginResponseModel = (await MySharedPrefNew()
+        EmployeeLoginResponseModel? loginResponseModel = (await MySharedPref()
                 .getEmployeeLoginModel(SharePreData.keySaveLoginModel))
             as EmployeeLoginResponseModel?;
 
@@ -76,7 +76,7 @@ class _SplashScreenViewState extends State<SplashScreenView>
           Get.off(() => WelcomeScreenView());
         }
       } else if (userType == UserTypeEnum.member.outputVal) {
-        CustomerLoginResponseModel? loginResponseModel = (await MySharedPrefNew()
+        CustomerLoginResponseModel? loginResponseModel = (await MySharedPref()
                 .getCustomerLoginModel(SharePreData.keySaveLoginModel))
             as CustomerLoginResponseModel?;
 
@@ -92,7 +92,7 @@ class _SplashScreenViewState extends State<SplashScreenView>
   }
 
    initSharedPreference() async{
-     await MySharedPrefNew.init(); // ✅ MUST be before runApp
+    await MySharedPref.getInstance(); // 🔥 REQUIRED FOR RELEASE
 
     redirectOnPendingState();
   }

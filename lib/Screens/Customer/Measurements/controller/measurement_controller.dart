@@ -119,7 +119,7 @@ class MeasurementController extends GetxController {
 
   getUserInfo() async {
     /// Set login model into shared preference
-    loginResponseModel.value = (await MySharedPrefNew()
+    loginResponseModel.value = (await MySharedPref()
             .getCustomerLoginModel(SharePreData.keySaveLoginModel)) ??
         CustomerLoginResponseModel();
   }
@@ -133,7 +133,7 @@ class MeasurementController extends GetxController {
     printData("urrllll", url);
 
     String token =
-        await MySharedPrefNew().getString(SharePreData.keyAccessToken);
+        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
     printData("tokenn", token);
 
     var headers = {
@@ -184,7 +184,7 @@ class MeasurementController extends GetxController {
     String url = urlBase + urlMeasurementDelete;
 
     String token =
-        await MySharedPrefNew().getString(SharePreData.keyAccessToken);
+        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
     printData("tokenn", token);
 
     var headers = {
@@ -243,7 +243,7 @@ class MeasurementController extends GetxController {
 
     // 🔹 Fetch token from shared prefs
     String token =
-        await MySharedPrefNew().getString(SharePreData.keyAccessToken);
+        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
     printData("Bearer Token", token);
 
     // 🔹 Headers

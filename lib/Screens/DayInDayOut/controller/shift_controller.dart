@@ -51,7 +51,7 @@ class ShiftController extends GetxController {
   String currentTime = "";
   getUserInfo() async{
     /// Set login model into shared preference
-    loginResponseModel.value = (await MySharedPrefNew().getEmployeeLoginModel(SharePreData.keySaveLoginModel))??EmployeeLoginResponseModel();
+    loginResponseModel.value = (await MySharedPref().getEmployeeLoginModel(SharePreData.keySaveLoginModel))??EmployeeLoginResponseModel();
   }
   /// get Login Status
   getLoginStatusAPI(BuildContext context, String shiftId) async {
@@ -67,7 +67,7 @@ class ShiftController extends GetxController {
     String currentDate = DateFormat('yyyy-MM-dd').format(now);
     String day = DateFormat('EEEE').format(now);
 
-    String token = await MySharedPrefNew().getString(SharePreData.keyAccessToken);
+    String token = await MySharedPref().getStringValue(SharePreData.keyAccessToken);
     printData("tokenn", token);
     var headers = {'Content-Type': 'application/json',
       'Authorization': 'Bearer $token'};
@@ -117,7 +117,7 @@ class ShiftController extends GetxController {
 
     printData("urrllll", url);
 
-    String token = await MySharedPrefNew().getString(SharePreData.keyAccessToken);
+    String token = await MySharedPref().getStringValue(SharePreData.keyAccessToken);
     printData("tokenn", token);
     var headers = {'Content-Type': 'application/json',
       'Authorization': 'Bearer $token'};
@@ -208,7 +208,7 @@ class ShiftController extends GetxController {
 
     printData("urrllll", url);
 
-    String token = await MySharedPrefNew().getString(SharePreData.keyAccessToken);
+    String token = await MySharedPref().getStringValue(SharePreData.keyAccessToken);
     printData("tokenn", token);
     var headers = {'Content-Type': 'application/json',
       'Authorization': 'Bearer $token'};
@@ -338,7 +338,7 @@ class ShiftController extends GetxController {
 
 
     printData("current ", currentDate + "  " + currentTime + "  " + day);
-    String token = await MySharedPrefNew().getString(SharePreData.keyAccessToken);
+    String token = await MySharedPref().getStringValue(SharePreData.keyAccessToken);
     printData("tokenn", token);
 
     var request = http.MultipartRequest('POST', Uri.parse(url));
