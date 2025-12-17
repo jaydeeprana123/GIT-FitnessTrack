@@ -73,19 +73,16 @@ class _VideoThumbnailWidgetState extends State<VideoThumbnailWidget> {
   Widget build(BuildContext context) {
     return _thumbnail != null
         ? Image.memory(
-      _thumbnail!,
-      width: 100,
-      height: 100,
-      fit: BoxFit.cover,
-    )
+            _thumbnail!,
+            width: 100,
+            height: 100,
+            fit: BoxFit.cover,
+          )
         : Container(
-      width: 100,
-      height: 100,
-      color: Colors.grey.shade300,
-      child: const Icon(Icons.videocam, color: Colors.black54),
-    );
+            width: 100,
+            height: 100,
+            color: Colors.grey.shade300,
+            child: const Icon(Icons.videocam, color: Colors.black54),
+          );
   }
 }
-
-
-

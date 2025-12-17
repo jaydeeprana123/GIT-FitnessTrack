@@ -2,14 +2,14 @@
   "project_info": {
     "project_number": "384476936311",
     "project_id": "fitnesstrack-3aa31",
-    "storage_bucket": "fitnesstrack-3aa31.appspot.com"
+    "storage_bucket": "fitnesstrack-3aa31.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
         "mobilesdk_app_id": "1:384476936311:android:36c712e4f06804dffdae72",
         "android_client_info": {
-          "package_name": "com.fitness.ftg"
+          "package_name": "com.fitness.fitness_track"
         }
       },
       "oauth_client": [],
