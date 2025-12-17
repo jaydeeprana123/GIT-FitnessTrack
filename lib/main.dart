@@ -16,71 +16,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() async{
 
   WidgetsFlutterBinding.ensureInitialized();
-  if (Platform.isIOS) {
-    await Firebase.initializeApp(
-        options: FirebaseOptions(
-            apiKey: "AIzaSyCnbxPzkWwv8Lq3Uqp3xa1Vk81NmnShYi0",
-            appId: "1:384476936311:ios:b904a332db074298fdae72",
-            messagingSenderId: "384476936311",
-            projectId: "fitnesstrack-3aa31"));
-  } else {
-    await Firebase.initializeApp( options: FirebaseOptions(
-        apiKey: "AIzaSyB5xkozrs7wcBOZWSoeFMGsVxMCYk6kqR4",
-        appId: "1:384476936311:android:dffb7bbbb39d9027fdae72",
-        messagingSenderId: "384476936311",
-        projectId: "fitnesstrack-3aa31"));
-  }
-  await FirebaseMessaging.instance.setAutoInitEnabled(true);
-  runApp(const MyApp());
-  // await Permission.notification.isDenied.then((value) {
-  //   if (value) {
-  //     Permission.notification.request();
-  //   }
-  // });
-
-
-
-  await PushNotificationsService().init();
-  // LocalNotificationService.initialize();
+  await Firebase.initializeApp(); // Let it auto-detect from google-services.json
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  FirebaseMessaging.instance.getInitialMessage();
-  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-    alert: true,
-    badge: true,
-    sound: true,
-  );
+  await PushNotificationsService().init();
+  runApp(const MyApp());
 }
 
 
 @pragma('vm:entry-point')
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage event) async {
-  print("Handling a background message doctor: ${event.messageId}");
-  if (Platform.isIOS) {
-    await Firebase.initializeApp(
-        options: FirebaseOptions(
-            apiKey: "AIzaSyCnbxPzkWwv8Lq3Uqp3xa1Vk81NmnShYi0",
-            appId: "1:384476936311:ios:b904a332db074298fdae72",
-            messagingSenderId: "384476936311",
-            projectId: "fitnesstrack-3aa31"));
-  } else {
-    await Firebase.initializeApp( options: FirebaseOptions(
-        apiKey: "AIzaSyB5xkozrs7wcBOZWSoeFMGsVxMCYk6kqR4",
-        appId: "1:384476936311:android:dffb7bbbb39d9027fdae72",
-        messagingSenderId: "384476936311",
-        projectId: "fitnesstrack-3aa31"));
-  }
-
-  // LocalNotificationService.initialize();
-  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-  await sharedPreferences.setString(
-    "notification",
-    event.toMap().toString(),
-  );
-  // Get.to(SplashScreenView());
-  // print("message recieved");
-  print(event.notification?.body ?? "");
-  print("event.data -- > ${event.data}");
-
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
 }
 
 class MyApp extends StatelessWidget {

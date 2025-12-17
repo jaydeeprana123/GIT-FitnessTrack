@@ -29,14 +29,13 @@ class SplashScreenView extends StatefulWidget {
 
 class _SplashScreenViewState extends State<SplashScreenView> with TickerProviderStateMixin{
 
-  Position? _currentPosition;
-  String? _currentAddress;
-
   @override
   void initState() {
     super.initState();
 
-    redirectOnPendingState();
+
+    initMethod();
+
   }
 
   @override
@@ -98,6 +97,13 @@ class _SplashScreenViewState extends State<SplashScreenView> with TickerProvider
 
 
     });
+  }
+
+  void initMethod() async{
+
+    await MySharedPref.getInstance(); // 🔥 REQUIRED FOR RELEASE
+
+    redirectOnPendingState();
   }
 
 

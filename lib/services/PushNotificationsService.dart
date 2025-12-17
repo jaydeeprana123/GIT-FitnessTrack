@@ -14,46 +14,32 @@ import '../Utils/share_predata.dart';
 import '../utils/preference_utils.dart';
 import 'LocalNotificationService.dart';
 
+// D:\StudioFlutterAllProject\GIT-FITNESS-TRACK\build\app\outputs\flutter-apk
+
 class PushNotificationsService {
   PushNotificationsService._();
-
-  factory PushNotificationsService() => _instance;
-
   static final PushNotificationsService _instance =
   PushNotificationsService._();
-
-  late FirebaseMessaging _firebaseMessaging;
+  factory PushNotificationsService() => _instance;
 
   bool _initialized = false;
 
   Future<void> init() async {
     if (_initialized) return;
 
-    // ✅ Initialize ONLY after Firebase.initializeApp()
-    _firebaseMessaging = FirebaseMessaging.instance;
+    final messaging = FirebaseMessaging.instance;
 
-    await _firebaseMessaging.requestPermission();
+    await messaging.requestPermission();
 
-    _firebaseMessaging.getInitialMessage().then((RemoteMessage? message) {
-      if (message != null) {
-        LocalNotificationService.displayNotification(message, "");
-      }
+    FirebaseMessaging.onMessage.listen((message) {
+      LocalNotificationService.displayNotification(message, "");
     });
 
-    FirebaseMessaging.onMessage.listen((RemoteMessage event) {
-      LocalNotificationService.displayNotification(event, "");
-      debugPrint("message title ${event.notification?.title}");
-      debugPrint("message body ${event.notification?.body}");
-      debugPrint("event.data -- > ${event.data}");
-    });
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {});
 
-    FirebaseMessaging.onMessageOpenedApp.listen((event) {
-      // navigation if needed
-    });
-
-    String? fcmToken = await _firebaseMessaging.getToken();
-    debugPrint("FCM Token: $fcmToken");
+    debugPrint("FCM Token: ${await messaging.getToken()}");
 
     _initialized = true;
   }
 }
+
