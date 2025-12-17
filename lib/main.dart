@@ -26,7 +26,7 @@ void main() async{
   } else {
     await Firebase.initializeApp( options: FirebaseOptions(
         apiKey: "AIzaSyB5xkozrs7wcBOZWSoeFMGsVxMCYk6kqR4",
-        appId: "1:384476936311:android:36c712e4f06804dffdae72",
+        appId: "1:384476936311:android:dffb7bbbb39d9027fdae72",
         messagingSenderId: "384476936311",
         projectId: "fitnesstrack-3aa31"));
   }
@@ -65,7 +65,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage event) async {
   } else {
     await Firebase.initializeApp( options: FirebaseOptions(
         apiKey: "AIzaSyB5xkozrs7wcBOZWSoeFMGsVxMCYk6kqR4",
-        appId: "1:384476936311:android:36c712e4f06804dffdae72",
+        appId: "1:384476936311:android:dffb7bbbb39d9027fdae72",
         messagingSenderId: "384476936311",
         projectId: "fitnesstrack-3aa31"));
   }
