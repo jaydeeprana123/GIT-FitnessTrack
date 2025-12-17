@@ -7,17 +7,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../Screens/Authentication/Login/model/customer_login_response_model.dart';
 import '../Screens/Authentication/Login/model/employee_login_response_model.dart';
 
-
-
-
 // Created by Vrusti Patel
-
-Future setuplocator() async {
-  GetIt locator = GetIt.instance;
-  var instance = await MySharedPref.getInstance();
-
-  locator.registerSingleton<MySharedPref>(instance!);
-}
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MySharedPref {
   static MySharedPref? classInstance;
@@ -56,7 +48,6 @@ class MySharedPref {
     return stringValue;
   }
 
-
   getBoolValue(String key) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     //Return String
@@ -85,11 +76,10 @@ class MySharedPref {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.reload();
 
-    print("Value set model ::::::${model.data?.first??""}");
-    print("Value set model name ::::::${model.data?.last??""}");
+    print("Value set model ::::::${model.data?.first ?? ""}");
+    print("Value set model name ::::::${model.data?.last ?? ""}");
     prefs.setString(key, json.encode(model.toJson()));
   }
-
 
   /// Used to get user's information
   Future<CustomerLoginResponseModel?> getCustomerLoginModel(String key) async {
@@ -103,17 +93,15 @@ class MySharedPref {
     return CustomerLoginResponseModel.fromJson(json.decode(myJson));
   }
 
-
   /// Used to save user's information
   setEmployeeLoginModel(EmployeeLoginResponseModel model, String key) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.reload();
 
-    print("Value set model ::::::${model.data?.first??""}");
-    print("Value set model name ::::::${model.data?.last??""}");
+    print("Value set model ::::::${model.data?.first ?? ""}");
+    print("Value set model name ::::::${model.data?.last ?? ""}");
     prefs.setString(key, json.encode(model.toJson()));
   }
-
 
   /// Used to get user's information
   Future<EmployeeLoginResponseModel?> getEmployeeLoginModel(String key) async {
@@ -127,14 +115,12 @@ class MySharedPref {
     return EmployeeLoginResponseModel.fromJson(json.decode(myJson));
   }
 
-
   /// Used to save user's information
   setDashboardModel(DashboardData model, String key) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.reload();
     prefs.setString(key, json.encode(model.toJson()));
   }
-
 
   /// Used to get user's information
   Future<DashboardData?> getDashboardData(String key) async {
@@ -148,14 +134,6 @@ class MySharedPref {
     return DashboardData.fromJson(json.decode(myJson));
   }
 
-
-
-
-
-
-
-
-
   /// set access token for kundli
   setAccessToken(String accessToken, String key) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -163,9 +141,7 @@ class MySharedPref {
 
     // printData("cart model.toJson()", cartItemList.toJson().toString());
     prefs.setString(key, accessToken);
-
   }
-
 
   ///  get access token
   Future<String> getAccessToken(String key) async {
@@ -175,14 +151,8 @@ class MySharedPref {
     var accessToken = prefs.getString(key);
     if (accessToken == null) {
       return "";
-    }else{
+    } else {
       return accessToken;
     }
-
   }
-
-
-
-
-
 }

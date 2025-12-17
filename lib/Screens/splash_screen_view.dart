@@ -19,7 +19,6 @@ import 'Authentication/Login/model/employee_login_response_model.dart';
 import 'BottomNavigation/view/bottom_navigation_view.dart';
 import 'Customer/CustomerBottomNavigation/view/customer_bottom_navigation_view.dart';
 
-
 class SplashScreenView extends StatefulWidget {
   const SplashScreenView({Key? key}) : super(key: key);
 
@@ -27,8 +26,8 @@ class SplashScreenView extends StatefulWidget {
   State<SplashScreenView> createState() => _SplashScreenViewState();
 }
 
-class _SplashScreenViewState extends State<SplashScreenView> with TickerProviderStateMixin{
-
+class _SplashScreenViewState extends State<SplashScreenView>
+    with TickerProviderStateMixin {
   Position? _currentPosition;
   String? _currentAddress;
 
@@ -41,14 +40,11 @@ class _SplashScreenViewState extends State<SplashScreenView> with TickerProvider
 
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         backgroundColor: Colors.white,
-        body:
-
-        Center(
+        body: Center(
           child: Image.asset(
             img_splash,
             fit: BoxFit.cover,
@@ -56,50 +52,42 @@ class _SplashScreenViewState extends State<SplashScreenView> with TickerProvider
             height: double.infinity,
           ),
         ),
-
       ),
     );
   }
 
   void redirectOnPendingState() {
     Future.delayed(const Duration(seconds: 2), () async {
-
-      String userType = await MySharedPref().getStringValue(SharePreData.keyUserType);
+      String userType =
+          await MySharedPref().getStringValue(SharePreData.keyUserType);
 
       printData("hhhuh", userType);
 
-      if(userType == UserTypeEnum.employee.outputVal){
-        EmployeeLoginResponseModel? loginResponseModel =
-        (await MySharedPref().getEmployeeLoginModel(SharePreData.keySaveLoginModel)) as EmployeeLoginResponseModel?;
+      if (userType == UserTypeEnum.employee.outputVal) {
+        EmployeeLoginResponseModel? loginResponseModel = (await MySharedPref()
+                .getEmployeeLoginModel(SharePreData.keySaveLoginModel))
+            as EmployeeLoginResponseModel?;
 
         if (loginResponseModel != null) {
           Get.offAll(BottomNavigationView(selectTabPosition: 0));
         } else {
-
           Get.off(() => WelcomeScreenView());
         }
-      }else if(userType == UserTypeEnum.member.outputVal){
-        CustomerLoginResponseModel? loginResponseModel =
-        (await MySharedPref().getCustomerLoginModel(SharePreData.keySaveLoginModel)) as CustomerLoginResponseModel?;
+      } else if (userType == UserTypeEnum.member.outputVal) {
+        CustomerLoginResponseModel? loginResponseModel = (await MySharedPref()
+                .getCustomerLoginModel(SharePreData.keySaveLoginModel))
+            as CustomerLoginResponseModel?;
 
         if (loginResponseModel != null) {
           Get.offAll(CustomerBottomNavigationView(selectTabPosition: 0));
         } else {
-
           Get.off(() => WelcomeScreenView());
         }
-      }else{
-
+      } else {
         Get.off(() => WelcomeScreenView());
       }
-
-
-
-
-
     });
   }
-
 
   // Future<bool> _handleLocationPermission() async {
   //   bool serviceEnabled;

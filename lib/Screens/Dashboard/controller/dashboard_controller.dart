@@ -16,18 +16,19 @@ import '../../../utils/share_predata.dart';
 import '../../Authentication/Login/model/employee_login_response_model.dart';
 import '../model/dashboard_counter_model.dart';
 
-
 /// Controller
 class DashboardController extends GetxController {
-  Rx<EmployeeLoginResponseModel> loginResponseModel = EmployeeLoginResponseModel().obs;
+  Rx<EmployeeLoginResponseModel> loginResponseModel =
+      EmployeeLoginResponseModel().obs;
   Rx<DashboardCounterModel> dashboardCounterModel = DashboardCounterModel().obs;
 
   RxBool isLoading = false.obs;
 
-  getUserInfo() async{
+  getUserInfo() async {
     /// Set login model into shared preference
-    loginResponseModel.value = (await MySharedPref().getEmployeeLoginModel(SharePreData.keySaveLoginModel))??EmployeeLoginResponseModel();
-
+    loginResponseModel.value = (await MySharedPref()
+            .getEmployeeLoginModel(SharePreData.keySaveLoginModel)) ??
+        EmployeeLoginResponseModel();
   }
 
   /// change password api
@@ -35,7 +36,8 @@ class DashboardController extends GetxController {
     isLoading.value = true;
 
     String url = urlBase + urlDashboardCounter;
-    String token = await MySharedPref().getStringValue(SharePreData.keyAccessToken);
+    String token =
+        await MySharedPref().getStringValue(SharePreData.keyAccessToken);
     printData("tokenn", token);
 
     var headers = {
@@ -58,19 +60,23 @@ class DashboardController extends GetxController {
         const Duration(seconds: 60),
         onTimeout: () {
           isLoading.value = false;
-          throw TimeoutException('The connection has timed out, Please try again!');
+          throw TimeoutException(
+              'The connection has timed out, Please try again!');
         },
       );
 
       isLoading.value = false;
-      printData(runtimeType.toString(), "callDashboardCounterAPI API status ${response.statusCode}");
+      printData(runtimeType.toString(),
+          "callDashboardCounterAPI API status ${response.statusCode}");
 
       if (response.statusCode == 200) {
         await response.stream.bytesToString().then((valueData) async {
-          printData(runtimeType.toString(), "callDashboardCounterAPI API value ${valueData}");
+          printData(runtimeType.toString(),
+              "callDashboardCounterAPI API value ${valueData}");
 
           Map<String, dynamic> userModel = json.decode(valueData);
-          dashboardCounterModel.value = DashboardCounterModel.fromJson(userModel);
+          dashboardCounterModel.value =
+              DashboardCounterModel.fromJson(userModel);
           if (dashboardCounterModel.value.status ?? false) {
             MySharedPref().setDashboardModel(
               dashboardCounterModel.value.data?[0] ?? DashboardData(),
@@ -88,6 +94,7 @@ class DashboardController extends GetxController {
     } on SocketException catch (_) {
       isLoading.value = false;
       printData(runtimeType.toString(), "No internet connection.");
+
       /// Show full-screen dialog for no internet
       Get.dialog(
         NoInternetDialog(
@@ -116,7 +123,7 @@ class DashboardController extends GetxController {
       isLoading.value = false;
       printData(runtimeType.toString(), "Unexpected error: $e");
       // Handle other exceptions
-      Get.snackbar("Error",  "An unexpected error occurred. Please try again.");
+      Get.snackbar("Error", "An unexpected error occurred. Please try again.");
     }
   }
 
