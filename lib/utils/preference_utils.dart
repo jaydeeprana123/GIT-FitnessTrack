@@ -21,138 +21,86 @@ class MySharedPref {
     return classInstance;
   }
 
+  // ---------------- BASIC ----------------
+
   _getFromDisk(String key) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var value = prefs.get(key);
+    var value = preferences?.get(key);
     print("Value Model got... .... $value");
     return value;
   }
 
   Future<void> setString(String key, String content) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
     print("Value Set ::::::$content");
-    prefs.setString(key, content);
+    await preferences?.setString(key, content);
   }
 
   Future<void> setBool(String key, bool value) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
     print("Value set ::::::$value");
-    prefs.setBool(key, value);
+    await preferences?.setBool(key, value);
   }
 
   getStringValue(String key) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    //Return String
-    String stringValue = prefs.getString(key) ?? "";
-    print("Value set ::::::$stringValue");
+    String stringValue = preferences?.getString(key) ?? "";
+    print("Value get ::::::$stringValue");
     return stringValue;
   }
 
   getBoolValue(String key) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    //Return String
-    bool? boolVal = prefs.getBool(key);
+    bool boolVal = preferences?.getBool(key) ?? false;
     print("Value get ::::::$boolVal");
-    boolVal ??= false;
     return boolVal;
   }
 
-  // It clears preference data by unique key name
+  // ---------------- CLEAR ----------------
+
   Future<void> clearData(String key) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.reload();
-    prefs.remove(key);
+    await preferences?.remove(key);
   }
 
-  // It clears preference whole data
   Future<void> clear() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.reload();
-    prefs.clear();
+    await preferences?.clear();
   }
 
-  /// Used to save user's information
+  // ---------------- MODELS ----------------
+
   setCustomerLoginModel(CustomerLoginResponseModel model, String key) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.reload();
-
     print("Value set model ::::::${model.data?.first ?? ""}");
-    print("Value set model name ::::::${model.data?.last ?? ""}");
-    prefs.setString(key, json.encode(model.toJson()));
+    await preferences?.setString(key, json.encode(model.toJson()));
   }
 
-  /// Used to get user's information
   Future<CustomerLoginResponseModel?> getCustomerLoginModel(String key) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.reload();
-
-    var myJson = prefs.getString(key);
-    if (myJson == null) {
-      return null;
-    }
+    var myJson = preferences?.getString(key);
+    if (myJson == null) return null;
     return CustomerLoginResponseModel.fromJson(json.decode(myJson));
   }
 
-  /// Used to save user's information
   setEmployeeLoginModel(EmployeeLoginResponseModel model, String key) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.reload();
-
     print("Value set model ::::::${model.data?.first ?? ""}");
-    print("Value set model name ::::::${model.data?.last ?? ""}");
-    prefs.setString(key, json.encode(model.toJson()));
+    await preferences?.setString(key, json.encode(model.toJson()));
   }
 
-  /// Used to get user's information
   Future<EmployeeLoginResponseModel?> getEmployeeLoginModel(String key) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.reload();
-
-    var myJson = prefs.getString(key);
-    if (myJson == null) {
-      return null;
-    }
+    var myJson = preferences?.getString(key);
+    if (myJson == null) return null;
     return EmployeeLoginResponseModel.fromJson(json.decode(myJson));
   }
 
-  /// Used to save user's information
   setDashboardModel(DashboardData model, String key) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.reload();
-    prefs.setString(key, json.encode(model.toJson()));
+    await preferences?.setString(key, json.encode(model.toJson()));
   }
 
-  /// Used to get user's information
   Future<DashboardData?> getDashboardData(String key) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.reload();
-
-    var myJson = prefs.getString(key);
-    if (myJson == null) {
-      return null;
-    }
+    var myJson = preferences?.getString(key);
+    if (myJson == null) return null;
     return DashboardData.fromJson(json.decode(myJson));
   }
 
-  /// set access token for kundli
   setAccessToken(String accessToken, String key) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.reload();
-
-    // printData("cart model.toJson()", cartItemList.toJson().toString());
-    prefs.setString(key, accessToken);
+    await preferences?.setString(key, accessToken);
   }
 
-  ///  get access token
   Future<String> getAccessToken(String key) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.reload();
-
-    var accessToken = prefs.getString(key);
-    if (accessToken == null) {
-      return "";
-    } else {
-      return accessToken;
-    }
+    return preferences?.getString(key) ?? "";
   }
 }
+

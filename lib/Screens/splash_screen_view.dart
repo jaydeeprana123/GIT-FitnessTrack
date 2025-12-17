@@ -35,7 +35,9 @@ class _SplashScreenViewState extends State<SplashScreenView>
   void initState() {
     super.initState();
 
-    redirectOnPendingState();
+    initSharedPreference();
+
+
   }
 
   @override
@@ -87,6 +89,12 @@ class _SplashScreenViewState extends State<SplashScreenView>
         Get.off(() => WelcomeScreenView());
       }
     });
+  }
+
+   initSharedPreference() async{
+    await MySharedPref.getInstance(); // 🔥 REQUIRED FOR RELEASE
+
+    redirectOnPendingState();
   }
 
   // Future<bool> _handleLocationPermission() async {
