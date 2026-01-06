@@ -2,9 +2,9 @@
 const urlBase = 'https://ftgservices.in/API/';
 
 // const urlBase =
-//     'https://stg.mineastro.in/api';
+//     'https://stg.mineastro.in/';
 
-// const urlBase = 'https://totalhealthsolutions.org.in/medical-app/api'; //Base Url (7-20-22)
+// const urlBase = 'https://totalheaapilthsolutions.org.in/medical-app/api'; //Base Url (7-20-22)
 
 // Used to get base url for live and development
 // const urlGetBaseURL = '/user/base_url';
