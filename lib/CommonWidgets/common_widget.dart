@@ -20,33 +20,35 @@ final String _text =
 // TranslationModel _translated = TranslationModel(translatedText: '', detectedSourceLanguage: '');
 // TranslationModel _detected = TranslationModel(translatedText: '', detectedSourceLanguage: '');
 
-snackBar(BuildContext? context, String message) {
-  if (!Get.isOverlaysOpen) {
-    GetSnackBar(
-      backgroundColor: Colors.black,
-      duration: const Duration(seconds: 8 ?? 2),
-      snackPosition: SnackPosition.TOP,
-      borderRadius: 10,
-      margin: EdgeInsets.symmetric(
-        horizontal: 15,
-        vertical: 15,
-      ),
-      snackStyle: SnackStyle.FLOATING,
-      messageText: Text(
-        message,
-        style: TextStyle(
-            fontFamily: fontInterRegular, fontSize: 14, color: Colors.white),
-      ),
-    ).show();
-  }
+snackBar(BuildContext context, String message) {
+  // if (!Get.isOverlaysOpen) {
+  //   GetSnackBar(
+  //     backgroundColor: Colors.black,
+  //     duration: const Duration(seconds: 8 ?? 2),
+  //     snackPosition: SnackPosition.TOP,
+  //     borderRadius: 10,
+  //     margin: EdgeInsets.symmetric(
+  //       horizontal: 15,
+  //       vertical: 15,
+  //     ),
+  //     snackStyle: SnackStyle.FLOATING,
+  //     messageText: Text(
+  //       message,
+  //       style: TextStyle(
+  //           fontFamily: fontInterRegular, fontSize: 14, color: Colors.white),
+  //     ),
+  //   ).show();
+  // }
 
-  // return ScaffoldMessenger.of(context).showSnackBar(
-  //   SnackBar(
-  //     behavior: SnackBarBehavior.floating,
-  //     content: Text(message),
-  //     duration: const Duration(seconds: 2),
-  //   ),
-  // );
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      behavior: SnackBarBehavior.floating,
+      content: Text(message,
+          style: TextStyle(
+              fontFamily: fontInterRegular, fontSize: 14, color: Colors.white)),
+      duration: const Duration(seconds: 2),
+    ),
+  );
 }
 
 snackBarLongTime(BuildContext? context, String message) {

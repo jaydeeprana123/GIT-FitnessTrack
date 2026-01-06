@@ -10,33 +10,53 @@ import 'package:get/get.dart';
 
 import 'Utils/preference_utils.dart';
 
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage event) async {
+  print("Handling a background message doctor: ${event.messageId}");
+  await Firebase.initializeApp();
+  // if (Platform.isIOS) {
+  //   await Firebase.initializeApp(
+  //       options: FirebaseOptions(
+  //           apiKey: "AIzaSyCnbxPzkWwv8Lq3Uqp3xa1Vk81NmnShYi0",
+  //           appId: "1:384476936311:ios:b904a332db074298fdae72",
+  //           messagingSenderId: "384476936311",
+  //           projectId: "fitnesstrack-3aa31"));
+  // } else {
+  //   await Firebase.initializeApp(
+  //       options: FirebaseOptions(
+  //           apiKey: "AIzaSyB5xkozrs7wcBOZWSoeFMGsVxMCYk6kqR4",
+  //           appId: "1:384476936311:android:dffb7bbbb39d9027fdae72",
+  //           messagingSenderId: "384476936311",
+  //           projectId: "fitnesstrack-3aa31"));
+  // }
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  try {
-    if (Platform.isIOS) {
-      await Firebase.initializeApp(
-        options: const FirebaseOptions(
-          apiKey: "AIzaSyCnbxPzkWwv8Lq3Uqp3xa1Vk81NmnShYi0",
-          appId: "1:384476936311:ios:b904a332db074298fdae72",
-          messagingSenderId: "384476936311",
-          projectId: "fitnesstrack-3aa31",
-        ),
-      );
-    } else {
-      await Firebase.initializeApp(
-        options: const FirebaseOptions(
-          apiKey: "AIzaSyB5xkozrs7wcBOZWSoeFMGsVxMCYk6kqR4",
-          appId: "1:384476936311:android:dffb7bbbb39d9027fdae72",
-          messagingSenderId: "384476936311",
-          projectId: "fitnesstrack-3aa31",
-        ),
-      );
-    }
-  } catch (e) {
-    debugPrint("Firebase init failed: $e");
-  }
-
+  await Firebase.initializeApp();
+  // try {
+  //   if (Platform.isIOS) {
+  //     await Firebase.initializeApp(
+  //       options: const FirebaseOptions(
+  //         apiKey: "AIzaSyCnbxPzkWwv8Lq3Uqp3xa1Vk81NmnShYi0",
+  //         appId: "1:384476936311:ios:b904a332db074298fdae72",
+  //         messagingSenderId: "384476936311",
+  //         projectId: "fitnesstrack-3aa31",
+  //       ),
+  //     );
+  //   } else {
+  //     await Firebase.initializeApp(
+  //       options: const FirebaseOptions(
+  //         apiKey: "AIzaSyB5xkozrs7wcBOZWSoeFMGsVxMCYk6kqR4",
+  //         appId: "1:384476936311:android:dffb7bbbb39d9027fdae72",
+  //         messagingSenderId: "384476936311",
+  //         projectId: "fitnesstrack-3aa31",
+  //       ),
+  //     );
+  //   }
+  // } catch (e) {
+  //   debugPrint("Firebase init failed: $e");
+  // }
 
   // Register background handler FIRST
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
@@ -44,7 +64,7 @@ void main() async {
   runApp(const MyApp());
 
   // Call AFTER Firebase init
-  await PushNotificationsService().init();
+  // await PushNotificationsService().init();
   // await Permission.notification.isDenied.then((value) {
   //   if (value) {
   //     Permission.notification.request();
@@ -56,38 +76,6 @@ void main() async {
   //   badge: true,
   //   sound: true,
   // );
-}
-
-@pragma('vm:entry-point')
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage event) async {
-  print("Handling a background message doctor: ${event.messageId}");
-
-  if (Platform.isIOS) {
-    await Firebase.initializeApp(
-        options: FirebaseOptions(
-            apiKey: "AIzaSyCnbxPzkWwv8Lq3Uqp3xa1Vk81NmnShYi0",
-            appId: "1:384476936311:ios:b904a332db074298fdae72",
-            messagingSenderId: "384476936311",
-            projectId: "fitnesstrack-3aa31"));
-  } else {
-    await Firebase.initializeApp(
-        options: FirebaseOptions(
-            apiKey: "AIzaSyB5xkozrs7wcBOZWSoeFMGsVxMCYk6kqR4",
-            appId: "1:384476936311:android:dffb7bbbb39d9027fdae72",
-            messagingSenderId: "384476936311",
-            projectId: "fitnesstrack-3aa31"));
-  }
-
-  // LocalNotificationService.initialize();
-  // SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-  // await sharedPreferences.setString(
-  //   "notification",
-  //   event.toMap().toString(),
-  // );
-  // Get.to(SplashScreenView());
-  // print("message recieved");
-  print(event.notification?.body ?? "");
-  print("event.data -- > ${event.data}");
 }
 
 class MyApp extends StatelessWidget {

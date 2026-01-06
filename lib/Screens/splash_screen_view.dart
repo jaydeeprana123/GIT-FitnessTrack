@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:fitness_track/CommonWidgets/common_widget.dart';
 import 'package:fitness_track/Screens/Authentication/Login/model/customer_login_response_model.dart';
@@ -36,8 +37,6 @@ class _SplashScreenViewState extends State<SplashScreenView>
     super.initState();
 
     initSharedPreference();
-
-
   }
 
   @override
@@ -60,6 +59,8 @@ class _SplashScreenViewState extends State<SplashScreenView>
 
   void redirectOnPendingState() {
     Future.delayed(const Duration(seconds: 2), () async {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+
       String userType =
           await MySharedPref().getStringValue(SharePreData.keyUserType);
 
@@ -67,8 +68,7 @@ class _SplashScreenViewState extends State<SplashScreenView>
 
       if (userType == UserTypeEnum.employee.outputVal) {
         EmployeeLoginResponseModel? loginResponseModel = (await MySharedPref()
-                .getEmployeeLoginModel(SharePreData.keySaveLoginModel))
-            as EmployeeLoginResponseModel?;
+            .getEmployeeLoginModel(SharePreData.keySaveLoginModel));
 
         if (loginResponseModel != null) {
           Get.offAll(BottomNavigationView(selectTabPosition: 0));
@@ -91,8 +91,8 @@ class _SplashScreenViewState extends State<SplashScreenView>
     });
   }
 
-   initSharedPreference() async{
-    await MySharedPref.getInstance(); // 🔥 REQUIRED FOR RELEASE
+  initSharedPreference() async {
+    // await MySharedPref.getInstance(); // 🔥 REQUIRED FOR RELEASE
 
     redirectOnPendingState();
   }
