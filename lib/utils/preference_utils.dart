@@ -119,7 +119,8 @@ class MySharedPref {
   }
 
   Future<DashboardData?> getDashboardData(String key) async {
-    var myJson = preferences?.getString(key);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var myJson = prefs.getString(key);
     if (myJson == null) return null;
     return DashboardData.fromJson(json.decode(myJson));
   }
