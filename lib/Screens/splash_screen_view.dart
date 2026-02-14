@@ -81,7 +81,10 @@ class _SplashScreenViewState extends State<SplashScreenView>
             as CustomerLoginResponseModel?;
 
         if (loginResponseModel != null) {
+
           Get.offAll(CustomerBottomNavigationView(selectTabPosition: 0));
+
+          // Get.offAll(CustomerBottomNavigationView(selectTabPosition: 0));
         } else {
           Get.off(() => WelcomeScreenView());
         }

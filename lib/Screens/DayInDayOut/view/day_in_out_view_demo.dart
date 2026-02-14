@@ -379,16 +379,20 @@ class _DayInOutViewDemoState extends State<DayInOutViewDemo> {
     }
 
     try {
-      final position = await Geolocator.getCurrentPosition();
+      final position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+        timeLimit: const Duration(seconds: 10),
+      );
+      if (position.latitude.isNaN || position.longitude.isNaN) {
+        throw Exception("Invalid coordinates");
+      }
+
+      printData("position latitude", position.toString());
+
       if (position == null) {
         _resetControllerStates();
         return;
       }
-
-      // final branchLat = double.parse(controller.dashboardData.value.branchLatData.toString());
-      // final branchLong = double.parse(controller.dashboardData.value.branchLongData.toString());
-
-
 
 
       List<Placemark> placemarks = await placemarkFromCoordinates(
@@ -404,6 +408,13 @@ class _DayInOutViewDemoState extends State<DayInOutViewDemo> {
     }
   }
 
+  double safeParseDouble(dynamic value) {
+    if (value == null) return 0.0;
+    if (value.toString().isEmpty) return 0.0;
+    return double.tryParse(value.toString()) ?? 0.0;
+  }
+
+
   /// Reset controller states
   void _resetControllerStates() {
     controller.isLocationFetch.value = false;
@@ -412,138 +423,6 @@ class _DayInOutViewDemoState extends State<DayInOutViewDemo> {
     controller.isBackClose.value = false;
   }
 
-  /// Show location error dialog
-  void _showLocationErrorDialog() {
-    Get.dialog(
-      NotAtLocationDialog(
-        onRetry: () {
-          Get.back(); // Close the dialog
-          _getCurrentPosition(); // Retry location fetch
-        },
-        onExit: () {
-          Get.back(); // Close the dialog
-          Get.back(); // Close the parent screen
-        },
-      ),
-      barrierDismissible: false,
-    );
-  }
-
-
-
-
-  // Future<void> _getCurrentPosition(String attendanceType) async {
-  //   controller.isLocationFetch.value = true;
-  //   // showProgressDialog(context, "Fteching Location!");
-  //   print("_getCurrentPosition method call");
-  //
-  //   /// Check location permission
-  //   final hasPermission = await _handleLocationPermission(attendanceType);
-  //   if (!hasPermission) {
-  //     controller.isLocationFetch.value = false;
-  //     controller.isLoading.value = false;
-  //     controller.isButtonHide.value = false;
-  //     controller.isBackClose.value = false;
-  //     return;
-  //   }
-  //   await Geolocator.getCurrentPosition()
-  //       .then((Position? position) {
-  //     if (position != null) {
-  //       print("position lat ${position.latitude ?? 0}");
-  //       print("position long ${position.longitude ?? 0}");
-  //
-  //       print(
-  //           "branch lat ${controller.dashboardData.value.branchLatData.toString()}");
-  //       print(
-  //           "branch long ${controller.dashboardData.value.branchLongData.toString()}");
-  //
-  //       controller.isLocationFetch.value = false;
-  //
-  //       distanceFromGym = (calculateDistance(
-  //           double.parse(
-  //               controller.dashboardData.value.branchLatData.toString()),
-  //           double.parse(
-  //               controller.dashboardData.value.branchLongData.toString()),
-  //           position.latitude,
-  //           position.longitude));
-  //
-  //       // snackBarLongTime(context,
-  //       //     "Distance from gym is " + (distanceFromGym.toString()) + " Km");
-  //
-  //       if(distanceFromGym > 1){
-  //         /// Show Location Error Dialog
-  //         Get.dialog(
-  //           NotAtLocationDialog(
-  //             onRetry: () {
-  //               Get.back();// Close the dialog
-  //               setState(() {
-  //
-  //               });
-  //
-  //               controller.isLocationFetch.value = true;
-  //               _getCurrentPosition(attendanceType);// Retry API call
-  //             },
-  //
-  //             onExit: () {
-  //               Get.back();// Close the dialog
-  //               Get.back();
-  //             },
-  //
-  //           ),
-  //           barrierDismissible: false,
-  //         );
-  //       }
-  //
-  //
-  //       if (attendanceType == "1" || attendanceType == "2") {
-  //         if (distanceFromGym < 1 && distanceFromGym != -1) {
-  //           DateTime now = DateTime.now();
-  //           controller.currentTime = DateFormat('HH:mm:ss').format(now);
-  //           printData("currecnt ", controller.currentTime);
-  //           printData(
-  //               "currecnt time when location get ", controller.currentTime);
-  //           controller.callDayInOutAPI(
-  //               widget.shiftId, widget.branchId, attendanceType);
-  //         } else {
-  //           if (controller.loginResponseModel.value.data?[0].mobile ==
-  //               "9737388786") {
-  //             printData("My Mobile",
-  //                 controller.loginResponseModel.value.data?[0].mobile ?? "");
-  //             controller.callDayInOutAPI(
-  //                 widget.shiftId, widget.branchId, attendanceType);
-  //           } else {
-  //             controller.isBackClose.value = false;
-  //             controller.isLoading.value = false;
-  //
-  //             snackBar(context, "You can not give attendance");
-  //
-  //             DateTime now = DateTime.now();
-  //             String currentTime = DateFormat('HH:mm:ss').format(now);
-  //             String currentDate = DateFormat('yyyy-MM-dd').format(now);
-  //             String day = DateFormat('EEEE').format(now);
-  //
-  //             printData("current ", "$currentDate  $currentTime  $day");
-  //           }
-  //         }
-  //       } else {
-  //         controller.isLoading.value = false;
-  //       }
-  //
-  //       if (distanceFromGym < 1 && distanceFromGym != -1) {
-  //         DateTime now = DateTime.now();
-  //         controller.currentTime = DateFormat('HH:mm:ss').format(now);
-  //         printData("currecnt ", controller.currentTime);
-  //         printData("currecnt time when location get ", controller.currentTime);
-  //       }
-  //
-  //       setState(() {});
-  //       printData("distanceFromGym ", distanceFromGym.toString());
-  //     }
-  //   }).catchError((e) {
-  //     controller.isLoading.value = false;
-  //     debugPrint(e.toString());
-  //   });
-  // }
 
   Future<void> _showLocationPermissionAlertDialog(bool isPermanentDenied,
       LocationPermission permission) async {
