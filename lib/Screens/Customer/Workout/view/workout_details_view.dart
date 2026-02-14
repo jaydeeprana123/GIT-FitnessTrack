@@ -499,49 +499,278 @@ class _WorkoutDetailsViewState extends State<WorkoutDetailsView> {
           ),
 
           // VIDEO SECTION - EACH WIDGET OWNS ITS CONTROLLER
+          // ADD THIS TO YOUR EXISTING CODE
+// Replace the video section in _buildExerciseRow method
+
+// VIDEO SECTION - WITH SCROLL INDICATORS
           if (videoList.isNotEmpty)
             Container(
-              height: 240,
               margin: EdgeInsets.only(top: 8, bottom: 12),
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                physics: const BouncingScrollPhysics(),
-                itemCount: videoList.length,
-                itemBuilder: (context, videoIndex) {
-                  final videoPath = videoList[videoIndex].video ?? "";
-                  final exerciseName = exercise?.workoutDetailName ?? "";
-
-                  return Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Column(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Video count indicator
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Row(
                       children: [
-                        InstagramVideoWidget(
-                          videoUrl: videoPath,
-                          uniqueId: 'video_${dayIndex}_${catIndex}_${subIndex}_$videoIndex',
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => VideoPlayerPage(
-                                  videoPath: videoPath,
-                                  exerciseName: exerciseName,
+                        Icon(Icons.video_library, size: 18, color: color_primary),
+                        SizedBox(width: 6),
+                        Text(
+                          '${videoList.length} ${videoList.length == 1 ? 'Video' : 'Videos'}',
+                          style: TextStyle(
+                            color: color_primary,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: fontInterSemiBold,
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        if (videoList.length > 1)
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: color_primary.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: color_primary.withOpacity(0.3)),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.swipe_left, size: 14, color: color_primary),
+                                SizedBox(width: 4),
+                                Text(
+                                  'Swipe',
+                                  style: TextStyle(
+                                    color: color_primary,
+                                    fontSize: 11,
+                                    fontFamily: fontInterMedium,
+                                  ),
                                 ),
+                              ],
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+
+                  // Video horizontal scroll with indicators
+                  Container(
+                    height: 240,
+                    child: Stack(
+                      children: [
+                        // Video ListView
+                        ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          physics: const BouncingScrollPhysics(),
+                          padding: EdgeInsets.symmetric(horizontal: 4),
+                          itemCount: videoList.length,
+                          itemBuilder: (context, videoIndex) {
+                            final videoPath = videoList[videoIndex].video ?? "";
+                            final exerciseName = exercise?.workoutDetailName ?? "";
+
+                            return Container(
+                              margin: const EdgeInsets.symmetric(horizontal: 8),
+                              child: Column(
+                                children: [
+                                  // Video card with shadow and border
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.1),
+                                          blurRadius: 8,
+                                          offset: Offset(0, 2),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Stack(
+                                      children: [
+                                        InstagramVideoWidget(
+                                          videoUrl: videoPath,
+                                          uniqueId: 'video_${dayIndex}_${catIndex}_${subIndex}_$videoIndex',
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => VideoPlayerPage(
+                                                  videoPath: videoPath,
+                                                  exerciseName: exerciseName,
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
+
+                                        // Video number badge
+                                        Positioned(
+                                          top: 8,
+                                          left: 8,
+                                          child: Container(
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 8,
+                                              vertical: 4,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: Colors.black.withOpacity(0.7),
+                                              borderRadius: BorderRadius.circular(12),
+                                            ),
+                                            child: Text(
+                                              '${videoIndex + 1}/${videoList.length}',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+
+                                  const SizedBox(height: 6),
+                                  Text(
+                                    "Video ${videoIndex + 1}",
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
                               ),
                             );
                           },
                         ),
-                        const SizedBox(height: 6),
-                        Text(
-                          "Video ${videoIndex + 1}",
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
+
+                        // Left scroll indicator (if not at start)
+                        if (videoList.length > 1)
+                          Positioned(
+                            left: 0,
+                            top: 0,
+                            bottom: 30,
+                            child: Container(
+                              width: 40,
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight,
+                                  colors: [
+                                    Colors.white,
+                                    Colors.white.withOpacity(0.0),
+                                  ],
+                                ),
+                              ),
+                              child: Center(
+                                child: Container(
+                                  padding: EdgeInsets.all(6),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    shape: BoxShape.circle,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.1),
+                                        blurRadius: 4,
+                                      ),
+                                    ],
+                                  ),
+                                  child: Icon(
+                                    Icons.chevron_left,
+                                    color: color_primary,
+                                    size: 20,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
+
+                        // Right scroll indicator (if more videos)
+                        if (videoList.length > 1)
+                          Positioned(
+                            right: 0,
+                            top: 0,
+                            bottom: 30,
+                            child: Container(
+                              width: 40,
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.centerRight,
+                                  end: Alignment.centerLeft,
+                                  colors: [
+                                    Colors.white,
+                                    Colors.white.withOpacity(0.0),
+                                  ],
+                                ),
+                              ),
+                              child: Center(
+                                child: Container(
+                                  padding: EdgeInsets.all(6),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    shape: BoxShape.circle,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.1),
+                                        blurRadius: 4,
+                                      ),
+                                    ],
+                                  ),
+                                  child: Icon(
+                                    Icons.chevron_right,
+                                    color: color_primary,
+                                    size: 20,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
                       ],
                     ),
-                  );
-                },
+                  ),
+
+                  // Dot indicators (like Instagram stories)
+                  if (videoList.length > 1)
+                    Container(
+                      padding: EdgeInsets.only(top: 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(
+                          videoList.length > 5 ? 5 : videoList.length,
+                              (index) {
+                            if (videoList.length > 5 && index == 4) {
+                              // Show "+X more" indicator
+                              return Container(
+                                margin: EdgeInsets.symmetric(horizontal: 3),
+                                padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: color_primary.withOpacity(0.2),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Text(
+                                  '+${videoList.length - 4}',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    color: color_primary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              );
+                            }
+                            return Container(
+                              margin: EdgeInsets.symmetric(horizontal: 3),
+                              width: 6,
+                              height: 6,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: color_primary.withOpacity(0.3),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ),
         ],

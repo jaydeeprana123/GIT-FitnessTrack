@@ -186,6 +186,8 @@ class _WorkoutListViewState extends State<WorkoutListView> {
                                     onTap: () {
                                       controller.selectedWorkoutData.value =
                                       controller.workoutList[index];
+
+
                                       Get.to(WorkoutDetailsView());
                                     },
                                   ),
