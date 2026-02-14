@@ -52,8 +52,6 @@ class _DayInOutViewState extends State<DayInOutView> {
 
   @override
   void initState() {
-
-
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       controller.isLoading.value = false;
       controller.isLocationFetch.value = false;
@@ -66,12 +64,12 @@ class _DayInOutViewState extends State<DayInOutView> {
       controller.isBackClose.value = false;
       setState(() {});
 
-      if(controller.statusResponse.value != "2"){
+      if (controller.statusResponse.value != "2") {
         /// In starting fetching the location
         _getCurrentPosition();
+
+        //  isUserWithinDistance(100);
       }
-
-
     });
 
     super.initState();
@@ -112,93 +110,102 @@ class _DayInOutViewState extends State<DayInOutView> {
 
               /// Here I change Temp
               body: (controller.isLocationFetch.value)
-                      ? Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                CircularProgressIndicator(),
-                                SizedBox(width: 16),
-                                Text(
-                                  "Fetching Location...",
-                                  style: TextStyle(fontSize: 16,fontFamily: fontInterBold, color: color_primary),
-                                ),
-                              ],
+                  ? Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CircularProgressIndicator(),
+                            SizedBox(width: 16),
+                            Text(
+                              "Fetching Location...",
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontFamily: fontInterBold,
+                                  color: color_primary),
                             ),
-                          ),
-                        )
-                      : (distanceFromGym != -1) && (distanceFromGym < 1)?Stack(
-                      children: [
-                        SingleChildScrollView(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                height: 50,
-                              ),
-                              controller.statusResponse.value == "2"
-                                  ? Center(
-                                      child: Text(
-                                      "Your attendance is submited",
-                                      style: TextStyle(fontSize: 18),
-                                    ))
-                                  : Center(
-                                      child: InkWell(
-                                        onTap: () async {
-                                          controller.isLoading.value = true;
+                          ],
+                        ),
+                      ),
+                    )
+                  : (distanceFromGym != -1) && (distanceFromGym < 1)
+                      ? Stack(
+                          children: [
+                            SingleChildScrollView(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    height: 50,
+                                  ),
+                                  controller.statusResponse.value == "2"
+                                      ? Center(
+                                          child: Text(
+                                          "Your attendance is submited",
+                                          style: TextStyle(fontSize: 18),
+                                        ))
+                                      : Center(
+                                          child: InkWell(
+                                            onTap: () async {
+                                              controller.isLoading.value = true;
 
-                                          controller.imagePath.value =
-                                              await openCamera(context);
+                                              controller.imagePath.value =
+                                                  await openCamera(context);
 
-                                          controller.isLoading.value = false;
+                                              controller.isLoading.value =
+                                                  false;
 
-                                          printData(
-                                              "controller.imagePath.value",
-                                              controller.imagePath.value);
-                                          setState(() {});
-                                        },
-                                        child:  Container(
-                                                child: Column(
-                                                  children: [
-                                                    ClipRRect(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              90.r),
-                                                      child: DottedBorder(
-                                                        dashPattern: [6, 3],
-                                                        strokeWidth: 1.5,
-                                                        color: hint_txt_909196,
-                                                        borderType:
-                                                            BorderType.Circle,
-                                                        radius:
-                                                            Radius.circular(50),
-                                                        child: (controller
-                                                            .imagePath.value.isNotEmpty)?Image.file(
-                                                          imageFile,
-                                                          fit: BoxFit.fill,
-                                                          height: 130,
-                                                          width: 130,
-                                                        ):Container(
-                                                          height: 130,
-                                                          width: 130,
-                                                          decoration:
-                                                              const BoxDecoration(
+                                              printData(
+                                                  "controller.imagePath.value",
+                                                  controller.imagePath.value);
+                                              setState(() {});
+                                            },
+                                            child: Container(
+                                              child: Column(
+                                                children: [
+                                                  ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            90.r),
+                                                    child: DottedBorder(
+                                                      dashPattern: [6, 3],
+                                                      strokeWidth: 1.5,
+                                                      color: hint_txt_909196,
+                                                      borderType:
+                                                          BorderType.Circle,
+                                                      radius:
+                                                          Radius.circular(50),
+                                                      child: (controller
+                                                              .imagePath
+                                                              .value
+                                                              .isNotEmpty)
+                                                          ? Image.file(
+                                                              imageFile,
+                                                              fit: BoxFit.fill,
+                                                              height: 130,
+                                                              width: 130,
+                                                            )
+                                                          : Container(
+                                                              height: 130,
+                                                              width: 130,
+                                                              decoration: const BoxDecoration(
                                                                   shape: BoxShape
                                                                       .circle,
                                                                   color:
                                                                       line_gray_e2e2e6),
-                                                          child: SizedBox(),
-                                                        ),
-                                                      ),
+                                                              child: SizedBox(),
+                                                            ),
                                                     ),
-                                                    SizedBox(
-                                                      height: 10.h,
-                                                    ),
-                                                    if(controller
-                                                        .imagePath.value.isEmpty) Text(
+                                                  ),
+                                                  SizedBox(
+                                                    height: 10.h,
+                                                  ),
+                                                  if (controller
+                                                      .imagePath.value.isEmpty)
+                                                    Text(
                                                       "Add Your Photo",
                                                       style: TextStyle(
                                                           color: const Color(
@@ -209,50 +216,15 @@ class _DayInOutViewState extends State<DayInOutView> {
                                                               FontStyle.normal,
                                                           fontSize: 11),
                                                     )
-                                                  ],
-                                                ),
+                                                ],
                                               ),
-                                      ),
-                                    ),
-                              SizedBox(
-                                height: 26,
-                              ),
-                              controller.statusResponse.value == "0"
-                                  ? Visibility(
-                                      visible: !controller.isButtonHide.value,
-                                      child: Center(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 38.0, right: 38),
-                                          child:
-                                              CommonGreenButton("SHIFT IN", () {
-                                            FocusScope.of(context).unfocus();
-
-                                            checkNet(context).then((value) {
-                                              if (controller
-                                                  .imagePath.isNotEmpty) {
-                                                controller.isLoading.value =
-                                                    true;
-                                                controller.isBackClose.value =
-                                                    true;
-                                                controller.isButtonHide.value =
-                                                    true;
-
-
-                                                controller.callDayInOutAPI(
-                                                    widget.shiftId,
-                                                    widget.branchId,
-                                                    "1");
-                                              } else {
-                                                snackBar(context,
-                                                    "Take your photo first");
-                                              }
-                                            });
-                                          }, button_Color),
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                    )
-                                  : controller.statusResponse.value == "1"
+                                  SizedBox(
+                                    height: 26,
+                                  ),
+                                  controller.statusResponse.value == "0"
                                       ? Visibility(
                                           visible:
                                               !controller.isButtonHide.value,
@@ -261,7 +233,7 @@ class _DayInOutViewState extends State<DayInOutView> {
                                               padding: const EdgeInsets.only(
                                                   left: 38.0, right: 38),
                                               child: CommonGreenButton(
-                                                  "SHIFT OUT", () {
+                                                  "SHIFT IN", () {
                                                 FocusScope.of(context)
                                                     .unfocus();
 
@@ -275,12 +247,10 @@ class _DayInOutViewState extends State<DayInOutView> {
                                                     controller.isButtonHide
                                                         .value = true;
 
-
-                                                    controller
-                                                        .callDayInOutAPI(
+                                                    controller.callDayInOutAPI(
                                                         widget.shiftId,
                                                         widget.branchId,
-                                                        "2");
+                                                        "1");
                                                   } else {
                                                     snackBar(context,
                                                         "Take your photo first");
@@ -291,30 +261,76 @@ class _DayInOutViewState extends State<DayInOutView> {
                                           ),
                                         )
                                       : controller.statusResponse.value == "1"
-                                          ? SizedBox()
-                                          : SizedBox(),
-                            ],
-                          ),
-                        ),
-                        controller.isLoading.value
-                            ? Center(
-                                child: CircularProgressIndicator(),
-                              )
-                            : SizedBox()
-                      ],
-                    ):(controller.statusResponse.value == "2")?Center(
-                child: CommonGreenButton(
-                    "Your attendance is submitted!\nThank You", () {
+                                          ? Visibility(
+                                              visible: !controller
+                                                  .isButtonHide.value,
+                                              child: Center(
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 38.0,
+                                                          right: 38),
+                                                  child: CommonGreenButton(
+                                                      "SHIFT OUT", () {
+                                                    FocusScope.of(context)
+                                                        .unfocus();
 
-                      Get.back();
+                                                    checkNet(context)
+                                                        .then((value) {
+                                                      if (controller.imagePath
+                                                          .isNotEmpty) {
+                                                        controller.isLoading
+                                                            .value = true;
+                                                        controller.isBackClose
+                                                            .value = true;
+                                                        controller.isButtonHide
+                                                            .value = true;
 
-                }, color_primary),
-              ):(distanceFromGym == -1)?Center(
-                child: CommonGreenButton(
-                    "Location not fetched. Please try again!", () {
-                  _getCurrentPosition();
-                }, color_primary),
-              ):SizedBox(),
+                                                        controller
+                                                            .callDayInOutAPI(
+                                                                widget.shiftId,
+                                                                widget.branchId,
+                                                                "2");
+                                                      } else {
+                                                        snackBar(context,
+                                                            "Take your photo first");
+                                                      }
+                                                    });
+                                                  }, button_Color),
+                                                ),
+                                              ),
+                                            )
+                                          : controller.statusResponse.value ==
+                                                  "1"
+                                              ? SizedBox()
+                                              : SizedBox(),
+                                ],
+                              ),
+                            ),
+                            controller.isLoading.value
+                                ? Center(
+                                    child: CircularProgressIndicator(),
+                                  )
+                                : SizedBox()
+                          ],
+                        )
+                      : (controller.statusResponse.value == "2")
+                          ? Center(
+                              child: CommonGreenButton(
+                                  "Your attendance is submitted!\nThank You",
+                                  () {
+                                Get.back();
+                              }, color_primary),
+                            )
+                          : (distanceFromGym == -1)
+                              ? Center(
+                                  child: CommonGreenButton(
+                                      "Location not fetched. Please try again!",
+                                      () {
+                                    _getCurrentPosition();
+                                  }, color_primary),
+                                )
+                              : SizedBox(),
             ),
           ),
         ));
@@ -380,8 +396,14 @@ class _DayInOutViewState extends State<DayInOutView> {
         return;
       }
 
-      final branchLat = double.parse(controller.dashboardData.value.branchLatData.toString());
-      final branchLong = double.parse(controller.dashboardData.value.branchLongData.toString());
+      printData("branch lat",
+          controller.dashboardData.value.branchLatData.toString());
+      printData("branch long",
+          controller.dashboardData.value.branchLongData.toString());
+      final branchLat =
+          double.parse(controller.dashboardData.value.branchLatData.toString());
+      final branchLong = double.parse(
+          controller.dashboardData.value.branchLongData.toString());
 
       distanceFromGym = calculateDistance(
         branchLat,
@@ -399,8 +421,7 @@ class _DayInOutViewState extends State<DayInOutView> {
       if (distanceFromGym > 1) {
         _showLocationErrorDialog();
         return;
-      }else{
-
+      } else {
         /// When location is fetched. Time will taken
         DateTime now = DateTime.now();
         controller.currentTime = DateFormat('HH:mm:ss').format(now);
@@ -437,9 +458,6 @@ class _DayInOutViewState extends State<DayInOutView> {
       barrierDismissible: false,
     );
   }
-
-
-
 
   // Future<void> _getCurrentPosition(String attendanceType) async {
   //   controller.isLocationFetch.value = true;
@@ -554,8 +572,8 @@ class _DayInOutViewState extends State<DayInOutView> {
   //   });
   // }
 
-  Future<void> _showLocationPermissionAlertDialog(bool isPermanentDenied,
-      LocationPermission permission) async {
+  Future<void> _showLocationPermissionAlertDialog(
+      bool isPermanentDenied, LocationPermission permission) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -610,7 +628,6 @@ class _DayInOutViewState extends State<DayInOutView> {
     super.dispose();
   }
 
-
   /// Show location fetching progress bar
   void showProgressDialog(BuildContext context, String message) {
     showDialog(
@@ -641,5 +658,4 @@ class _DayInOutViewState extends State<DayInOutView> {
       },
     );
   }
-
 }
