@@ -62,30 +62,96 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 // ============================================================================
 // VIDEO LIMIT TRACKER - PREVENTS TOO MANY VIDEOS
 // ============================================================================
-class VideoLimitTracker {
-  static final VideoLimitTracker instance = VideoLimitTracker._();
-  VideoLimitTracker._();
+import 'dart:developer';
+import 'dart:typed_data';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:video_player/video_player.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:visibility_detector/visibility_detector.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-  final Set<String> _activeVideos = {};
-  static const int MAX_ACTIVE = 2;
+// Add your imports here
+// import 'your_constants.dart';
+// import 'your_controller.dart';
 
-  bool canActivate(String id) {
-    return _activeVideos.length < MAX_ACTIVE || _activeVideos.contains(id);
+import 'dart:developer';
+import 'dart:typed_data';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:video_player/video_player.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:visibility_detector/visibility_detector.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+// Add your imports here
+// import 'your_constants.dart';
+// import 'your_controller.dart';
+
+// ============================================================================
+// VIDEO CONTROLLER LIMITER - PREVENTS CRASHES
+import 'dart:developer';
+import 'dart:typed_data';
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:video_player/video_player.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:visibility_detector/visibility_detector.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+// TODO: Add your imports here
+// import 'your_constants.dart';  // For colors and fonts
+// import 'your_controller.dart'; // For WorkoutController
+
+import 'dart:developer';
+import 'dart:typed_data';
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:video_player/video_player.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:visibility_detector/visibility_detector.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+// TODO: Add your imports here
+// import 'your_constants.dart';  // For colors and fonts
+// import 'your_controller.dart'; // For WorkoutController
+
+// ============================================================================
+// VIDEO CONTROLLER LIMITER - PREVENTS CRASHES
+// ============================================================================
+class VideoControllerLimiter {
+  static final VideoControllerLimiter _instance = VideoControllerLimiter._();
+  factory VideoControllerLimiter() => _instance;
+  VideoControllerLimiter._();
+
+  int _activeCount = 0;
+  static const int MAX_VIDEOS = 2;
+
+  bool canCreate() => _activeCount < MAX_VIDEOS;
+
+  void increment() {
+    _activeCount++;
+    print('📹 Active: $_activeCount/$MAX_VIDEOS');
   }
 
-  void activate(String id) {
-    _activeVideos.add(id);
+  void decrement() {
+    if (_activeCount > 0) _activeCount--;
+    print('📹 Active: $_activeCount/$MAX_VIDEOS');
   }
 
-  void deactivate(String id) {
-    _activeVideos.remove(id);
+  void reset() {
+    _activeCount = 0;
   }
-
-  void clear() {
-    _activeVideos.clear();
-  }
-
-  int get activeCount => _activeVideos.length;
 }
 
 // ============================================================================
@@ -104,8 +170,7 @@ class _WorkoutDetailsViewState extends State<WorkoutDetailsView> {
   @override
   void initState() {
     super.initState();
-    log(":::::::::::::::WorkoutDetailsView InitState::::::::::");
-
+    log("WorkoutDetailsView InitState");
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await controller.getUserInfo();
     });
@@ -113,7 +178,7 @@ class _WorkoutDetailsViewState extends State<WorkoutDetailsView> {
 
   @override
   void dispose() {
-    VideoLimitTracker.instance.clear();
+    VideoControllerLimiter().reset();
     super.dispose();
   }
 
@@ -159,16 +224,7 @@ class _WorkoutDetailsViewState extends State<WorkoutDetailsView> {
                 Row(
                   children: [
                     Text(
-                        "From : " +
-                            (getDateOnly((controller.selectedWorkoutData
-                                .value.workoutDate ??
-                                DateTime(2023))
-                                .toString())) +
-                            "  To : " +
-                            (getDateOnly((controller.selectedWorkoutData
-                                .value.dueDate ??
-                                DateTime(2023))
-                                .toString())),
+                        "From : ${getDateOnly((controller.selectedWorkoutData.value.workoutDate ?? DateTime(2023)).toString())}  To : ${getDateOnly((controller.selectedWorkoutData.value.dueDate ?? DateTime(2023)).toString())}",
                         style: TextStyle(
                             color: text_color,
                             fontSize: 14,
@@ -183,141 +239,24 @@ class _WorkoutDetailsViewState extends State<WorkoutDetailsView> {
                         fontSize: 14,
                         fontFamily: fontInterRegular)),
                 SizedBox(height: 20),
-
-                // WARM UP SECTION
                 Text("WARM UP",
                     style: TextStyle(
                         color: text_color,
                         fontSize: 16,
                         fontFamily: fontInterSemiBold)),
                 SizedBox(height: 8),
-
-                Row(
-                  children: [
-                    Expanded(
-                      flex: 3,
-                      child: Text("Training Schedule",
-                          style: TextStyle(
-                              color: text_color,
-                              fontSize: 13,
-                              fontFamily: fontInterSemiBold)),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: Text("SETS",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color: text_color,
-                              fontSize: 13,
-                              fontFamily: fontInterSemiBold)),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: Text("REP",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color: text_color,
-                              fontSize: 13,
-                              fontFamily: fontInterSemiBold)),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: Text("WEIGHT",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color: text_color,
-                              fontSize: 13,
-                              fontFamily: fontInterSemiBold)),
-                    )
-                  ],
-                ),
-
-                ListView.builder(
-                  scrollDirection: Axis.vertical,
-                  primary: false,
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount:
-                  (controller.selectedWorkoutData.value.warmupList ?? [])
-                      .length,
-                  itemBuilder: (context, index) => Container(
-                    margin: EdgeInsets.only(top: 8),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          flex: 3,
-                          child: Text(
-                              controller.selectedWorkoutData.value
-                                  .warmupList?[index].masterWorkoutName ??
-                                  "",
-                              style: TextStyle(
-                                  color: text_color,
-                                  fontSize: 13,
-                                  fontFamily: fontInterRegular)),
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: Text(
-                              controller.selectedWorkoutData.value
-                                  .warmupList?[index].sets ??
-                                  "",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: text_color,
-                                  fontSize: 13,
-                                  fontFamily: fontInterRegular)),
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: Text(
-                              controller.selectedWorkoutData.value
-                                  .warmupList?[index].repeatNo ??
-                                  "",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: text_color,
-                                  fontSize: 13,
-                                  fontFamily: fontInterRegular)),
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: Text(
-                              controller.selectedWorkoutData.value
-                                  .warmupList?[index].repeatTime ??
-                                  "",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: text_color,
-                                  fontSize: 13,
-                                  fontFamily: fontInterRegular)),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
+                _buildTableHeader(),
+                _buildWarmupList(),
                 SizedBox(height: 16),
                 Container(color: grey_f0f0f0, height: 2),
                 SizedBox(height: 16),
-
-                // EXERCISE ROUTINE SECTION
                 Text("EXERCISE ROUTINE",
                     style: TextStyle(
                         color: text_color,
                         fontSize: 16,
                         fontFamily: fontInterSemiBold)),
                 SizedBox(height: 4),
-
-                ListView.builder(
-                  scrollDirection: Axis.vertical,
-                  primary: false,
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: (controller.selectedWorkoutData.value
-                      .workoutTrainingList ?? [])
-                      .length,
-                  itemBuilder: (context, index) => _buildDaySection(index),
-                ),
+                _buildExerciseList(),
               ],
             ),
           ),
@@ -326,143 +265,64 @@ class _WorkoutDetailsViewState extends State<WorkoutDetailsView> {
     );
   }
 
-  Widget _buildDaySection(int index) {
-    return Container(
-      margin: EdgeInsets.only(top: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-              "Day " +
-                  (controller.selectedWorkoutData.value
-                      .workoutTrainingList?[index].day ??
-                      ""),
+  Widget _buildTableHeader() {
+    return Row(
+      children: [
+        Expanded(
+          flex: 3,
+          child: Text("Training Schedule",
               style: TextStyle(
                   color: text_color,
-                  fontSize: 14,
+                  fontSize: 13,
                   fontFamily: fontInterSemiBold)),
-          ListView.builder(
-            scrollDirection: Axis.vertical,
-            primary: false,
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: (controller.selectedWorkoutData.value
-                .workoutTrainingList?[index].workoutTrainingCategory ??
-                [])
-                .length,
-            itemBuilder: (context, j) => _buildCategorySection(index, j),
-          ),
-          SizedBox(height: 12),
-          Row(
-            children: List.generate(
-                150 ~/ 2,
-                    (i) => Expanded(
-                  child: Container(
-                    color: i % 2 == 0 ? Colors.transparent : Colors.grey,
-                    height: 1,
-                  ),
-                )),
-          ),
-          SizedBox(height: 2),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCategorySection(int dayIndex, int catIndex) {
-    return Container(
-      margin: EdgeInsets.only(top: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(height: 6),
-          Text(
-              controller.selectedWorkoutData.value
-                  .workoutTrainingList?[dayIndex]
-                  .workoutTrainingCategory?[catIndex]
-                  .workoutTrainingCategoryName ??
-                  "",
+        ),
+        Expanded(
+          flex: 1,
+          child: Text("SETS",
+              textAlign: TextAlign.center,
               style: TextStyle(
-                  color: Colors.red,
-                  fontSize: 15,
+                  color: text_color,
+                  fontSize: 13,
                   fontFamily: fontInterSemiBold)),
-          SizedBox(height: 6),
-          Row(
-            children: [
-              Expanded(
-                flex: 3,
-                child: Text("Training Schedule",
-                    style: TextStyle(
-                        color: text_color,
-                        fontSize: 13,
-                        fontFamily: fontInterSemiBold)),
-              ),
-              Expanded(
-                flex: 1,
-                child: Text("SETS",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: text_color,
-                        fontSize: 13,
-                        fontFamily: fontInterSemiBold)),
-              ),
-              Expanded(
-                flex: 1,
-                child: Text("REP",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: text_color,
-                        fontSize: 13,
-                        fontFamily: fontInterSemiBold)),
-              ),
-              Expanded(
-                flex: 1,
-                child: Text("WEIGHT",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: text_color,
-                        fontSize: 13,
-                        fontFamily: fontInterSemiBold)),
-              )
-            ],
-          ),
-          ListView.builder(
-            scrollDirection: Axis.vertical,
-            primary: false,
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: (controller.selectedWorkoutData.value
-                .workoutTrainingList?[dayIndex]
-                .workoutTrainingCategory?[catIndex]
-                .workoutTrainingSubCategory ??
-                [])
-                .length,
-            itemBuilder: (context, subIndex) =>
-                _buildExerciseRow(dayIndex, catIndex, subIndex),
-          ),
-        ],
-      ),
+        ),
+        Expanded(
+          flex: 1,
+          child: Text("REP",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: text_color,
+                  fontSize: 13,
+                  fontFamily: fontInterSemiBold)),
+        ),
+        Expanded(
+          flex: 1,
+          child: Text("WEIGHT",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: text_color,
+                  fontSize: 13,
+                  fontFamily: fontInterSemiBold)),
+        )
+      ],
     );
   }
 
-  Widget _buildExerciseRow(int dayIndex, int catIndex, int subIndex) {
-    final exercise = controller.selectedWorkoutData.value
-        .workoutTrainingList?[dayIndex]
-        .workoutTrainingCategory?[catIndex]
-        .workoutTrainingSubCategory?[subIndex];
-
-    final videoList = exercise?.workoutDetailVideoList ?? [];
-
-    return Container(
-      margin: EdgeInsets.only(top: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+  Widget _buildWarmupList() {
+    return ListView.builder(
+      scrollDirection: Axis.vertical,
+      primary: false,
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      itemCount: (controller.selectedWorkoutData.value.warmupList ?? []).length,
+      itemBuilder: (context, index) {
+        final warmup = controller.selectedWorkoutData.value.warmupList?[index];
+        return Container(
+          margin: EdgeInsets.only(top: 8),
+          child: Row(
             children: [
               Expanded(
                 flex: 3,
-                child: Text(exercise?.workoutDetailName ?? "",
+                child: Text(warmup?.masterWorkoutName ?? "",
                     style: TextStyle(
                         color: text_color,
                         fontSize: 13,
@@ -470,7 +330,7 @@ class _WorkoutDetailsViewState extends State<WorkoutDetailsView> {
               ),
               Expanded(
                 flex: 1,
-                child: Text(exercise?.sets ?? "",
+                child: Text(warmup?.sets ?? "",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         color: text_color,
@@ -479,7 +339,7 @@ class _WorkoutDetailsViewState extends State<WorkoutDetailsView> {
               ),
               Expanded(
                 flex: 1,
-                child: Text(exercise?.repeatNo ?? "",
+                child: Text(warmup?.repeatNo ?? "",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         color: text_color,
@@ -488,7 +348,7 @@ class _WorkoutDetailsViewState extends State<WorkoutDetailsView> {
               ),
               Expanded(
                 flex: 1,
-                child: Text(exercise?.repeatTime ?? "",
+                child: Text(warmup?.repeatTime ?? "",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         color: text_color,
@@ -497,313 +357,377 @@ class _WorkoutDetailsViewState extends State<WorkoutDetailsView> {
               ),
             ],
           ),
+        );
+      },
+    );
+  }
 
-          // VIDEO SECTION - EACH WIDGET OWNS ITS CONTROLLER
-          // ADD THIS TO YOUR EXISTING CODE
-// Replace the video section in _buildExerciseRow method
+  Widget _buildExerciseList() {
+    return ListView.builder(
+      scrollDirection: Axis.vertical,
+      primary: false,
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      itemCount:
+      (controller.selectedWorkoutData.value.workoutTrainingList ?? [])
+          .length,
+      itemBuilder: (context, dayIndex) {
+        final day = controller.selectedWorkoutData.value
+            .workoutTrainingList?[dayIndex];
+        return Container(
+          margin: EdgeInsets.only(top: 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
 
-// VIDEO SECTION - WITH SCROLL INDICATORS
-          if (videoList.isNotEmpty)
-            Container(
-              margin: EdgeInsets.only(top: 8, bottom: 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Video count indicator
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: Row(
+              if(dayIndex != 0)SizedBox(height: 20,),
+
+              Container(
+                width: double.infinity,
+                color: color_primary,
+                alignment: Alignment.center,
+                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                child: Text("Day ${day?.day ?? ""}",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontFamily: fontInterSemiBold)),
+              ),
+              ListView.builder(
+                scrollDirection: Axis.vertical,
+                primary: false,
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: (day?.workoutTrainingCategory ?? []).length,
+                itemBuilder: (context, catIndex) {
+                  final category = day?.workoutTrainingCategory?[catIndex];
+                  return Container(
+                    margin: EdgeInsets.only(top: 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(Icons.video_library, size: 18, color: color_primary),
-                        SizedBox(width: 6),
-                        Text(
-                          '${videoList.length} ${videoList.length == 1 ? 'Video' : 'Videos'}',
-                          style: TextStyle(
-                            color: color_primary,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            fontFamily: fontInterSemiBold,
-                          ),
-                        ),
-                        SizedBox(width: 8),
-                        if (videoList.length > 1)
-                          Container(
-                            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                            decoration: BoxDecoration(
-                              color: color_primary.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: color_primary.withOpacity(0.3)),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(Icons.swipe_left, size: 14, color: color_primary),
-                                SizedBox(width: 4),
-                                Text(
-                                  'Swipe',
-                                  style: TextStyle(
-                                    color: color_primary,
-                                    fontSize: 11,
-                                    fontFamily: fontInterMedium,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-
-                  // Video horizontal scroll with indicators
-                  Container(
-                    height: 240,
-                    child: Stack(
-                      children: [
-                        // Video ListView
+                        SizedBox(height: 6),
+                        Text(category?.workoutTrainingCategoryName ?? "",
+                            style: TextStyle(
+                                color: Colors.red,
+                                fontSize: 15,
+                                fontFamily: fontInterSemiBold)),
+                        SizedBox(height: 6),
+                        _buildTableHeader(),
                         ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          physics: const BouncingScrollPhysics(),
-                          padding: EdgeInsets.symmetric(horizontal: 4),
-                          itemCount: videoList.length,
-                          itemBuilder: (context, videoIndex) {
-                            final videoPath = videoList[videoIndex].video ?? "";
-                            final exerciseName = exercise?.workoutDetailName ?? "";
-
+                          scrollDirection: Axis.vertical,
+                          primary: false,
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount:
+                          (category?.workoutTrainingSubCategory ?? [])
+                              .length,
+                          itemBuilder: (context, subIndex) {
+                            final exercise =
+                            category?.workoutTrainingSubCategory?[subIndex];
+                            final videos = exercise?.workoutDetailVideoList ?? [];
                             return Container(
-                              margin: const EdgeInsets.symmetric(horizontal: 8),
+                              margin: EdgeInsets.only(top: 8),
                               child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  // Video card with shadow and border
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(12),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.1),
-                                          blurRadius: 8,
-                                          offset: Offset(0, 2),
-                                        ),
-                                      ],
-                                    ),
-                                    child: Stack(
-                                      children: [
-                                        InstagramVideoWidget(
-                                          videoUrl: videoPath,
-                                          uniqueId: 'video_${dayIndex}_${catIndex}_${subIndex}_$videoIndex',
-                                          onTap: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) => VideoPlayerPage(
-                                                  videoPath: videoPath,
-                                                  exerciseName: exerciseName,
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                        ),
-
-                                        // Video number badge
-                                        Positioned(
-                                          top: 8,
-                                          left: 8,
-                                          child: Container(
-                                            padding: EdgeInsets.symmetric(
-                                              horizontal: 8,
-                                              vertical: 4,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: Colors.black.withOpacity(0.7),
-                                              borderRadius: BorderRadius.circular(12),
-                                            ),
-                                            child: Text(
-                                              '${videoIndex + 1}/${videoList.length}',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        flex: 3,
+                                        child: Text(
+                                            exercise?.workoutDetailName ?? "",
+                                            style: TextStyle(
+                                                color: text_color,
+                                                fontSize: 13,
+                                                fontFamily: fontInterRegular)),
+                                      ),
+                                      Expanded(
+                                        flex: 1,
+                                        child: Text(exercise?.sets ?? "",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: text_color,
+                                                fontSize: 13,
+                                                fontFamily: fontInterRegular)),
+                                      ),
+                                      Expanded(
+                                        flex: 1,
+                                        child: Text(exercise?.repeatNo ?? "",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: text_color,
+                                                fontSize: 13,
+                                                fontFamily: fontInterRegular)),
+                                      ),
+                                      Expanded(
+                                        flex: 1,
+                                        child: Text(exercise?.repeatTime ?? "",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: text_color,
+                                                fontSize: 13,
+                                                fontFamily: fontInterRegular)),
+                                      ),
+                                    ],
                                   ),
-
-                                  const SizedBox(height: 6),
-                                  Text(
-                                    "Video ${videoIndex + 1}",
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
+                                  if (videos.isNotEmpty)
+                                    _buildVideoSection(videos, exercise?.workoutDetailName ?? ""),
                                 ],
                               ),
                             );
                           },
                         ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+              SizedBox(height: 12),
+              Row(
+                children: List.generate(
+                    75,
+                        (i) => Expanded(
+                      child: Container(
+                        color: i % 2 == 0 ? Colors.transparent : Colors.grey,
+                        height: 1,
+                      ),
+                    )),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
-                        // Left scroll indicator (if not at start)
-                        if (videoList.length > 1)
-                          Positioned(
-                            left: 0,
-                            top: 0,
-                            bottom: 30,
-                            child: Container(
-                              width: 40,
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.centerLeft,
-                                  end: Alignment.centerRight,
-                                  colors: [
-                                    Colors.white,
-                                    Colors.white.withOpacity(0.0),
-                                  ],
-                                ),
-                              ),
-                              child: Center(
-                                child: Container(
-                                  padding: EdgeInsets.all(6),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    shape: BoxShape.circle,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withOpacity(0.1),
-                                        blurRadius: 4,
-                                      ),
-                                    ],
-                                  ),
-                                  child: Icon(
-                                    Icons.chevron_left,
-                                    color: color_primary,
-                                    size: 20,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-
-                        // Right scroll indicator (if more videos)
-                        if (videoList.length > 1)
-                          Positioned(
-                            right: 0,
-                            top: 0,
-                            bottom: 30,
-                            child: Container(
-                              width: 40,
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.centerRight,
-                                  end: Alignment.centerLeft,
-                                  colors: [
-                                    Colors.white,
-                                    Colors.white.withOpacity(0.0),
-                                  ],
-                                ),
-                              ),
-                              child: Center(
-                                child: Container(
-                                  padding: EdgeInsets.all(6),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    shape: BoxShape.circle,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withOpacity(0.1),
-                                        blurRadius: 4,
-                                      ),
-                                    ],
-                                  ),
-                                  child: Icon(
-                                    Icons.chevron_right,
-                                    color: color_primary,
-                                    size: 20,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
+  Widget _buildVideoSection(List videos, String exerciseName) {
+    return Container(
+      margin: EdgeInsets.only(top: 8, bottom: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Row(
+              children: [
+                Icon(Icons.video_library, size: 18, color: color_primary),
+                SizedBox(width: 6),
+                Text(
+                  '${videos.length} ${videos.length == 1 ? 'Video' : 'Videos'}',
+                  style: TextStyle(
+                    color: color_primary,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    fontFamily: fontInterSemiBold,
+                  ),
+                ),
+                SizedBox(width: 8),
+                if (videos.length > 1)
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: color_primary.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: color_primary.withOpacity(0.3)),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.swipe_left, size: 14, color: color_primary),
+                        SizedBox(width: 4),
+                        Text('Swipe',
+                            style: TextStyle(
+                              color: color_primary,
+                              fontSize: 11,
+                              fontFamily: fontInterMedium,
+                            )),
                       ],
                     ),
                   ),
-
-                  // Dot indicators (like Instagram stories)
-                  if (videoList.length > 1)
-                    Container(
-                      padding: EdgeInsets.only(top: 8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(
-                          videoList.length > 5 ? 5 : videoList.length,
-                              (index) {
-                            if (videoList.length > 5 && index == 4) {
-                              // Show "+X more" indicator
-                              return Container(
-                                margin: EdgeInsets.symmetric(horizontal: 3),
-                                padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                decoration: BoxDecoration(
-                                  color: color_primary.withOpacity(0.2),
-                                  borderRadius: BorderRadius.circular(8),
+              ],
+            ),
+          ),
+          Container(
+            height: 280,
+            child: Stack(
+              children: [
+                ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  physics: const BouncingScrollPhysics(),
+                  padding: EdgeInsets.symmetric(horizontal: 4),
+                  itemCount: videos.length,
+                  itemBuilder: (context, videoIndex) {
+                    final videoPath = videos[videoIndex].video ?? "";
+                    return Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 8),
+                      child: Column(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  blurRadius: 8,
+                                  offset: Offset(0, 2),
                                 ),
-                                child: Text(
-                                  '+${videoList.length - 4}',
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    color: color_primary,
-                                    fontWeight: FontWeight.bold,
+                              ],
+                            ),
+                            child: Stack(
+                              children: [
+                                SimpleAutoPlayVideo(
+                                  videoUrl: videoPath,
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => VideoPlayerPage(
+                                          videoPath: videoPath,
+                                          exerciseName: exerciseName,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                                Positioned(
+                                  top: 8,
+                                  left: 8,
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 4),
+                                    decoration: BoxDecoration(
+                                      color: Colors.black.withOpacity(0.7),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Text(
+                                      '${videoIndex + 1}/${videos.length}',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              );
-                            }
-                            return Container(
-                              margin: EdgeInsets.symmetric(horizontal: 3),
-                              width: 6,
-                              height: 6,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: color_primary.withOpacity(0.3),
-                              ),
-                            );
-                          },
-                        ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Text("Video ${videoIndex + 1}",
+                              style: const TextStyle(
+                                  fontSize: 14, fontWeight: FontWeight.w500)),
+                        ],
                       ),
-                    ),
-                ],
-              ),
+                    );
+                  },
+                ),
+                if (videos.length > 1) _buildScrollArrow(true),
+                if (videos.length > 1) _buildScrollArrow(false),
+              ],
             ),
+          ),
+          if (videos.length > 1) _buildDotIndicators(videos.length),
         ],
+      ),
+    );
+  }
+
+  Widget _buildScrollArrow(bool isLeft) {
+    return Positioned(
+      left: isLeft ? 0 : null,
+      right: isLeft ? null : 0,
+      top: 0,
+      bottom: 30,
+      child: Container(
+        width: 40,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: isLeft ? Alignment.centerLeft : Alignment.centerRight,
+            end: isLeft ? Alignment.centerRight : Alignment.centerLeft,
+            colors: [Colors.white, Colors.white.withOpacity(0.0)],
+          ),
+        ),
+        child: Center(
+          child: Container(
+            padding: EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 4),
+              ],
+            ),
+            child: Icon(
+              isLeft ? Icons.chevron_left : Icons.chevron_right,
+              color: color_primary,
+              size: 20,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDotIndicators(int count) {
+    return Container(
+      padding: EdgeInsets.only(top: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: List.generate(count > 5 ? 5 : count, (index) {
+          if (count > 5 && index == 4) {
+            return Container(
+              margin: EdgeInsets.symmetric(horizontal: 3),
+              padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              decoration: BoxDecoration(
+                color: color_primary.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text('+${count - 4}',
+                  style: TextStyle(
+                      fontSize: 10,
+                      color: color_primary,
+                      fontWeight: FontWeight.bold)),
+            );
+          }
+          return Container(
+            margin: EdgeInsets.symmetric(horizontal: 3),
+            width: 6,
+            height: 6,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: color_primary.withOpacity(0.3),
+            ),
+          );
+        }),
       ),
     );
   }
 }
 
 // ============================================================================
-// INSTAGRAM VIDEO WIDGET - OWNS ITS OWN CONTROLLER
+// AUTO-PLAY VIDEO WIDGET - OPTIMIZED FOR MOBILE DATA
 // ============================================================================
-class InstagramVideoWidget extends StatefulWidget {
+class SimpleAutoPlayVideo extends StatefulWidget {
   final String videoUrl;
-  final String uniqueId;
   final VoidCallback onTap;
 
-  const InstagramVideoWidget({
+  const SimpleAutoPlayVideo({
     Key? key,
     required this.videoUrl,
-    required this.uniqueId,
     required this.onTap,
   }) : super(key: key);
 
   @override
-  State<InstagramVideoWidget> createState() => _InstagramVideoWidgetState();
+  State<SimpleAutoPlayVideo> createState() => _SimpleAutoPlayVideoState();
 }
 
-class _InstagramVideoWidgetState extends State<InstagramVideoWidget> {
+class _SimpleAutoPlayVideoState extends State<SimpleAutoPlayVideo> {
   VideoPlayerController? _controller;
   Uint8List? _thumbnail;
   bool _showVideo = false;
   bool _disposed = false;
-  bool _isActive = false;
+  bool _hasController = false;
 
   @override
   void initState() {
@@ -816,8 +740,8 @@ class _InstagramVideoWidgetState extends State<InstagramVideoWidget> {
       final thumb = await VideoThumbnail.thumbnailData(
         video: widget.videoUrl,
         imageFormat: ImageFormat.JPEG,
-        maxWidth: 250,
-        quality: 70,
+        maxWidth: 150,
+        quality: 100,
       );
       if (!_disposed && mounted) {
         setState(() => _thumbnail = thumb);
@@ -827,24 +751,24 @@ class _InstagramVideoWidgetState extends State<InstagramVideoWidget> {
     }
   }
 
-  Future<void> _activateVideo() async {
-    if (_disposed || _controller != null) return;
+  Future<void> _initVideo() async {
+    if (_disposed || _hasController) return;
 
-    // Check if we can activate
-    if (!VideoLimitTracker.instance.canActivate(widget.uniqueId)) {
-      print('Video limit reached, cannot activate ${widget.uniqueId}');
+    if (!VideoControllerLimiter().canCreate()) {
+      print('⚠️ Limit reached');
       return;
     }
 
     try {
-      VideoLimitTracker.instance.activate(widget.uniqueId);
-      _isActive = true;
+      VideoControllerLimiter().increment();
+      _hasController = true;
 
-      final fileInfo = await DefaultCacheManager().getFileFromCache(widget.videoUrl);
+      final fileInfo = await DefaultCacheManager()
+          .getFileFromCache(widget.videoUrl)
+          .timeout(Duration(seconds: 3), onTimeout: () => null);
 
       if (_disposed) {
-        VideoLimitTracker.instance.deactivate(widget.uniqueId);
-        _isActive = false;
+        await _cleanup();
         return;
       }
 
@@ -856,57 +780,59 @@ class _InstagramVideoWidgetState extends State<InstagramVideoWidget> {
       }
 
       if (_disposed) {
-        await _cleanupController();
+        await _cleanup();
         return;
       }
 
-      await _controller!.initialize();
+      await _controller!.initialize().timeout(
+        Duration(seconds: 10),
+        onTimeout: () => throw TimeoutException('Init timeout'),
+      );
 
       if (_disposed) {
-        await _cleanupController();
+        await _cleanup();
         return;
       }
 
       _controller!.setLooping(true);
       _controller!.setVolume(0);
+      await Future.delayed(Duration(milliseconds: 50));
+
+      if (_disposed) {
+        await _cleanup();
+        return;
+      }
+
       _controller!.play();
 
       if (!_disposed && mounted) {
         setState(() => _showVideo = true);
       }
+    } on TimeoutException {
+      print('Video timeout');
+      await _cleanup();
     } catch (e) {
-      print('Video activation error: $e');
-      await _cleanupController();
+      print('Video error: $e');
+      await _cleanup();
     }
   }
 
-  Future<void> _deactivateVideo() async {
-    if (!_isActive) return;
-
-    VideoLimitTracker.instance.deactivate(widget.uniqueId);
-    _isActive = false;
-
-    if (_showVideo && mounted) {
-      setState(() => _showVideo = false);
-    }
-
-    await _cleanupController();
-  }
-
-  Future<void> _cleanupController() async {
+  Future<void> _cleanup() async {
     if (_controller != null) {
       try {
         await _controller!.pause();
         await _controller!.dispose();
-      } catch (e) {
-        print('Cleanup error: $e');
-      }
+      } catch (e) {}
       _controller = null;
     }
 
-    if (_isActive) {
-      VideoLimitTracker.instance.deactivate(widget.uniqueId);
-      _isActive = false;
+    if (_hasController) {
+      VideoControllerLimiter().decrement();
+      _hasController = false;
+    }
+
+    if (mounted && _showVideo) {
+      setState(() => _showVideo = false);
     }
   }
 
@@ -914,21 +840,17 @@ class _InstagramVideoWidgetState extends State<InstagramVideoWidget> {
     if (_disposed) return;
 
     if (fraction > 0.7) {
-      // Visible - activate
-      if (!_isActive) {
-        _activateVideo();
+      if (_controller == null && !_hasController) {
+        _initVideo();
       } else if (_controller != null && !_showVideo) {
         try {
           _controller!.play();
           if (mounted) setState(() => _showVideo = true);
-        } catch (e) {
-          print('Play error: $e');
-        }
+        } catch (e) {}
       }
-    } else if (fraction < 0.3) {
-      // Not visible - deactivate to free slot
-      if (_isActive) {
-        _deactivateVideo();
+    } else if (fraction < 0.2) {
+      if (_hasController) {
+        _cleanup();
       }
     }
   }
@@ -936,25 +858,24 @@ class _InstagramVideoWidgetState extends State<InstagramVideoWidget> {
   @override
   void dispose() {
     _disposed = true;
-    _showVideo = false;
-    _cleanupController();
+    _cleanup();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     if (_disposed) {
-      return const SizedBox(width: 280, height: 180);
+      return Container(width: 320, height: 220, color: Colors.grey[300]);
     }
 
     return GestureDetector(
       onTap: widget.onTap,
       child: VisibilityDetector(
-        key: Key(widget.uniqueId),
-        onVisibilityChanged: (info) => _onVisibilityChanged(info.visibleFraction),
+        key: Key('v_${widget.videoUrl}_$hashCode'),
+        onVisibilityChanged: (i) => _onVisibilityChanged(i.visibleFraction),
         child: Container(
-          width: 280,
-          height: 180,
+          width: 320,
+          height: 220,
           decoration: BoxDecoration(
             color: Colors.black,
             borderRadius: BorderRadius.circular(12),
@@ -964,13 +885,19 @@ class _InstagramVideoWidgetState extends State<InstagramVideoWidget> {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                // Thumbnail
                 if (_thumbnail != null)
-                  Image.memory(_thumbnail!, fit: BoxFit.cover),
-
-                // Video - ONLY if controller is valid and not disposed
+                  Image.memory(_thumbnail!, fit: BoxFit.cover)
+                else
+                  Container(
+                    color: Colors.grey[800],
+                    child: Center(
+                      child: CircularProgressIndicator(
+                          color: Colors.white, strokeWidth: 2),
+                    ),
+                  ),
                 if (_showVideo &&
                     !_disposed &&
+                    _hasController &&
                     _controller != null &&
                     _controller!.value.isInitialized)
                   FittedBox(
@@ -981,9 +908,15 @@ class _InstagramVideoWidgetState extends State<InstagramVideoWidget> {
                       child: VideoPlayer(_controller!),
                     ),
                   ),
-
-                // Play icon
-                if (!_showVideo && _thumbnail != null)
+                if (_hasController && !_showVideo && _thumbnail != null)
+                  Container(
+                    color: Colors.black.withOpacity(0.5),
+                    child: Center(
+                      child: CircularProgressIndicator(
+                          color: Colors.white, strokeWidth: 2),
+                    ),
+                  ),
+                if (!_showVideo && !_hasController && _thumbnail != null)
                   Center(
                     child: Container(
                       padding: const EdgeInsets.all(12),
@@ -991,16 +924,11 @@ class _InstagramVideoWidgetState extends State<InstagramVideoWidget> {
                         color: Colors.black.withOpacity(0.6),
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(
-                        Icons.play_arrow_rounded,
-                        color: Colors.white,
-                        size: 32,
-                      ),
+                      child: const Icon(Icons.play_arrow_rounded,
+                          color: Colors.white, size: 32),
                     ),
                   ),
-
-                // Mute indicator
-                if (_showVideo && !_disposed)
+                if (_showVideo && !_disposed && _hasController)
                   Positioned(
                     bottom: 8,
                     right: 8,
@@ -1010,11 +938,8 @@ class _InstagramVideoWidgetState extends State<InstagramVideoWidget> {
                         color: Colors.black.withOpacity(0.5),
                         borderRadius: BorderRadius.circular(4),
                       ),
-                      child: const Icon(
-                        Icons.volume_off,
-                        color: Colors.white,
-                        size: 14,
-                      ),
+                      child: const Icon(Icons.volume_off,
+                          color: Colors.white, size: 14),
                     ),
                   ),
               ],
@@ -1027,7 +952,7 @@ class _InstagramVideoWidgetState extends State<InstagramVideoWidget> {
 }
 
 // ============================================================================
-// VIDEO PLAYER FULLSCREEN PAGE
+// FULLSCREEN VIDEO PLAYER
 // ============================================================================
 class VideoPlayerPage extends StatefulWidget {
   final String videoPath;
@@ -1121,10 +1046,8 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
           icon: const Icon(Icons.close, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(
-          widget.exerciseName,
-          style: const TextStyle(color: Colors.white, fontSize: 16),
-        ),
+        title: Text(widget.exerciseName,
+            style: const TextStyle(color: Colors.white, fontSize: 16)),
       ),
       body: Stack(
         children: [
@@ -1145,11 +1068,8 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
                           color: Colors.black.withOpacity(0.5),
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(
-                          Icons.play_arrow_rounded,
-                          color: Colors.white,
-                          size: 50,
-                        ),
+                        child: const Icon(Icons.play_arrow_rounded,
+                            color: Colors.white, size: 50),
                       ),
                     ),
                   ),
