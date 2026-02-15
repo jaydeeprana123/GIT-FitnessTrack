@@ -126,24 +126,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 // import 'your_constants.dart';  // For colors and fonts
 // import 'your_controller.dart'; // For WorkoutController
 
-import 'dart:developer';
-import 'dart:typed_data';
-import 'dart:async';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:get/get.dart';
-import 'package:video_player/video_player.dart';
-import 'package:video_thumbnail/video_thumbnail.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:visibility_detector/visibility_detector.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-// TODO: Add your imports here
-// import 'your_constants.dart';
-// import 'your_controller.dart';
-
 // ============================================================================
-// VIDEO CONTROLLER LIMITER
+// VIDEO CONTROLLER LIMITER - PREVENTS CRASHES
 // ============================================================================
 class VideoControllerLimiter {
   static final VideoControllerLimiter _instance = VideoControllerLimiter._();
@@ -173,22 +157,20 @@ class VideoControllerLimiter {
 // ============================================================================
 // WORKOUT DETAILS VIEW
 // ============================================================================
-class WorkoutDetailsView extends StatefulWidget {
-  const WorkoutDetailsView({Key? key}) : super(key: key);
+class WorkoutDetailsViewCopy extends StatefulWidget {
+  const WorkoutDetailsViewCopy({Key? key}) : super(key: key);
 
   @override
-  State<WorkoutDetailsView> createState() => _WorkoutDetailsViewState();
+  State<WorkoutDetailsViewCopy> createState() => _WorkoutDetailsViewCopyState();
 }
 
-class _WorkoutDetailsViewState extends State<WorkoutDetailsView> {
+class _WorkoutDetailsViewCopyState extends State<WorkoutDetailsViewCopy> {
   WorkoutController controller = Get.find<WorkoutController>();
-  int? _expandedDayIndex;
 
   @override
   void initState() {
     super.initState();
     log("WorkoutDetailsView InitState");
-    _expandedDayIndex = 0; // First day expanded by default
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await controller.getUserInfo();
     });
@@ -257,8 +239,6 @@ class _WorkoutDetailsViewState extends State<WorkoutDetailsView> {
                         fontSize: 14,
                         fontFamily: fontInterRegular)),
                 SizedBox(height: 20),
-
-                // WARM UP SECTION
                 Text("WARM UP",
                     style: TextStyle(
                         color: text_color,
@@ -270,15 +250,13 @@ class _WorkoutDetailsViewState extends State<WorkoutDetailsView> {
                 SizedBox(height: 16),
                 Container(color: grey_f0f0f0, height: 2),
                 SizedBox(height: 16),
-
-                // EXERCISE ROUTINE WITH EXPANDABLE DAYS
                 Text("EXERCISE ROUTINE",
                     style: TextStyle(
                         color: text_color,
                         fontSize: 16,
                         fontFamily: fontInterSemiBold)),
                 SizedBox(height: 4),
-                _buildExpandableDays(),
+                _buildExerciseList(),
               ],
             ),
           ),
@@ -384,261 +362,137 @@ class _WorkoutDetailsViewState extends State<WorkoutDetailsView> {
     );
   }
 
-  Widget _buildExpandableDays() {
-    final days = controller.selectedWorkoutData.value.workoutTrainingList ?? [];
-
+  Widget _buildExerciseList() {
     return ListView.builder(
       scrollDirection: Axis.vertical,
       primary: false,
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
-      itemCount: days.length,
+      itemCount:
+      (controller.selectedWorkoutData.value.workoutTrainingList ?? [])
+          .length,
       itemBuilder: (context, dayIndex) {
-        final day = days[dayIndex];
-        final isExpanded = _expandedDayIndex == dayIndex;
-
+        final day = controller.selectedWorkoutData.value
+            .workoutTrainingList?[dayIndex];
         return Container(
-          margin: EdgeInsets.only(bottom: 12),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: isExpanded ? color_primary : Colors.grey[300]!,
-              width: isExpanded ? 2 : 1,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 4,
-                offset: Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Column(
-            children: [
-              // Day Header (Always Visible)
-              InkWell(
-                onTap: () {
-                  setState(() {
-                    if (_expandedDayIndex == dayIndex) {
-                      _expandedDayIndex = null; // Collapse
-                    } else {
-                      _expandedDayIndex = dayIndex; // Expand this, collapse others
-                    }
-                  });
-                },
-                child: Container(
-                  padding: EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: isExpanded
-                        ? color_primary.withOpacity(0.1)
-                        : Colors.grey[50],
-                    borderRadius: isExpanded
-                        ? BorderRadius.only(
-                      topLeft: Radius.circular(10),
-                      topRight: Radius.circular(10),
-                    )
-                        : BorderRadius.circular(10),
-                  ),
-                  child: Row(
-                    children: [
-                      // Day icon
-                      Container(
-                        padding: EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: isExpanded ? color_primary : Colors.grey[400],
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          Icons.calendar_today,
-                          color: Colors.white,
-                          size: 20,
-                        ),
-                      ),
-                      SizedBox(width: 12),
-
-                      // Day info
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Day ${day?.day ?? ""}",
-                              style: TextStyle(
-                                color: isExpanded ? color_primary : text_color,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: fontInterSemiBold,
-                              ),
-                            ),
-                            SizedBox(height: 4),
-                            Text(
-                              "${(day?.workoutTrainingCategory ?? []).length} Categories",
-                              style: TextStyle(
-                                color: Colors.grey[600],
-                                fontSize: 12,
-                                fontFamily: fontInterRegular,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      // Expand/Collapse icon
-                      AnimatedRotation(
-                        turns: isExpanded ? 0.5 : 0,
-                        duration: Duration(milliseconds: 200),
-                        child: Icon(
-                          Icons.keyboard_arrow_down,
-                          color: isExpanded ? color_primary : Colors.grey,
-                          size: 28,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              // Day Content (Expandable)
-              AnimatedCrossFade(
-                firstChild: Container(),
-                secondChild: Container(
-                  padding: EdgeInsets.all(16),
-                  child: _buildDayContent(day, dayIndex),
-                ),
-                crossFadeState: isExpanded
-                    ? CrossFadeState.showSecond
-                    : CrossFadeState.showFirst,
-                duration: Duration(milliseconds: 200),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildDayContent(day, int dayIndex) {
-    final categories = day?.workoutTrainingCategory ?? [];
-
-    return ListView.builder(
-      scrollDirection: Axis.vertical,
-      primary: false,
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      itemCount: categories.length,
-      itemBuilder: (context, catIndex) {
-        final category = categories[catIndex];
-
-        return Container(
-          margin: EdgeInsets.only(bottom: 16),
+          margin: EdgeInsets.only(top: 8),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Category Name
+
+              if(dayIndex != 0)SizedBox(height: 20,),
+
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                decoration: BoxDecoration(
-                  color: Colors.red.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  children: [
-                    Icon(Icons.fitness_center, color: Colors.red, size: 18),
-                    SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        category?.workoutTrainingCategoryName ?? "",
-                        style: TextStyle(
-                          color: Colors.red,
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: fontInterSemiBold,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                width: double.infinity,
+                color: color_primary,
+                alignment: Alignment.center,
+                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                child: Text("Day ${day?.day ?? ""}",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontFamily: fontInterSemiBold)),
               ),
-
-              SizedBox(height: 12),
-              _buildTableHeader(),
-              SizedBox(height: 8),
-
-              // Exercises
               ListView.builder(
                 scrollDirection: Axis.vertical,
                 primary: false,
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
-                itemCount: (category?.workoutTrainingSubCategory ?? []).length,
-                itemBuilder: (context, subIndex) {
-                  final exercise = category?.workoutTrainingSubCategory?[subIndex];
-                  final videos = exercise?.workoutDetailVideoList ?? [];
-
+                itemCount: (day?.workoutTrainingCategory ?? []).length,
+                itemBuilder: (context, catIndex) {
+                  final category = day?.workoutTrainingCategory?[catIndex];
                   return Container(
-                    margin: EdgeInsets.only(bottom: 12),
-                    padding: EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[50],
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.grey[200]!),
-                    ),
+                    margin: EdgeInsets.only(top: 8),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Exercise details
-                        Row(
-                          children: [
-                            Expanded(
-                              flex: 3,
-                              child: Text(
-                                exercise?.workoutDetailName ?? "",
-                                style: TextStyle(
-                                  color: text_color,
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                  fontFamily: fontInterSemiBold,
-                                ),
+                        SizedBox(height: 6),
+                        Text(category?.workoutTrainingCategoryName ?? "",
+                            style: TextStyle(
+                                color: Colors.red,
+                                fontSize: 15,
+                                fontFamily: fontInterSemiBold)),
+                        SizedBox(height: 6),
+                        _buildTableHeader(),
+                        ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          primary: false,
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount:
+                          (category?.workoutTrainingSubCategory ?? [])
+                              .length,
+                          itemBuilder: (context, subIndex) {
+                            final exercise =
+                            category?.workoutTrainingSubCategory?[subIndex];
+                            final videos = exercise?.workoutDetailVideoList ?? [];
+                            return Container(
+                              margin: EdgeInsets.only(top: 8),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        flex: 3,
+                                        child: Text(
+                                            exercise?.workoutDetailName ?? "",
+                                            style: TextStyle(
+                                                color: text_color,
+                                                fontSize: 13,
+                                                fontFamily: fontInterRegular)),
+                                      ),
+                                      Expanded(
+                                        flex: 1,
+                                        child: Text(exercise?.sets ?? "",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: text_color,
+                                                fontSize: 13,
+                                                fontFamily: fontInterRegular)),
+                                      ),
+                                      Expanded(
+                                        flex: 1,
+                                        child: Text(exercise?.repeatNo ?? "",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: text_color,
+                                                fontSize: 13,
+                                                fontFamily: fontInterRegular)),
+                                      ),
+                                      Expanded(
+                                        flex: 1,
+                                        child: Text(exercise?.repeatTime ?? "",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: text_color,
+                                                fontSize: 13,
+                                                fontFamily: fontInterRegular)),
+                                      ),
+                                    ],
+                                  ),
+                                  if (videos.isNotEmpty)
+                                    _buildVideoSection(videos, exercise?.workoutDetailName ?? ""),
+                                ],
                               ),
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: Text(exercise?.sets ?? "",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: text_color,
-                                      fontSize: 13,
-                                      fontFamily: fontInterRegular)),
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: Text(exercise?.repeatNo ?? "",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: text_color,
-                                      fontSize: 13,
-                                      fontFamily: fontInterRegular)),
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: Text(exercise?.repeatTime ?? "",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: text_color,
-                                      fontSize: 13,
-                                      fontFamily: fontInterRegular)),
-                            ),
-                          ],
+                            );
+                          },
                         ),
-
-                        // Videos (ONLY LOAD IF DAY IS EXPANDED)
-                        if (videos.isNotEmpty && _expandedDayIndex == dayIndex)
-                          _buildVideoSection(videos, exercise?.workoutDetailName ?? ""),
                       ],
                     ),
                   );
                 },
+              ),
+              SizedBox(height: 12),
+              Row(
+                children: List.generate(
+                    75,
+                        (i) => Expanded(
+                      child: Container(
+                        color: i % 2 == 0 ? Colors.transparent : Colors.grey,
+                        height: 1,
+                      ),
+                    )),
               ),
             ],
           ),
@@ -649,7 +503,7 @@ class _WorkoutDetailsViewState extends State<WorkoutDetailsView> {
 
   Widget _buildVideoSection(List videos, String exerciseName) {
     return Container(
-      margin: EdgeInsets.only(top: 12),
+      margin: EdgeInsets.only(top: 8, bottom: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -684,9 +538,10 @@ class _WorkoutDetailsViewState extends State<WorkoutDetailsView> {
                         SizedBox(width: 4),
                         Text('Swipe',
                             style: TextStyle(
-                                color: color_primary,
-                                fontSize: 11,
-                                fontFamily: fontInterMedium)),
+                              color: color_primary,
+                              fontSize: 11,
+                              fontFamily: fontInterMedium,
+                            )),
                       ],
                     ),
                   ),
@@ -694,7 +549,7 @@ class _WorkoutDetailsViewState extends State<WorkoutDetailsView> {
             ),
           ),
           Container(
-            height: 240,
+            height: 280,
             child: Stack(
               children: [
                 ListView.builder(
@@ -851,7 +706,7 @@ class _WorkoutDetailsViewState extends State<WorkoutDetailsView> {
 }
 
 // ============================================================================
-// AUTO-PLAY VIDEO WIDGET
+// AUTO-PLAY VIDEO WIDGET - OPTIMIZED FOR MOBILE DATA
 // ============================================================================
 class SimpleAutoPlayVideo extends StatefulWidget {
   final String videoUrl;
@@ -886,7 +741,7 @@ class _SimpleAutoPlayVideoState extends State<SimpleAutoPlayVideo> {
         video: widget.videoUrl,
         imageFormat: ImageFormat.JPEG,
         maxWidth: 150,
-        quality: 50,
+        quality: 100,
       );
       if (!_disposed && mounted) {
         setState(() => _thumbnail = thumb);
@@ -1010,7 +865,7 @@ class _SimpleAutoPlayVideoState extends State<SimpleAutoPlayVideo> {
   @override
   Widget build(BuildContext context) {
     if (_disposed) {
-      return Container(width: 280, height: 180, color: Colors.grey[300]);
+      return Container(width: 320, height: 220, color: Colors.grey[300]);
     }
 
     return GestureDetector(
@@ -1019,8 +874,8 @@ class _SimpleAutoPlayVideoState extends State<SimpleAutoPlayVideo> {
         key: Key('v_${widget.videoUrl}_$hashCode'),
         onVisibilityChanged: (i) => _onVisibilityChanged(i.visibleFraction),
         child: Container(
-          width: 280,
-          height: 180,
+          width: 320,
+          height: 220,
           decoration: BoxDecoration(
             color: Colors.black,
             borderRadius: BorderRadius.circular(12),
