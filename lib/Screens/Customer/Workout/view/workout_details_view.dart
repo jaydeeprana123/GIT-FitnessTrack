@@ -138,6 +138,106 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'dart:developer';
+import 'dart:typed_data';
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:video_player/video_player.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:visibility_detector/visibility_detector.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+// TODO: Add your imports here
+// import 'your_constants.dart';
+// import 'your_controller.dart';
+
+import 'dart:developer';
+import 'dart:typed_data';
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:video_player/video_player.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:visibility_detector/visibility_detector.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+// TODO: Add your imports here
+// import 'your_constants.dart';
+// import 'your_controller.dart';
+
+import 'dart:developer';
+import 'dart:typed_data';
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:video_player/video_player.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:visibility_detector/visibility_detector.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+// TODO: Add your imports here
+// import 'your_constants.dart';
+// import 'your_controller.dart';
+
+import 'dart:developer';
+import 'dart:typed_data';
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:video_player/video_player.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:visibility_detector/visibility_detector.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+// TODO: Add your imports here
+// import 'your_constants.dart';
+// import 'your_controller.dart';
+
+import 'dart:developer';
+import 'dart:typed_data';
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:video_player/video_player.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:visibility_detector/visibility_detector.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import 'dart:developer';
+import 'dart:typed_data';
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:video_player/video_player.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:visibility_detector/visibility_detector.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import 'dart:developer';
+import 'dart:typed_data';
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:video_player/video_player.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:visibility_detector/visibility_detector.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 // TODO: Add your imports here
 // import 'your_constants.dart';
 // import 'your_controller.dart';
@@ -183,6 +283,8 @@ class WorkoutDetailsView extends StatefulWidget {
 class _WorkoutDetailsViewState extends State<WorkoutDetailsView> {
   WorkoutController controller = Get.find<WorkoutController>();
   int? _expandedDayIndex;
+  int? _loadingDayIndex;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -196,6 +298,7 @@ class _WorkoutDetailsViewState extends State<WorkoutDetailsView> {
 
   @override
   void dispose() {
+    _scrollController.dispose();
     VideoControllerLimiter().reset();
     super.dispose();
   }
@@ -227,6 +330,7 @@ class _WorkoutDetailsViewState extends State<WorkoutDetailsView> {
           ),
         ),
         body: Obx(() => SingleChildScrollView(
+          controller: _scrollController,
           child: Container(
             padding: EdgeInsets.all(12),
             child: Column(
@@ -398,6 +502,7 @@ class _WorkoutDetailsViewState extends State<WorkoutDetailsView> {
         final isExpanded = _expandedDayIndex == dayIndex;
 
         return Container(
+          key: ValueKey('day_$dayIndex'),
           margin: EdgeInsets.only(bottom: 12),
           decoration: BoxDecoration(
             color: Colors.white,
@@ -418,20 +523,46 @@ class _WorkoutDetailsViewState extends State<WorkoutDetailsView> {
             children: [
               // Day Header (Always Visible)
               InkWell(
-                onTap: () {
-                  setState(() {
-                    if (_expandedDayIndex == dayIndex) {
-                      _expandedDayIndex = null; // Collapse
-                    } else {
-                      _expandedDayIndex = dayIndex; // Expand this, collapse others
+                onTap: () async {
+                  if (_expandedDayIndex == dayIndex) {
+                    // Just collapse if clicking the same card
+                    setState(() {
+                      _expandedDayIndex = null;
+                    });
+                  } else {
+                    // Show loading indicator on clicked card
+                    setState(() {
+                      _loadingDayIndex = dayIndex;
+                    });
+
+                    // Close the currently open card first
+                    if (_expandedDayIndex != null) {
+                      setState(() {
+                        _expandedDayIndex = null;
+                      });
+                      // Wait for close animation (reduced from 300ms)
+                      await Future.delayed(Duration(milliseconds: 180));
                     }
-                  });
+
+                    // Brief pause for smooth transition (reduced from 100ms)
+                    await Future.delayed(Duration(milliseconds: 50));
+
+                    // Open the new card
+                    if (mounted) {
+                      setState(() {
+                        _expandedDayIndex = dayIndex;
+                        _loadingDayIndex = null;
+                      });
+                    }
+                  }
                 },
                 child: Container(
                   padding: EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: isExpanded
                         ? color_primary.withOpacity(0.1)
+                        : _loadingDayIndex == dayIndex
+                        ? color_primary.withOpacity(0.05)
                         : Colors.grey[50],
                     borderRadius: isExpanded
                         ? BorderRadius.only(
@@ -442,14 +573,28 @@ class _WorkoutDetailsViewState extends State<WorkoutDetailsView> {
                   ),
                   child: Row(
                     children: [
-                      // Day icon
-                      Container(
+                      // Day icon with animation
+                      AnimatedContainer(
+                        duration: Duration(milliseconds: 200),
                         padding: EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: isExpanded ? color_primary : Colors.grey[400],
+                          color: isExpanded
+                              ? color_primary
+                              : _loadingDayIndex == dayIndex
+                              ? color_primary.withOpacity(0.7)
+                              : Colors.grey[400],
                           shape: BoxShape.circle,
                         ),
-                        child: Icon(
+                        child: _loadingDayIndex == dayIndex
+                            ? SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
+                          ),
+                        )
+                            : Icon(
                           Icons.calendar_today,
                           color: Colors.white,
                           size: 20,
@@ -462,14 +607,30 @@ class _WorkoutDetailsViewState extends State<WorkoutDetailsView> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              "Day ${day?.day ?? ""}",
-                              style: TextStyle(
-                                color: isExpanded ? color_primary : text_color,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: fontInterSemiBold,
-                              ),
+                            Row(
+                              children: [
+                                Text(
+                                  "Day ${day?.day ?? ""}",
+                                  style: TextStyle(
+                                    color: isExpanded ? color_primary : text_color,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: fontInterSemiBold,
+                                  ),
+                                ),
+                                if (_loadingDayIndex == dayIndex) ...[
+                                  SizedBox(width: 8),
+                                  Text(
+                                    "Loading...",
+                                    style: TextStyle(
+                                      color: color_primary.withOpacity(0.7),
+                                      fontSize: 12,
+                                      fontStyle: FontStyle.italic,
+                                      fontFamily: fontInterRegular,
+                                    ),
+                                  ),
+                                ],
+                              ],
                             ),
                             SizedBox(height: 4),
                             Text(
@@ -500,16 +661,17 @@ class _WorkoutDetailsViewState extends State<WorkoutDetailsView> {
               ),
 
               // Day Content (Expandable)
-              AnimatedCrossFade(
-                firstChild: Container(),
-                secondChild: Container(
-                  padding: EdgeInsets.all(16),
-                  child: _buildDayContent(day, dayIndex),
+              ClipRect(
+                child: AnimatedSize(
+                  duration: Duration(milliseconds: 200),
+                  curve: Curves.easeInOut,
+                  child: isExpanded
+                      ? Container(
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                    child: _buildDayContent(day, dayIndex),
+                  )
+                      : SizedBox.shrink(),
                 ),
-                crossFadeState: isExpanded
-                    ? CrossFadeState.showSecond
-                    : CrossFadeState.showFirst,
-                duration: Duration(milliseconds: 200),
               ),
             ],
           ),
@@ -578,7 +740,7 @@ class _WorkoutDetailsViewState extends State<WorkoutDetailsView> {
 
                   return Container(
                     margin: EdgeInsets.only(bottom: 12),
-                    padding: EdgeInsets.all(12),
+                    padding: EdgeInsets.symmetric(horizontal: 0, vertical: 8),
                     decoration: BoxDecoration(
                       color: Colors.grey[50],
                       borderRadius: BorderRadius.circular(8),
@@ -694,13 +856,13 @@ class _WorkoutDetailsViewState extends State<WorkoutDetailsView> {
             ),
           ),
           Container(
-            height: 240,
+            height: 260,
             child: Stack(
               children: [
                 ListView.builder(
                   scrollDirection: Axis.horizontal,
                   physics: const BouncingScrollPhysics(),
-                  padding: EdgeInsets.symmetric(horizontal: 4),
+                  // padding: EdgeInsets.symmetric(horizontal: 4),
                   itemCount: videos.length,
                   itemBuilder: (context, videoIndex) {
                     final videoPath = videos[videoIndex].video ?? "";
@@ -886,7 +1048,7 @@ class _SimpleAutoPlayVideoState extends State<SimpleAutoPlayVideo> {
         video: widget.videoUrl,
         imageFormat: ImageFormat.JPEG,
         maxWidth: 150,
-        quality: 50,
+        quality: 70,
       );
       if (!_disposed && mounted) {
         setState(() => _thumbnail = thumb);
@@ -1010,7 +1172,7 @@ class _SimpleAutoPlayVideoState extends State<SimpleAutoPlayVideo> {
   @override
   Widget build(BuildContext context) {
     if (_disposed) {
-      return Container(width: 280, height: 180, color: Colors.grey[300]);
+      return Container(width: 300, height: 220, color: Colors.grey[300]);
     }
 
     return GestureDetector(
@@ -1019,8 +1181,8 @@ class _SimpleAutoPlayVideoState extends State<SimpleAutoPlayVideo> {
         key: Key('v_${widget.videoUrl}_$hashCode'),
         onVisibilityChanged: (i) => _onVisibilityChanged(i.visibleFraction),
         child: Container(
-          width: 280,
-          height: 180,
+          width: 300,
+          height: 220,
           decoration: BoxDecoration(
             color: Colors.black,
             borderRadius: BorderRadius.circular(12),
